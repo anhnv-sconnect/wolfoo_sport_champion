@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
+  m_Name: Pando_5Age_Atlas
+  m_EditorClassIdentifier: 
+  atlasFile: {fileID: 4900000, guid: a67e8f482d1f9df4db49e3e6deaeaaa3, type: 3}
+  materials:
+  - {fileID: 2100000, guid: eba9000d94d733c4a921fce55895d587, type: 2}
+  - {fileID: 2100000, guid: 9d38cb9565eb0b5428d063593e69782f, type: 2}
+  - {fileID: 2100000, guid: c61544c475923fd47aa1495ffce2e374, type: 2}
+  - {fileID: 2100000, guid: 804ea4124de1b7545aea4559fc41bb36, type: 2}

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
+  m_Name: Dady_Wolf_Atlas
+  m_EditorClassIdentifier: 
+  atlasFile: {fileID: 4900000, guid: 8116588bbadb3cb4a9a8e8f33f40877f, type: 3}
+  materials:
+  - {fileID: 2100000, guid: f6f9592a3f7dfaf46a837edc1d48d154, type: 2}
+  - {fileID: 2100000, guid: e88937c6bd77f6d4d8fae91dfc325ede, type: 2}
+  - {fileID: 2100000, guid: 425ab0fc42893464b8b7133bd404d732, type: 2}
+  - {fileID: 2100000, guid: 69222c5db486b7243a1071c8bd06aebd, type: 2}
+  - {fileID: 2100000, guid: b5d787172d9c7ae449ac2493c762aa66, type: 2}
+  - {fileID: 2100000, guid: 8ce8e29cb2385394a9b6f42ce19d3f08, type: 2}
+  - {fileID: 2100000, guid: d48afa4f716613845aeefb4957171581, type: 2}
+  - {fileID: 2100000, guid: a74b91e6a866f3040982f410650b614f, type: 2}
+  - {fileID: 2100000, guid: cdc09e4dc5f25564fa0318edeacd0207, type: 2}
+  - {fileID: 2100000, guid: 8e3edb598352a51479c1442f01be6b8b, type: 2}
+  - {fileID: 2100000, guid: aa46f70d249ce4b4594cfda2849a528b, type: 2}
+  - {fileID: 2100000, guid: 0a40e33f1c002b04c8d3466b1a3e8d1b, type: 2}
+  - {fileID: 2100000, guid: f763fbc00885cd641912e80d5e7c51f5, type: 2}

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
+  m_Name: Kat_5Age_Atlas
+  m_EditorClassIdentifier: 
+  atlasFile: {fileID: 4900000, guid: 2983102cf6078e74e95afc468e9abdcb, type: 3}
+  materials:
+  - {fileID: 2100000, guid: 00b9dab50645c3849aefdec6ebdd3275, type: 2}
+  - {fileID: 2100000, guid: d8178729ddcd4314ea75fa664855b9dd, type: 2}
+  - {fileID: 2100000, guid: b0dd945f3d5ed8f4eaec80f0ff7a28f2, type: 2}
+  - {fileID: 2100000, guid: 764e29fa0de851b48a9e9ac504f070fa, type: 2}
+  - {fileID: 2100000, guid: 143909235b108ac4aaf3f5976eec8e58, type: 2}
+  - {fileID: 2100000, guid: 34a540bec634f9b4ba05c157a24c71d8, type: 2}

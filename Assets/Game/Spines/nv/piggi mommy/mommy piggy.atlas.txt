@@ -1,0 +1,300 @@
+
+mommy piggy.png
+size: 4096,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Body
+  rotate: false
+  xy: 0, 77
+  size: 981, 894
+  orig: 981, 894
+  offset: 0, 0
+  index: -1
+EYE-V/Eye_v_00002
+  rotate: false
+  xy: 1935, 181
+  size: 281, 345
+  orig: 400, 400
+  offset: 45, 25
+  index: -1
+EYE-V/Eye_v_00003
+  rotate: false
+  xy: 2310, 735
+  size: 280, 286
+  orig: 400, 400
+  offset: 46, 38
+  index: -1
+EYE-V/Eye_v_00004
+  rotate: false
+  xy: 1108, 2
+  size: 277, 149
+  orig: 400, 400
+  offset: 49, 71
+  index: -1
+EYE-V/Eye_v_00005
+  rotate: true
+  xy: 2095, 1490
+  size: 275, 185
+  orig: 400, 400
+  offset: 51, 38
+  index: -1
+EYE-V/Eye_v_00006
+  rotate: true
+  xy: 2141, 1214
+  size: 274, 191
+  orig: 400, 400
+  offset: 52, 34
+  index: -1
+EYE_^/Eye___00001
+  rotate: false
+  xy: 1497, 640
+  size: 281, 350
+  orig: 400, 400
+  offset: 45, 30
+  index: -1
+EYE_^/Eye___00002
+  rotate: false
+  xy: 1780, 699
+  size: 281, 304
+  orig: 400, 400
+  offset: 45, 58
+  index: -1
+EYE_^/Eye___00003
+  rotate: true
+  xy: 1907, 1767
+  size: 281, 244
+  orig: 400, 400
+  offset: 45, 95
+  index: -1
+EYE_^/Eye___00004
+  rotate: true
+  xy: 2153, 1767
+  size: 281, 186
+  orig: 400, 400
+  offset: 45, 129
+  index: -1
+EYE_^/Eye___00005
+  rotate: false
+  xy: 1813, 1487
+  size: 280, 165
+  orig: 400, 400
+  offset: 46, 132
+  index: -1
+EYE_^/Eye___00006
+  rotate: false
+  xy: 2136, 1023
+  size: 281, 160
+  orig: 400, 400
+  offset: 45, 130
+  index: -1
+Mom_havui/MomHavui_00001
+  rotate: false
+  xy: 196, 6
+  size: 170, 69
+  orig: 400, 400
+  offset: 123, 162
+  index: -1
+Mom_havui/MomHavui_00002
+  rotate: false
+  xy: 0, 0
+  size: 194, 75
+  orig: 400, 400
+  offset: 111, 157
+  index: -1
+Mom_havui/MomHavui_00003
+  rotate: false
+  xy: 1369, 992
+  size: 231, 86
+  orig: 400, 400
+  offset: 92, 149
+  index: -1
+Mom_havui/MomHavui_00004
+  rotate: false
+  xy: 1547, 1479
+  size: 264, 99
+  orig: 400, 400
+  offset: 76, 140
+  index: -1
+Mom_havui/MomHavui_00005
+  rotate: true
+  xy: 2191, 733
+  size: 288, 117
+  orig: 400, 400
+  offset: 64, 125
+  index: -1
+Mom_havui/MomHavui_00006
+  rotate: true
+  xy: 2063, 707
+  size: 298, 126
+  orig: 400, 400
+  offset: 59, 118
+  index: -1
+TaiTruoc_Phai
+  rotate: true
+  xy: 1108, 526
+  size: 459, 387
+  orig: 459, 387
+  offset: 0, 0
+  index: -1
+TaiTruoc_Trai
+  rotate: true
+  xy: 1409, 159
+  size: 365, 319
+  orig: 365, 319
+  offset: 0, 0
+  index: -1
+Taisau_Phai
+  rotate: true
+  xy: 1002, 987
+  size: 486, 365
+  orig: 486, 365
+  offset: 0, 0
+  index: -1
+Taisau_Trai
+  rotate: true
+  xy: 1108, 153
+  size: 371, 299
+  orig: 371, 299
+  offset: 0, 0
+  index: -1
+banchan_trai
+  rotate: false
+  xy: 1905, 1007
+  size: 229, 129
+  orig: 229, 129
+  offset: 0, 0
+  index: -1
+bong
+  rotate: true
+  xy: 983, 83
+  size: 888, 123
+  orig: 888, 124
+  offset: 0, 1
+  index: -1
+chan 2
+  rotate: true
+  xy: 1767, 528
+  size: 110, 340
+  orig: 110, 340
+  offset: 0, 0
+  index: -1
+duoi
+  rotate: false
+  xy: 1605, 1005
+  size: 298, 130
+  orig: 298, 130
+  offset: 0, 0
+  index: -1
+mat
+  rotate: false
+  xy: 0, 973
+  size: 1000, 1075
+  orig: 1000, 1075
+  offset: 0, 0
+  index: -1
+mieng an/mieng_an_1_00001
+  rotate: false
+  xy: 1387, 19
+  size: 288, 132
+  orig: 512, 512
+  offset: 115, 214
+  index: -1
+mieng an/mieng_an_1_00002
+  rotate: true
+  xy: 1987, 1185
+  size: 300, 152
+  orig: 512, 512
+  offset: 109, 198
+  index: -1
+mieng an/mieng_an_1_00003
+  rotate: false
+  xy: 1999, 4
+  size: 320, 175
+  orig: 512, 512
+  offset: 99, 180
+  index: -1
+mieng an/mieng_an_1_00004
+  rotate: true
+  xy: 1605, 1137
+  size: 340, 194
+  orig: 512, 512
+  offset: 89, 166
+  index: -1
+mieng an/mieng_an_1_00005
+  rotate: true
+  xy: 1730, 176
+  size: 349, 203
+  orig: 512, 512
+  offset: 84, 160
+  index: -1
+mieng an/mieng_an_1_00006
+  rotate: true
+  xy: 1801, 1138
+  size: 339, 184
+  orig: 512, 512
+  offset: 89, 175
+  index: -1
+mieng an/mieng_an_1_00007
+  rotate: false
+  xy: 1677, 2
+  size: 320, 155
+  orig: 512, 512
+  offset: 99, 201
+  index: -1
+mieng an/mieng_an_1_00008
+  rotate: false
+  xy: 2109, 579
+  size: 296, 126
+  orig: 512, 512
+  offset: 111, 227
+  index: -1
+mieng an/mieng_an_1_00009
+  rotate: false
+  xy: 1497, 527
+  size: 268, 111
+  orig: 512, 512
+  offset: 125, 240
+  index: -1
+mieng an/mieng_an_1_00010
+  rotate: false
+  xy: 1300, 1477
+  size: 245, 101
+  orig: 512, 512
+  offset: 137, 250
+  index: -1
+mieng an/mieng_an_1_00011
+  rotate: true
+  xy: 2282, 1530
+  size: 235, 97
+  orig: 512, 512
+  offset: 142, 254
+  index: -1
+mu
+  rotate: true
+  xy: 1002, 1475
+  size: 573, 296
+  orig: 573, 296
+  offset: 0, 0
+  index: -1
+mui
+  rotate: true
+  xy: 1300, 1580
+  size: 468, 369
+  orig: 468, 369
+  offset: 0, 0
+  index: -1
+tay
+  rotate: true
+  xy: 1671, 1654
+  size: 394, 234
+  orig: 394, 234
+  offset: 0, 0
+  index: -1
+tay 2
+  rotate: true
+  xy: 1369, 1080
+  size: 395, 234
+  orig: 395, 234
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,1506 @@
+
+Dady_Wolf.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01.Skin/Black_Vest/chan_Trai
+  rotate: true
+  xy: 390, 1880
+  size: 92, 183
+  orig: 92, 183
+  offset: 0, 0
+  index: -1
+01.Skin/Crimminal/chan
+  rotate: true
+  xy: 845, 1654
+  size: 115, 212
+  orig: 115, 237
+  offset: 0, 25
+  index: -1
+01.Skin/Crimminal/chan 2
+  rotate: true
+  xy: 631, 1656
+  size: 113, 212
+  orig: 113, 251
+  offset: 0, 24
+  index: -1
+01.Skin/Crimminal/tay
+  rotate: false
+  xy: 451, 1509
+  size: 225, 145
+  orig: 269, 155
+  offset: 0, 10
+  index: -1
+01.Skin/Crimminal/tay 2
+  rotate: false
+  xy: 218, 1519
+  size: 231, 142
+  orig: 278, 155
+  offset: 47, 13
+  index: -1
+01.Skin/Sport/chan_Trai
+  rotate: true
+  xy: 575, 1872
+  size: 92, 183
+  orig: 92, 183
+  offset: 0, 0
+  index: -1
+01.Skin/Sport/tay
+  rotate: false
+  xy: 678, 1497
+  size: 264, 155
+  orig: 264, 155
+  offset: 0, 0
+  index: -1
+01.Skin/Sport/tay 2
+  rotate: false
+  xy: 201, 1346
+  size: 266, 161
+  orig: 266, 161
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 10/chan phai
+  rotate: true
+  xy: 1125, 314
+  size: 191, 391
+  orig: 191, 391
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 10/chan trai
+  rotate: true
+  xy: 0, 386
+  size: 191, 373
+  orig: 191, 373
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 12/chan phai
+  rotate: true
+  xy: 1518, 299
+  size: 191, 391
+  orig: 191, 391
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 12/chan trai
+  rotate: true
+  xy: 375, 370
+  size: 191, 373
+  orig: 191, 373
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 13/chan phai
+  rotate: true
+  xy: 1122, 121
+  size: 191, 391
+  orig: 191, 391
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 13/chan trai
+  rotate: true
+  xy: 750, 343
+  size: 191, 373
+  orig: 191, 373
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 15/chan phai
+  rotate: true
+  xy: 1515, 106
+  size: 191, 391
+  orig: 191, 391
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 15/chan trai
+  rotate: true
+  xy: 0, 193
+  size: 191, 372
+  orig: 191, 372
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 17/chan trai
+  rotate: true
+  xy: 374, 177
+  size: 191, 372
+  orig: 191, 372
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 18/chan trai
+  rotate: true
+  xy: 748, 150
+  size: 191, 372
+  orig: 191, 372
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 2/chan phai
+  rotate: true
+  xy: 375, 756
+  size: 191, 391
+  orig: 191, 391
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 2/chan trai
+  rotate: true
+  xy: 0, 772
+  size: 191, 373
+  orig: 191, 373
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 22/chan trai
+  rotate: true
+  xy: 0, 0
+  size: 191, 372
+  orig: 191, 372
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 3/chan phai
+  rotate: true
+  xy: 1143, 700
+  size: 191, 391
+  orig: 191, 391
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 3/chan trai
+  rotate: true
+  xy: 768, 729
+  size: 191, 373
+  orig: 191, 373
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 4/chan phai
+  rotate: true
+  xy: 1536, 685
+  size: 191, 391
+  orig: 191, 391
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 4/chan trai
+  rotate: true
+  xy: 0, 579
+  size: 191, 373
+  orig: 191, 373
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 5/chan phai
+  rotate: true
+  xy: 1155, 893
+  size: 190, 391
+  orig: 190, 391
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 5/chan trai
+  rotate: true
+  xy: 375, 563
+  size: 191, 373
+  orig: 191, 373
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 7/chan phai
+  rotate: true
+  xy: 1548, 878
+  size: 190, 391
+  orig: 190, 391
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 7/chan trai
+  rotate: true
+  xy: 750, 536
+  size: 191, 373
+  orig: 191, 373
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 9/chan phai
+  rotate: true
+  xy: 1125, 507
+  size: 191, 391
+  orig: 191, 391
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 9/chan trai
+  rotate: true
+  xy: 1518, 492
+  size: 191, 373
+  orig: 191, 373
+  offset: 0, 0
+  index: -1
+01.Skin/canifa1/chan phai
+  rotate: true
+  xy: 422, 1663
+  size: 111, 207
+  orig: 112, 230
+  offset: 1, 23
+  index: -1
+01.Skin/canifa1/chan trai
+  rotate: true
+  xy: 1724, 1746
+  size: 109, 189
+  orig: 113, 230
+  offset: 1, 22
+  index: -1
+01.Skin/deer/chan_Phai
+  rotate: true
+  xy: 469, 1326
+  size: 169, 389
+  orig: 169, 389
+  offset: 0, 0
+  index: -1
+01.Skin/deer/chan_Trai
+  rotate: true
+  xy: 982, 1112
+  size: 188, 383
+  orig: 188, 383
+  offset: 0, 0
+  index: -1
+01.Skin/elephant/chan_Phai
+  rotate: true
+  xy: 1152, 1302
+  size: 169, 389
+  orig: 169, 389
+  offset: 0, 0
+  index: -1
+01.Skin/elephant/chan_Trai
+  rotate: true
+  xy: 1367, 1085
+  size: 188, 383
+  orig: 188, 383
+  offset: 0, 0
+  index: -1
+01.Skin/fish/chan_Phai
+  rotate: true
+  xy: 1543, 1275
+  size: 169, 389
+  orig: 169, 389
+  offset: 0, 0
+  index: -1
+01.Skin/fish/chan_Trai
+  rotate: true
+  xy: 0, 965
+  size: 188, 383
+  orig: 188, 383
+  offset: 0, 0
+  index: -1
+01.Skin/frog/chan_Phai
+  rotate: true
+  xy: 200, 1155
+  size: 169, 389
+  orig: 169, 389
+  offset: 0, 0
+  index: -1
+01.Skin/frog/chan_Trai
+  rotate: true
+  xy: 385, 949
+  size: 188, 383
+  orig: 188, 383
+  offset: 0, 0
+  index: -1
+01.Skin/magicial/chan_Phai
+  rotate: true
+  xy: 591, 1139
+  size: 169, 389
+  orig: 169, 389
+  offset: 0, 0
+  index: -1
+01.Skin/magicial/chan_Trai
+  rotate: true
+  xy: 770, 922
+  size: 188, 383
+  orig: 188, 383
+  offset: 0, 0
+  index: -1
+01.Skin/skin 1/chan phai
+  rotate: true
+  xy: 945, 1868
+  size: 92, 183
+  orig: 92, 183
+  offset: 0, 0
+  index: -1
+01.Skin/skin 2/chan trai
+  rotate: true
+  xy: 1130, 1865
+  size: 92, 183
+  orig: 92, 183
+  offset: 0, 0
+  index: -1
+01.Skin/skin 3/chan trai
+  rotate: true
+  xy: 1315, 1858
+  size: 92, 183
+  orig: 92, 183
+  offset: 0, 0
+  index: -1
+01.Skin/skin 4/chan trai
+  rotate: true
+  xy: 1500, 1858
+  size: 92, 183
+  orig: 92, 183
+  offset: 0, 0
+  index: -1
+01.Skin/skin 5/chan trai
+  rotate: true
+  xy: 1685, 1858
+  size: 92, 183
+  orig: 92, 183
+  offset: 0, 0
+  index: -1
+01.Skin/skin 7/chan trai
+  rotate: true
+  xy: 0, 1805
+  size: 92, 183
+  orig: 92, 183
+  offset: 0, 0
+  index: -1
+01.Skin/skin/chan trai
+  rotate: true
+  xy: 760, 1868
+  size: 92, 183
+  orig: 92, 183
+  offset: 0, 0
+  index: -1
+EYE_^/EYE___00002
+  rotate: false
+  xy: 0, 1380
+  size: 199, 171
+  orig: 250, 250
+  offset: 24, 48
+  index: -1
+EYE_^/EYE___00003
+  rotate: true
+  xy: 1915, 1656
+  size: 199, 128
+  orig: 250, 250
+  offset: 24, 74
+  index: -1
+EYE_^/EYE___00004
+  rotate: false
+  xy: 0, 1899
+  size: 199, 88
+  orig: 250, 250
+  offset: 24, 98
+  index: -1
+EYE_^/EYE___00005
+  rotate: false
+  xy: 837, 1962
+  size: 197, 73
+  orig: 250, 250
+  offset: 26, 100
+  index: -1
+EYE_^/EYE___00006
+  rotate: false
+  xy: 636, 1966
+  size: 199, 69
+  orig: 250, 250
+  offset: 24, 99
+  index: -1
+EYE_v/EYE_v_00001
+  rotate: true
+  xy: 1752, 1070
+  size: 203, 220
+  orig: 250, 250
+  offset: 23, 20
+  index: -1
+EYE_v/EYE_v_00002
+  rotate: false
+  xy: 0, 1180
+  size: 198, 198
+  orig: 250, 250
+  offset: 25, 24
+  index: -1
+EYE_v/EYE_v_00003
+  rotate: false
+  xy: 1214, 1476
+  size: 198, 156
+  orig: 250, 250
+  offset: 25, 34
+  index: -1
+EYE_v/EYE_v_00004
+  rotate: false
+  xy: 1110, 1759
+  size: 196, 104
+  orig: 250, 250
+  offset: 27, 59
+  index: -1
+EYE_v/EYE_v_00005
+  rotate: false
+  xy: 726, 1771
+  size: 194, 95
+  orig: 250, 250
+  offset: 29, 69
+  index: -1
+EYE_v/EYE_v_00006
+  rotate: false
+  xy: 185, 1798
+  size: 194, 93
+  orig: 250, 250
+  offset: 29, 73
+  index: -1
+Mom_NghienRang/Mom_nghienrang_00005
+  rotate: false
+  xy: 1308, 1752
+  size: 206, 104
+  orig: 250, 250
+  offset: 24, 44
+  index: -1
+Mom_NghienRang/Mom_nghienrang_00006
+  rotate: false
+  xy: 1059, 1641
+  size: 216, 116
+  orig: 250, 250
+  offset: 19, 36
+  index: -1
+Mom_ha/Mom_ha_00001
+  rotate: false
+  xy: 288, 1985
+  size: 121, 50
+  orig: 250, 250
+  offset: 67, 96
+  index: -1
+Mom_ha2/Mom_Buon_00001
+  rotate: false
+  xy: 288, 1985
+  size: 121, 50
+  orig: 250, 250
+  offset: 67, 96
+  index: -1
+Mom_ha/Mom_ha_00002
+  rotate: false
+  xy: 501, 1974
+  size: 133, 61
+  orig: 250, 250
+  offset: 61, 92
+  index: -1
+Mom_ha/Mom_ha_00003
+  rotate: false
+  xy: 1219, 1959
+  size: 158, 76
+  orig: 250, 250
+  offset: 48, 83
+  index: -1
+Mom_ha/Mom_ha_00004
+  rotate: false
+  xy: 201, 1893
+  size: 187, 90
+  orig: 250, 250
+  offset: 33, 74
+  index: -1
+Mom_ha/Mom_ha_00005
+  rotate: false
+  xy: 0, 1686
+  size: 209, 110
+  orig: 250, 250
+  offset: 22, 58
+  index: -1
+Mom_ha/Mom_ha_00006
+  rotate: false
+  xy: 1495, 1632
+  size: 216, 118
+  orig: 250, 250
+  offset: 19, 51
+  index: -1
+Mom_ha2/Mom_Buon_00002
+  rotate: false
+  xy: 0, 1994
+  size: 131, 41
+  orig: 250, 250
+  offset: 62, 92
+  index: -1
+Mom_ha2/Mom_Buon_00003
+  rotate: false
+  xy: 133, 1989
+  size: 153, 46
+  orig: 250, 250
+  offset: 51, 84
+  index: -1
+Mom_ha2/Mom_Buon_00004
+  rotate: false
+  xy: 1036, 1962
+  size: 181, 73
+  orig: 250, 250
+  offset: 37, 64
+  index: -1
+Mom_ha2/Mom_Buon_00005
+  rotate: false
+  xy: 1516, 1752
+  size: 206, 104
+  orig: 250, 250
+  offset: 24, 44
+  index: -1
+Mom_ha2/Mom_Buon_00006
+  rotate: false
+  xy: 1277, 1634
+  size: 216, 116
+  orig: 250, 250
+  offset: 19, 36
+  index: -1
+Mom_nherang/Mom_nherang_00005
+  rotate: false
+  xy: 211, 1673
+  size: 209, 110
+  orig: 250, 250
+  offset: 22, 58
+  index: -1
+Mom_nherang/Mom_nherang_00006
+  rotate: false
+  xy: 0, 1553
+  size: 216, 118
+  orig: 250, 250
+  offset: 19, 51
+  index: -1
+banchan_phai
+  rotate: false
+  xy: 1870, 1857
+  size: 156, 93
+  orig: 158, 95
+  offset: 1, 1
+  index: -1
+banchan_trai
+  rotate: false
+  xy: 381, 1785
+  size: 156, 93
+  orig: 158, 95
+  offset: 1, 1
+  index: -1
+bong
+  rotate: false
+  xy: 1379, 1952
+  size: 590, 83
+  orig: 593, 85
+  offset: 2, 1
+  index: -1
+chan_phai
+  rotate: true
+  xy: 922, 1771
+  size: 95, 186
+  orig: 95, 186
+  offset: 0, 0
+  index: -1
+chan_trai
+  rotate: true
+  xy: 539, 1776
+  size: 94, 185
+  orig: 94, 185
+  offset: 0, 0
+  index: -1
+chuMieng_00001
+  rotate: true
+  xy: 411, 1976
+  size: 59, 88
+  orig: 200, 200
+  offset: 77, 59
+  index: -1
+taiphai_sau
+  rotate: true
+  xy: 1679, 1446
+  size: 160, 223
+  orig: 160, 223
+  offset: 0, 0
+  index: -1
+taiphai_truoc
+  rotate: true
+  xy: 1713, 1608
+  size: 136, 177
+  orig: 136, 177
+  offset: 0, 0
+  index: -1
+taitrai_truoc
+  rotate: true
+  xy: 860, 1310
+  size: 172, 290
+  orig: 172, 290
+  offset: 0, 0
+  index: -1
+tay
+  rotate: false
+  xy: 1414, 1473
+  size: 263, 157
+  orig: 263, 157
+  offset: 0, 0
+  index: -1
+tay 2
+  rotate: false
+  xy: 944, 1484
+  size: 268, 155
+  orig: 268, 155
+  offset: 0, 0
+  index: -1
+
+Dady_Wolf2.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01.Skin/Black_Vest/tay
+  rotate: false
+  xy: 811, 1339
+  size: 377, 219
+  orig: 377, 219
+  offset: 0, 0
+  index: -1
+01.Skin/Black_Vest/tay 2
+  rotate: false
+  xy: 0, 238
+  size: 372, 228
+  orig: 372, 228
+  offset: 0, 0
+  index: -1
+01.Skin/Crimminal/mask
+  rotate: false
+  xy: 0, 1354
+  size: 476, 204
+  orig: 476, 204
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 10/tay
+  rotate: false
+  xy: 0, 912
+  size: 378, 219
+  orig: 379, 220
+  offset: 1, 0
+  index: -1
+01.Skin/canifa 12/tay
+  rotate: false
+  xy: 380, 907
+  size: 378, 219
+  orig: 379, 220
+  offset: 1, 0
+  index: -1
+01.Skin/canifa 13/tay
+  rotate: false
+  xy: 760, 897
+  size: 378, 219
+  orig: 379, 220
+  offset: 1, 0
+  index: -1
+01.Skin/canifa 15/tay 2
+  rotate: false
+  xy: 1137, 667
+  size: 382, 220
+  orig: 383, 221
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 15/tay_
+  rotate: false
+  xy: 1521, 667
+  size: 382, 220
+  orig: 383, 221
+  offset: 1, 0
+  index: -1
+01.Skin/canifa 17/chan phai
+  rotate: true
+  xy: 0, 1753
+  size: 191, 391
+  orig: 191, 391
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 17/tay 2
+  rotate: false
+  xy: 768, 0
+  size: 383, 221
+  orig: 383, 221
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 17/tay_
+  rotate: false
+  xy: 1137, 445
+  size: 382, 220
+  orig: 383, 221
+  offset: 1, 0
+  index: -1
+01.Skin/canifa 18/chan phai
+  rotate: true
+  xy: 393, 1753
+  size: 191, 391
+  orig: 191, 391
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 18/tay 2
+  rotate: false
+  xy: 1153, 0
+  size: 383, 221
+  orig: 383, 221
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 18/tay_
+  rotate: false
+  xy: 1521, 445
+  size: 382, 220
+  orig: 383, 221
+  offset: 1, 0
+  index: -1
+01.Skin/canifa 19/tay 2
+  rotate: false
+  xy: 1538, 0
+  size: 384, 221
+  orig: 384, 221
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 19/tay_
+  rotate: false
+  xy: 374, 229
+  size: 382, 220
+  orig: 383, 221
+  offset: 1, 0
+  index: -1
+01.Skin/canifa 2/tay
+  rotate: false
+  xy: 1570, 1331
+  size: 378, 219
+  orig: 379, 220
+  offset: 1, 0
+  index: -1
+01.Skin/canifa 22/chan phai
+  rotate: true
+  xy: 786, 1753
+  size: 191, 391
+  orig: 191, 391
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 22/tay 2
+  rotate: false
+  xy: 758, 223
+  size: 382, 220
+  orig: 383, 221
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 22/tay_
+  rotate: false
+  xy: 1142, 223
+  size: 382, 220
+  orig: 383, 221
+  offset: 1, 0
+  index: -1
+01.Skin/canifa 23/chan phai
+  rotate: true
+  xy: 1179, 1753
+  size: 191, 391
+  orig: 191, 391
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 23/chan trai
+  rotate: true
+  xy: 1572, 1753
+  size: 191, 372
+  orig: 191, 372
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 23/tay 2
+  rotate: false
+  xy: 1526, 223
+  size: 382, 220
+  orig: 383, 221
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 23/tay_
+  rotate: false
+  xy: 0, 7
+  size: 382, 220
+  orig: 383, 221
+  offset: 1, 0
+  index: -1
+01.Skin/canifa 24/chan phai
+  rotate: true
+  xy: 0, 1560
+  size: 191, 391
+  orig: 191, 391
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 24/chan trai
+  rotate: true
+  xy: 393, 1560
+  size: 191, 372
+  orig: 191, 372
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 24/tay_
+  rotate: false
+  xy: 384, 1
+  size: 382, 220
+  orig: 383, 221
+  offset: 1, 0
+  index: -1
+01.Skin/canifa 26/chan phai
+  rotate: true
+  xy: 767, 1560
+  size: 191, 391
+  orig: 191, 391
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 26/chan trai
+  rotate: true
+  xy: 1160, 1560
+  size: 191, 372
+  orig: 191, 372
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 3/tay
+  rotate: false
+  xy: 0, 1133
+  size: 378, 219
+  orig: 379, 220
+  offset: 1, 0
+  index: -1
+01.Skin/canifa 4/tay
+  rotate: false
+  xy: 380, 1128
+  size: 378, 219
+  orig: 379, 220
+  offset: 1, 0
+  index: -1
+01.Skin/canifa 5/tay
+  rotate: false
+  xy: 760, 1118
+  size: 378, 219
+  orig: 379, 220
+  offset: 1, 0
+  index: -1
+01.Skin/canifa 7/tay
+  rotate: false
+  xy: 1140, 1110
+  size: 378, 219
+  orig: 379, 220
+  offset: 1, 0
+  index: -1
+01.Skin/canifa 9/tay
+  rotate: false
+  xy: 1520, 1110
+  size: 378, 219
+  orig: 379, 220
+  offset: 1, 0
+  index: -1
+01.Skin/canifa1/tay
+  rotate: false
+  xy: 1190, 1331
+  size: 378, 219
+  orig: 379, 220
+  offset: 0, 0
+  index: -1
+01.Skin/canifa1/tay 2
+  rotate: false
+  xy: 379, 457
+  size: 374, 226
+  orig: 375, 228
+  offset: 1, 1
+  index: -1
+01.Skin/skin 1/tay
+  rotate: false
+  xy: 379, 685
+  size: 377, 220
+  orig: 377, 220
+  offset: 0, 0
+  index: -1
+01.Skin/skin 5/tay
+  rotate: false
+  xy: 758, 675
+  size: 377, 220
+  orig: 377, 220
+  offset: 0, 0
+  index: -1
+01.Skin/skin 5/tay 2
+  rotate: false
+  xy: 0, 468
+  size: 377, 220
+  orig: 377, 220
+  offset: 0, 0
+  index: -1
+01.Skin/skin 7/tay
+  rotate: false
+  xy: 1140, 889
+  size: 377, 219
+  orig: 377, 219
+  offset: 0, 0
+  index: -1
+01.Skin/skin 7/tay 2
+  rotate: false
+  xy: 1519, 889
+  size: 377, 219
+  orig: 377, 219
+  offset: 0, 0
+  index: -1
+01.Skin/skin/tay
+  rotate: false
+  xy: 0, 690
+  size: 377, 220
+  orig: 377, 220
+  offset: 0, 0
+  index: -1
+01.Skin/skin 2/tay
+  rotate: false
+  xy: 0, 690
+  size: 377, 220
+  orig: 377, 220
+  offset: 0, 0
+  index: -1
+01.Skin/skin 6/tay
+  rotate: false
+  xy: 0, 690
+  size: 377, 220
+  orig: 377, 220
+  offset: 0, 0
+  index: -1
+01.Skin/skin/tay 2
+  rotate: false
+  xy: 755, 451
+  size: 380, 222
+  orig: 380, 222
+  offset: 0, 0
+  index: -1
+01.Skin/skin 2/tay 2
+  rotate: false
+  xy: 755, 451
+  size: 380, 222
+  orig: 380, 222
+  offset: 0, 0
+  index: -1
+01.Skin/skin 6/tay 2
+  rotate: false
+  xy: 755, 451
+  size: 380, 222
+  orig: 380, 222
+  offset: 0, 0
+  index: -1
+duoi
+  rotate: false
+  xy: 1534, 1552
+  size: 399, 199
+  orig: 399, 199
+  offset: 0, 0
+  index: -1
+taitrai_sau
+  rotate: true
+  xy: 478, 1349
+  size: 209, 331
+  orig: 209, 331
+  offset: 0, 0
+  index: -1
+
+Dady_Wolf3.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01.Skin/Crimminal/body
+  rotate: false
+  xy: 0, 26
+  size: 571, 564
+  orig: 571, 564
+  offset: 0, 0
+  index: -1
+01.Skin/Sport/body
+  rotate: true
+  xy: 1148, 0
+  size: 585, 586
+  orig: 585, 586
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 10/tay 2
+  rotate: false
+  xy: 1128, 818
+  size: 374, 228
+  orig: 375, 228
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 12/tay 2
+  rotate: false
+  xy: 1504, 818
+  size: 374, 228
+  orig: 375, 228
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 13/tay 2
+  rotate: false
+  xy: 0, 595
+  size: 374, 228
+  orig: 375, 228
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 2/tay 2
+  rotate: false
+  xy: 764, 1053
+  size: 374, 228
+  orig: 375, 228
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 24/tay 2
+  rotate: false
+  xy: 0, 1508
+  size: 383, 221
+  orig: 383, 221
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 3/tay 2
+  rotate: false
+  xy: 1140, 1048
+  size: 374, 228
+  orig: 375, 228
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 4/tay 2
+  rotate: false
+  xy: 1516, 1048
+  size: 374, 228
+  orig: 375, 228
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 5/tay 2
+  rotate: false
+  xy: 0, 825
+  size: 374, 228
+  orig: 375, 228
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 7/tay 2
+  rotate: false
+  xy: 376, 824
+  size: 374, 228
+  orig: 375, 228
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 9/tay 2
+  rotate: false
+  xy: 752, 823
+  size: 374, 228
+  orig: 375, 228
+  offset: 0, 0
+  index: -1
+01.Skin/deer/tay
+  rotate: false
+  xy: 376, 592
+  size: 381, 229
+  orig: 382, 229
+  offset: 1, 0
+  index: -1
+01.Skin/deer/tay 2
+  rotate: false
+  xy: 1146, 1278
+  size: 380, 227
+  orig: 380, 227
+  offset: 0, 0
+  index: -1
+01.Skin/elephant/tay
+  rotate: false
+  xy: 759, 587
+  size: 381, 229
+  orig: 382, 229
+  offset: 1, 0
+  index: -1
+01.Skin/elephant/tay 2
+  rotate: false
+  xy: 1528, 1278
+  size: 380, 227
+  orig: 380, 227
+  offset: 0, 0
+  index: -1
+01.Skin/fish/tay
+  rotate: false
+  xy: 1142, 587
+  size: 381, 229
+  orig: 382, 229
+  offset: 1, 0
+  index: -1
+01.Skin/fish/tay 2
+  rotate: false
+  xy: 0, 1055
+  size: 380, 227
+  orig: 380, 227
+  offset: 0, 0
+  index: -1
+01.Skin/frog/tay
+  rotate: false
+  xy: 1525, 587
+  size: 381, 229
+  orig: 382, 229
+  offset: 1, 0
+  index: -1
+01.Skin/frog/tay 2
+  rotate: false
+  xy: 382, 1054
+  size: 380, 227
+  orig: 380, 227
+  offset: 0, 0
+  index: -1
+01.Skin/magicial/tay
+  rotate: false
+  xy: 382, 1283
+  size: 380, 223
+  orig: 380, 223
+  offset: 0, 0
+  index: -1
+01.Skin/magicial/tay 2
+  rotate: false
+  xy: 764, 1283
+  size: 380, 223
+  orig: 380, 223
+  offset: 0, 0
+  index: -1
+01.Skin/skin 1/tay 2
+  rotate: false
+  xy: 1151, 1507
+  size: 380, 222
+  orig: 380, 222
+  offset: 0, 0
+  index: -1
+01.Skin/skin 3/tay
+  rotate: false
+  xy: 1533, 1507
+  size: 380, 222
+  orig: 380, 222
+  offset: 0, 0
+  index: -1
+01.Skin/skin 3/tay 2
+  rotate: false
+  xy: 0, 1284
+  size: 380, 222
+  orig: 380, 222
+  offset: 0, 0
+  index: -1
+01.Skin/skin 4/tay
+  rotate: false
+  xy: 385, 1508
+  size: 381, 221
+  orig: 381, 221
+  offset: 0, 0
+  index: -1
+01.Skin/skin 4/tay 2
+  rotate: false
+  xy: 768, 1508
+  size: 381, 221
+  orig: 381, 221
+  offset: 0, 0
+  index: -1
+body
+  rotate: false
+  xy: 573, 20
+  size: 573, 565
+  orig: 573, 565
+  offset: 0, 0
+  index: -1
+
+Dady_Wolf4.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01.Skin/canifa 12/body
+  rotate: false
+  xy: 828, 0
+  size: 860, 811
+  orig: 860, 813
+  offset: 0, 1
+  index: -1
+01.Skin/canifa1/body
+  rotate: false
+  xy: 835, 813
+  size: 859, 811
+  orig: 860, 813
+  offset: 0, 1
+  index: -1
+01.Skin/deer/body
+  rotate: false
+  xy: 0, 138
+  size: 826, 812
+  orig: 826, 813
+  offset: 0, 0
+  index: -1
+head
+  rotate: false
+  xy: 0, 952
+  size: 833, 672
+  orig: 833, 672
+  offset: 0, 0
+  index: -1
+
+Dady_Wolf5.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01.Skin/Black_Vest/body
+  rotate: false
+  xy: 0, 1
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 13/body
+  rotate: false
+  xy: 0, 816
+  size: 860, 811
+  orig: 860, 813
+  offset: 0, 1
+  index: -1
+01.Skin/canifa 2/body
+  rotate: false
+  xy: 862, 0
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+01.Skin/skin/body
+  rotate: false
+  xy: 862, 815
+  size: 826, 812
+  orig: 826, 812
+  offset: 0, 0
+  index: -1
+
+Dady_Wolf6.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01.Skin/canifa 3/body
+  rotate: false
+  xy: 0, 815
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 4/body
+  rotate: false
+  xy: 862, 815
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 5/body
+  rotate: false
+  xy: 0, 0
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 7/body
+  rotate: false
+  xy: 862, 0
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+
+Dady_Wolf7.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01.Skin/canifa 10/body
+  rotate: false
+  xy: 862, 815
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 11/body
+  rotate: false
+  xy: 0, 0
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 14/body
+  rotate: false
+  xy: 862, 0
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 9/body
+  rotate: false
+  xy: 0, 815
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+
+Dady_Wolf8.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01.Skin/canifa 15/body copy
+  rotate: false
+  xy: 0, 815
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 16/body copy
+  rotate: false
+  xy: 862, 815
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 17/body_
+  rotate: false
+  xy: 0, 0
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 18/body copy
+  rotate: false
+  xy: 862, 0
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+
+Dady_Wolf9.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01.Skin/canifa 19/body copy
+  rotate: false
+  xy: 0, 815
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 20/body
+  rotate: false
+  xy: 862, 815
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 21/body
+  rotate: false
+  xy: 0, 0
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 22/body
+  rotate: false
+  xy: 862, 0
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+
+Dady_Wolf10.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01.Skin/canifa 23/body
+  rotate: false
+  xy: 0, 815
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 24/body
+  rotate: false
+  xy: 862, 815
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 25/body
+  rotate: false
+  xy: 0, 0
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+01.Skin/canifa 26/body
+  rotate: false
+  xy: 862, 0
+  size: 860, 813
+  orig: 860, 813
+  offset: 0, 0
+  index: -1
+
+Dady_Wolf11.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01.Skin/elephant/body
+  rotate: false
+  xy: 0, 815
+  size: 826, 813
+  orig: 826, 813
+  offset: 0, 0
+  index: -1
+01.Skin/fish/body
+  rotate: false
+  xy: 828, 815
+  size: 826, 813
+  orig: 826, 813
+  offset: 0, 0
+  index: -1
+01.Skin/frog/body
+  rotate: false
+  xy: 0, 0
+  size: 826, 813
+  orig: 826, 813
+  offset: 0, 0
+  index: -1
+01.Skin/skin 3/body
+  rotate: false
+  xy: 828, 0
+  size: 826, 813
+  orig: 826, 813
+  offset: 0, 0
+  index: -1
+
+Dady_Wolf12.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01.Skin/magicial/body
+  rotate: false
+  xy: 828, 818
+  size: 907, 815
+  orig: 907, 816
+  offset: 0, 0
+  index: -1
+01.Skin/skin 4/body
+  rotate: false
+  xy: 0, 1
+  size: 830, 815
+  orig: 830, 815
+  offset: 0, 0
+  index: -1
+01.Skin/skin 5/body
+  rotate: false
+  xy: 832, 0
+  size: 832, 816
+  orig: 832, 816
+  offset: 0, 0
+  index: -1
+01.Skin/skin 7/body
+  rotate: false
+  xy: 0, 820
+  size: 826, 813
+  orig: 826, 813
+  offset: 0, 0
+  index: -1
+
+Dady_Wolf13.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01.Skin/skin 1/body
+  rotate: false
+  xy: 0, 832
+  size: 832, 820
+  orig: 832, 820
+  offset: 0, 0
+  index: -1
+01.Skin/skin 2/body
+  rotate: false
+  xy: 834, 832
+  size: 834, 820
+  orig: 834, 820
+  offset: 0, 0
+  index: -1
+01.Skin/skin 6/body
+  rotate: false
+  xy: 0, 0
+  size: 898, 830
+  orig: 898, 831
+  offset: 0, 1
+  index: -1

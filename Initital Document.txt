@@ -1,0 +1,88 @@
+MiniGame
+I. Nước tăng lực
+
+
+
+II. Gameplay
+ a. Data Transport
+  - Coin
+  - Total Score
+  - State: back, lose, win
+
+ b. Flow
+ - Có nút back
+ - Dialog backToHome - Pause Game
+ - Tutorial: Cô giáo hướng dẫn
+ - Begin Screen: Cô giáo đếm số để bắt đầu
+ - State : Controller
+ - Score: tổng số sao kiếm được, Loading Score
+ - Timer: Time out -> End Game, Wining -> End game
+ - Congratulation Time: Có thể có nhiều kiểu kết thúc
+
+ - Có Bot và No Bot
+ 
+
+1. Mode kết hợp
+
+ - Player: Nhân vật
+  + Moving
+  + Slide -> chuyển Lane, Nhảy lên
+ - Map -> prefabs
+  + Lane
+  + Vật phẩm: Star, Obstacle (Barriel, Dust), Support (Shield, Boost) 
+
+2. Tung hứng
+
+ - Player: Nhân vật
+  + Slider -> hứng rổ đỡ bóng
+ - Đồ vật bay
+
+3. Bóng rổ
+ - Tutorial: Cô giáo hướng dẫn
+ - Begin Screen: Cô giáo đếm số để bắt đầu
+ - State: Controller
+ - Score: tổng số đồ kiếm được, Loading Score (có cả cho Bot)
+ - Timer: Time out -> End Game
+ - Congratulation Time: Có thể có nhiều kiểu kết thúc
+
+ - Level
+  + Bảng chọn chế độ
+   . Rổ: số lượng trên sàn, thời gian di chuyển
+   . Bot: Tỷ lệ ném trúng, Reload shooting Time
+ - Player: Nhân vật, Bot
+  + Chạm -> bóng bay đến vị trí chạm
+ - Rổ di chuyển
+
+4. Bắn cung
+ - Tutorial: Cô giáo hướng dẫn
+ - Begin Screen: Cô giáo đếm số để bắt đầu
+ - State: Controller
+ - Score: tổng số đồ kiếm được, Loading Score (có cả cho Bot)
+ - Timer: Time out -> End Game
+ - Congratulation Time: Có thể có nhiều kiểu kết thúc
+
+ - Player: Nhân vật, Bot
+  + Chạm để bắn cung vào biển
+ - Mũi tên
+ - Bia: bắn trúng sẽ nhận được các hiệu ứng và hành động, Score khác nhau
+   . Bia bổ trợ: nâng cấp tên Vip, 
+   . Bia bom: nổ tỏa khói ra màn hình,
+   . Bia di chuyển
+
+5. Khiêu vũ
+
+ - Player: Nhân vật
+  + chạm và drag nhân vật để di chuyển trong map
+ - Item:
+  + Xuất hiện trong map
+ - Map
+
+6. Cầu tuyết
+
+ - Player: Nhân vật
+  + Chạm và drag nhân vật để di chuyển
+ - Tuyết
+  + tuyết cục
+  + tuyết sàn
+  + tutorial khi tuyết đã đủ để tạo ra người tuyết
+ - Screen time khi tạo người tuyết

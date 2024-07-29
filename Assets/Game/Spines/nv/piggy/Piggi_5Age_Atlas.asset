@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
+  m_Name: Piggi_5Age_Atlas
+  m_EditorClassIdentifier: 
+  atlasFile: {fileID: 4900000, guid: c327afc470fb42c4f892252af753b941, type: 3}
+  materials:
+  - {fileID: 2100000, guid: 2eb2666fb1ca46a4989e11996941fc6e, type: 2}
+  - {fileID: 2100000, guid: e1ebf1cf13ff0094eb20ff8e6041b67d, type: 2}
+  - {fileID: 2100000, guid: 729bf3072b665644daac83b730f5cfd9, type: 2}
+  - {fileID: 2100000, guid: 43423a14a04aded4e9092e808b0f6bd6, type: 2}
+  - {fileID: 2100000, guid: 51a514682f17dae448609ce739fc6266, type: 2}
+  - {fileID: 2100000, guid: 08d3d75d5fd2ed9438a3fe27a484d39c, type: 2}
