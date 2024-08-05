@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace WFSport
+namespace WFSport.Gameplay
 {
     public abstract class Minigame : MonoBehaviour
     {

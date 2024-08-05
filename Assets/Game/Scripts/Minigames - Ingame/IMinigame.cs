@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace WFSport
+namespace WFSport.Gameplay
 {
     public interface IMinigame
     {
+        public Data ExternalData { get; set; }
         public void OnGameResume();
         public void OnGameStart();
         public void OnGameStop();
@@ -18,6 +19,12 @@ namespace WFSport
             Stopping,
         }
 
+        public enum GameMode
+        {
+            Solo,
+            Bot
+        }
+
         public enum ResultState
         {
             Win,
@@ -28,11 +35,17 @@ namespace WFSport
         /// <summary>
         /// Store Data Game
         /// </summary>
-        internal class Data
+        [System.Serializable]
+        public class Data
         {
             public int coin;
             public int score;
-            public ResultState completeGState;
+
+            public Data()
+            {
+                coin = 0;
+                score = 0;
+            }
         }
     }
 }

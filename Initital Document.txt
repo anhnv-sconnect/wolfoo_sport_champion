@@ -1,6 +1,10 @@
+Time Begin Poject: 31/7/2024
+
+Mode Relay: 1/8/2024 - 
+
 MiniGame
 I. Nước tăng lực
-
+ Mini gameplay ở ngoài màn Home
 
 
 II. Gameplay
@@ -21,6 +25,8 @@ II. Gameplay
 
  - Có Bot và No Bot
  
+ c. Player
+ d. Bot
 
 1. Mode kết hợp
 
@@ -29,7 +35,7 @@ II. Gameplay
   + Slide -> chuyển Lane, Nhảy lên
  - Map -> prefabs
   + Lane
-  + Vật phẩm: Star, Obstacle (Barriel, Dust), Support (Shield, Boost) 
+  + Vật phẩm: Star, Obstacle (Barriel, Dust), Support (Shield, Boost)
 
 2. Tung hứng
 
