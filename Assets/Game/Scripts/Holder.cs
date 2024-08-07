@@ -11,5 +11,6 @@ namespace WFSport
         public static Action PlayParticle;
         public static Action PlayAnim;
         public static Action PlayTutorial;
+        public static Action PlayFirebase;
     }
 }

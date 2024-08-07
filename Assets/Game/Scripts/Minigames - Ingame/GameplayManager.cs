@@ -6,20 +6,23 @@ namespace WFSport.Gameplay.RelayMode
 {
     public class GameplayManager : MonoBehaviour, IMinigame
     {
-        public IMinigame.Data ExternalData { get => myData; set => myData = value; }
+        [SerializeField] Transform[] maps;
+
         private IMinigame.Data myData;
-
-        public Transform GameplayHolder { get => transform; }
-
+        private MinigameUI ui;
         private int levelScore;
         private int playerScore;
-        private MinigameUI ui;
+
+        private int mapCount;
+        private (Transform Current, Transform Next) map;
+
+        public Transform GameplayHolder { get => transform; }
+        public IMinigame.Data ExternalData { get => myData; set => myData = value; }
 
         private void Awake()
         {
             ui = FindAnyObjectByType<MinigameUI>();
         }
-
         private void Start()
         {
             if(myData == null)
@@ -31,17 +34,37 @@ namespace WFSport.Gameplay.RelayMode
                 };
             }
             levelScore = 10;
+
+            // Set Map
+            SetMap();
+
             EventManager.OnInitGame?.Invoke();
-        }
-        private void OnEnable()
-        {
+
             EventManager.OnPlayerClaimNewStar += OnClaimExperience;
+            EventManager.OnPlayerIsMoving += OnClaimExperience;
         }
-        private void OnDisable()
+        private void OnDestroy()
         {
             EventManager.OnPlayerClaimNewStar -= OnClaimExperience;
+            EventManager.OnPlayerIsMoving -= OnClaimExperience;
         }
 
+        void SetMap()
+        {
+            if (mapCount >= maps.Length) mapCount = 0;
+            map = (maps[mapCount], maps[mapCount + 1 >= maps.Length ? 0 : mapCount + 1]);
+            mapCount++;
+
+            map.Next.position = map.Current.position + Vector3.right * 82;
+        }
+
+        internal void OnPlayerIsMoving(Base.Player player)
+        {
+            if(player.transform.position.x >= map.Next.position.x)
+            {
+                SetMap();
+            }
+        }
         internal void OnClaimExperience(Base.Player player)
         {
             playerScore++;

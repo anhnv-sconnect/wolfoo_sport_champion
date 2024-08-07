@@ -131,15 +131,7 @@ namespace WFSport.Gameplay.RelayMode
             {
                 if (collision.GetComponent<Mud>())
                 {
-                    if(isProtecting)
-                    {
-                        countShield--;
-                        if(countShield == 0)
-                        {
-                            DisableShield();
-                        }
-                    }
-                    else
+                    if (!HasProtection())
                     {
                         Holder.PlaySound?.Invoke();
                         PlayRunSlower();
@@ -147,15 +139,18 @@ namespace WFSport.Gameplay.RelayMode
                 }
                 else if (collision.GetComponent<TrafficCone>())
                 {
-                    if(neighborCrossCone.cone == null)
+                    if (!HasProtection())
                     {
-                        var cone = collision.GetComponent<TrafficCone>();
-                        Holder.PlaySound?.Invoke();
-                        Holder.PlayParticle?.Invoke();
+            Debug.Log("DebugLOG -1");
+                        if (neighborCrossCone.cone == null)
+                        {
+            Debug.Log("DebugLOG 0");
+                            var cone = collision.GetComponent<TrafficCone>();
+                            Holder.PlaySound?.Invoke();
+                            Holder.PlayParticle?.Invoke();
 
-                        neighborCrossCone = (cone, 1000, cone.IsLine1);
-                        EventManager.OnTriggleWithCone?.Invoke(cone);
-                        StartCoroutine("OnCollisonWithCone");
+                            OnCollisonWithCone(cone);
+                        }
                     }
                 }
             }
@@ -192,6 +187,19 @@ namespace WFSport.Gameplay.RelayMode
 
         #region METHODS
 
+        private bool HasProtection()
+        {
+            if (isProtecting)
+            {
+                countShield--;
+                if (countShield == 0)
+                {
+                    DisableShield();
+                }
+                return true;
+            }
+            return false;
+        }
         private void PlayRunFaster()
         {
             mySpeed = boostSpeed;
@@ -237,10 +245,10 @@ namespace WFSport.Gameplay.RelayMode
 
         private void OnFinishStage()
         {
-            _tweenDelay = DOVirtual.Float(speed, 0, 1, (value) =>
+            _tweenDelay = DOVirtual.Float(speed, 0, 2, (value) =>
             {
                 mySpeed = value;
-                transform.Translate(Vector3.right * mySpeed * Time.deltaTime);
+                AutoMoving(Direction.Right);
 
             }).OnComplete(() =>
             {
@@ -286,6 +294,14 @@ namespace WFSport.Gameplay.RelayMode
             if (!isStop)
             {
                 transform.Translate((Vector3.up * force.y) * dragMovingSpeed);
+                if (transform.position.y > Constant.ABOVE_LIMIT)
+                {
+                    transform.position = new Vector3(transform.position.x, Constant.ABOVE_LIMIT, transform.position.z);
+                }
+                if (transform.position.y < Constant.BELOW_LIMIT)
+                {
+                    transform.position = new Vector3(transform.position.x, Constant.BELOW_LIMIT, transform.position.z);
+                }
             }
         }
 
@@ -349,7 +365,44 @@ namespace WFSport.Gameplay.RelayMode
 
         #region Pathway Mode
 
-        private IEnumerator OnCollisonWithCone()
+        private void OnCollisonWithCone(TrafficCone cone)
+        {
+            if(playerMode == Mode.Pathway1)
+            {
+                neighborCrossCone = (cone, 1000, cone.IsLine1);
+                EventManager.OnTriggleWithCone?.Invoke(cone);
+                StartCoroutine("PlayWithModePathway1");
+            }
+            else if(playerMode == Mode.Pathway2)
+            {
+                neighborCrossCone = (cone, 0, cone.IsLine1);
+                StartCoroutine("PlayWithModePathway2");
+            }
+        }
+        private IEnumerator PlayWithModePathway2()
+        {
+            Debug.Log("DebugLOG 1");
+            isStop = true;
+            characterAnimation.PlayDizzyAnim();
+
+            Holder.PlayAnim?.Invoke();
+
+            yield return new WaitForSeconds(1);
+
+            var destination = neighborCrossCone.cone.transform.position;
+            while (transform.position.y <= destination.y)
+            {
+                AutoMoving(destination);
+                yield return null;
+                Debug.Log("force: " + transform.position);
+            }
+            Debug.Log("DebugLOG 3");
+
+            isStop = false;
+            neighborCrossCone = (null, 0, true);
+            characterAnimation.PlayRunAnim();
+        }
+        private IEnumerator PlayWithModePathway1()
         {
             isStop = true;
             characterAnimation.PlayDizzyAnim();
@@ -363,7 +416,7 @@ namespace WFSport.Gameplay.RelayMode
                 var force = 0.0f;
                 var distance = neighborCrossCone.cone.transform.position.y - transform.position.y;
                 var moveDirection = distance < 0 ? Direction.Down : Direction.Up;
-                while (force < Mathf.Abs(distance) / 2)
+                while (force < Mathf.Abs(distance) / 3)
                 {
                     AutoMoving(moveDirection);
                     yield return new WaitForEndOfFrame();
@@ -424,6 +477,13 @@ namespace WFSport.Gameplay.RelayMode
                     transform.Translate(Vector3.right * mySpeed * Time.deltaTime);
                     break;
             }
+
+            EventManager.OnPlayerIsMoving?.Invoke(this);
+        }
+        private void AutoMoving(Vector2 destination)
+        {
+            transform.Translate(destination * mySpeed * Time.deltaTime);
+            EventManager.OnPlayerIsMoving?.Invoke(this);
         }
 
         private void OnHurdlingMode()

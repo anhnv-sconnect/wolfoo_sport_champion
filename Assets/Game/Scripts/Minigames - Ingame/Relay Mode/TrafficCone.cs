@@ -1,3 +1,4 @@
+using NaughtyAttributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,12 +19,24 @@ namespace WFSport.Gameplay.RelayMode
 
         [SerializeField] bool isLine1;
         public bool IsLine1 { get => isLine1; }
+        public float Lane { get => line; }
 
 #if UNITY_EDITOR
         [NaughtyAttributes.OnValueChanged("OnRegisterCreatingEventChanged")]
         [SerializeField] bool isCreating;
         [NaughtyAttributes.ShowIf("isCreating")]
         [SerializeField] float createRange;
+
+        protected override DropdownList<float> GetRoadValues()
+        {
+            base.GetRoadValues();
+            return new DropdownList<float>()
+            {
+                { "Line1", Constant.CONE_LINE1 },
+                { "Line2", Constant.CONE_LINE2 },
+                { "Line3", Constant.CONE_LINE3 }
+            };
+        }
 
         private void Assign(TrafficCone newCone)
         {
@@ -71,6 +84,7 @@ namespace WFSport.Gameplay.RelayMode
         {
             name = "Obstacle - Traffic Cone " + GetInstanceID();
             EventManager.OnTriggleWithCone += OnTracking;
+            SetLayerTopDown();
         }
         private void OnDestroy()
         {

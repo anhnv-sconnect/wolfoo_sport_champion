@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace WFSport
 {
     namespace Base
@@ -28,6 +24,12 @@ namespace WFSport
             public const float LINE1 = 0.2f;
             public const float LINE2 = -2;
             public const float LINE3 = -4;
+            public const float CONE_LINE1 = 1.2f;
+            public const float CONE_LINE2 = -0.9f;
+            public const float CONE_LINE3 = -2.97f;
+            public const float BELOW_LIMIT = -3.2f;
+            public const float ABOVE_LIMIT = 1.2f;
+            public const float MID = (BELOW_LIMIT + ABOVE_LIMIT) / 2;
         }
     }
 }

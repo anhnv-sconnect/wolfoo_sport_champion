@@ -12,9 +12,9 @@ namespace WFSport
 
         [Dropdown("GetRoadValues")]
         [OnValueChanged("OnChangeLine")]
-        public float line;
+        [SerializeField] public float line;
 
-        private DropdownList<float> GetRoadValues()
+        protected virtual DropdownList<float> GetRoadValues()
         {
             return new DropdownList<float>()
             {
