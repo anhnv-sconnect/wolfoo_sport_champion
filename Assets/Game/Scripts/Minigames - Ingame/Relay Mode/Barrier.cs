@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static WFSport.Base.Constant;
 
 namespace WFSport.Gameplay
 {
@@ -30,7 +31,7 @@ namespace WFSport.Gameplay
         }
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if (collision.collider.CompareTag(Constant.PLAYER_TAG))
+            if (collision.collider.CompareTag(TAG.PLAYER))
             {
                 Holder.PlaySound?.Invoke();
                 Callapse();

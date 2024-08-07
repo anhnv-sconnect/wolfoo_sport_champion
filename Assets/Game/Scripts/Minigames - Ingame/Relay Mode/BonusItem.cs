@@ -2,6 +2,8 @@ using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WFSport.Gameplay.RelayMode;
+using static WFSport.Base.Constant;
 
 namespace WFSport.Gameplay
 {
@@ -29,7 +31,7 @@ namespace WFSport.Gameplay
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.CompareTag(Constant.PLAYER_TAG))
+            if (collision.CompareTag(TAG.PLAYER))
             {
                 OnTriggerWithPlayer();
             }

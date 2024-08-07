@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TAG = WFSport.Base.Constant.TAG;
 
 namespace WFSport.Gameplay.RelayMode
 {
@@ -12,7 +13,7 @@ namespace WFSport.Gameplay.RelayMode
         }
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.CompareTag(Constant.PLAYER_TAG))
+            if (collision.CompareTag(TAG.PLAYER))
             {
                 Holder.PlaySound?.Invoke();
             }

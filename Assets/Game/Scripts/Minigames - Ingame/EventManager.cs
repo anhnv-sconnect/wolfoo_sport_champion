@@ -9,6 +9,8 @@ namespace WFSport.Gameplay
     {
         public static Action OnInitGame;
         public static Action OnFinishStage;
+        public static Action<RelayMode.TrafficCone> OnTriggleWithCone;
+        public static Action<RelayMode.TrafficCone> OnTracking;
         public static Action<Base.Player> OnPlayerClaimNewStar;
     }
 }

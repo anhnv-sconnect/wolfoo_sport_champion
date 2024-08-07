@@ -5,17 +5,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using static WFSport.Gameplay.IMinigame;
 using static WFSport.Gameplay.IPlayer;
+using TAG = WFSport.Base.Constant.TAG;
 
 namespace WFSport.Gameplay.RelayMode
 {
     public class Player : Base.Player
     {
+        public enum Mode
+        {
+            Hurdling,
+            Passthrough,
+            Pathway1,
+            Pathway2,
+        }
+
         [NaughtyAttributes.OnValueChanged("OnPlayModeChanged")]
         [SerializeField] private Mode playerMode;
+        [SerializeField] private float dragMovingSpeed;
         [SerializeField] private float speed;
         [SerializeField] private float slowSpeed;
         [SerializeField] private float boostSpeed;
         [SerializeField] private float jumpingForce;
+        [SerializeField] private float conePassingForce;
         [SerializeField] private float switchLaneForce;
         [SerializeField] private float speedBoostingTime;
         [SerializeField] private float protectedTimer;
@@ -24,9 +35,7 @@ namespace WFSport.Gameplay.RelayMode
         [SerializeField] GameObject[] colliderStages;
         [SerializeField] GameObject shield;
 
-    //    [NaughtyAttributes.ShowNonSerializedField] private int curStageIdx;
-        [SerializeField] private int curStageIdx;
-
+        private int curStageIdx;
         private GameState gameState;
 
         private int myLane = 1;
@@ -43,14 +52,17 @@ namespace WFSport.Gameplay.RelayMode
         private Tweener _tweenDelay;
         private bool isProtecting;
         private int countShield;
+        private (TrafficCone cone, float distance, bool isLine1) neighborCrossCone;
 
         private void OnEnable()
         {
             EventManager.OnInitGame += Init;
+            EventManager.OnTracking += FindWaytoPassObstacle;
         }
         private void OnDisable()
         {
             EventManager.OnInitGame -= Init;
+            EventManager.OnTracking -= FindWaytoPassObstacle;
         }
         private void Start()
         {
@@ -63,7 +75,7 @@ namespace WFSport.Gameplay.RelayMode
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if (!isStop && collision.collider.CompareTag(Constant.GROUND_TAG))
+            if (!isStop && collision.collider.CompareTag(TAG.GROUND))
             {
                 Holder.PlaySound?.Invoke();
                 Holder.PlayParticle?.Invoke();
@@ -71,26 +83,20 @@ namespace WFSport.Gameplay.RelayMode
                 PlayRun();
             }
 
-            if (collision.collider.CompareTag(Constant.OBSTACLE_TAG))
+            if (collision.collider.CompareTag(TAG.OBSTACLE))
             {
                 if (collision.collider.GetComponent<Barrier>())
                 {
                     Holder.PlaySound?.Invoke();
                     Holder.PlayParticle?.Invoke();
                     isStop = true;
-                    StartCoroutine(OnCollisonWithBarrier());
-                }
-                else if (collision.collider.GetComponent<TrafficCone>())
-                {
-                    Holder.PlaySound?.Invoke();
-                    Holder.PlayParticle?.Invoke();
-                    StartCoroutine(OnCollisonWithCone());
+                    StartCoroutine("OnCollisonWithBarrier");
                 }
             }
         }
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.CompareTag(Constant.BONUSITEM_TAG))
+            if (collision.CompareTag(TAG.BONUSITEM))
             {
                 if (collision.GetComponent<StarItem>())
                 {
@@ -113,7 +119,7 @@ namespace WFSport.Gameplay.RelayMode
                     StartCoroutine("OnSpeedBoosting");
                 }
             }
-            if (collision.CompareTag(Constant.FINISH_TAG))
+            if (collision.CompareTag(TAG.FINISH))
             {
                 Debug.Log($"Finish Stage {curStageIdx + 1} !!!");
                 Holder.PlaySound?.Invoke();
@@ -121,7 +127,7 @@ namespace WFSport.Gameplay.RelayMode
                 gameState = GameState.Stopping;
                 OnFinishStage();
             }
-            if (collision.CompareTag(Constant.OBSTACLE_TAG))
+            if (collision.CompareTag(TAG.OBSTACLE))
             {
                 if (collision.GetComponent<Mud>())
                 {
@@ -139,12 +145,25 @@ namespace WFSport.Gameplay.RelayMode
                         PlayRunSlower();
                     }
                 }
+                else if (collision.GetComponent<TrafficCone>())
+                {
+                    if(neighborCrossCone.cone == null)
+                    {
+                        var cone = collision.GetComponent<TrafficCone>();
+                        Holder.PlaySound?.Invoke();
+                        Holder.PlayParticle?.Invoke();
+
+                        neighborCrossCone = (cone, 1000, cone.IsLine1);
+                        EventManager.OnTriggleWithCone?.Invoke(cone);
+                        StartCoroutine("OnCollisonWithCone");
+                    }
+                }
             }
         }
 
         private void OnTriggerExit2D(Collider2D collision)
         {
-            if (collision.CompareTag(Constant.OBSTACLE_TAG))
+            if (collision.CompareTag(TAG.OBSTACLE))
             {
                 if (collision.GetComponent<Mud>() && !isProtecting)
                 {
@@ -165,12 +184,13 @@ namespace WFSport.Gameplay.RelayMode
 
         private void OnPlayModeChanged()
         {
+            Setup(playerMode);
+            isInited = false;
         }
 
         #endregion
 
         #region METHODS
-
 
         private void PlayRunFaster()
         {
@@ -220,6 +240,7 @@ namespace WFSport.Gameplay.RelayMode
             _tweenDelay = DOVirtual.Float(speed, 0, 1, (value) =>
             {
                 mySpeed = value;
+                transform.Translate(Vector3.right * mySpeed * Time.deltaTime);
 
             }).OnComplete(() =>
             {
@@ -248,17 +269,24 @@ namespace WFSport.Gameplay.RelayMode
 
 
         #region Inititial
-
-        public override void OnBeginDragCharacter()
+        public override void OnBeginDrag(DragEventType dragEvent)
         {
         }
 
-        public override void OnDragCharacter()
+        public override void OnDrag(DragEventType dragEvent)
         {
         }
 
-        public override void OnEndDragCharacter()
+        public override void OnEndDrag(DragEventType dragEvent)
         {
+        }
+
+        public override void OnDragging(Vector3 force)
+        {
+            if (!isStop)
+            {
+                transform.Translate((Vector3.up * force.y) * dragMovingSpeed);
+            }
         }
 
         public override void OnUpdate()
@@ -267,7 +295,7 @@ namespace WFSport.Gameplay.RelayMode
 
             if (!isStop)
             {
-                AutoMoving();
+                AutoMoving(Direction.Right);
             }
 
             CamFollowing();
@@ -289,27 +317,80 @@ namespace WFSport.Gameplay.RelayMode
         {
             Init();
 
+            shield.SetActive(false);
+
+            curStageIdx = (int)playerMode;
             for (int i = 0; i < colliderStages.Length; i++)
             {
                 colliderStages[i].SetActive(i == curStageIdx);
             }
 
-            playerMode = mode;
             switch (mode)
             {
-                case Mode.Swiping:
-                    rb2D.bodyType = RigidbodyType2D.Static;
-                    break;
-                case Mode.Running:
+                case Mode.Hurdling:
                     rb2D.bodyType = RigidbodyType2D.Dynamic;
+                    DetectType = DetectType.Swiping;
+                    EnableTopDown = false;
                     break;
+                case Mode.Passthrough:
+                    rb2D.bodyType = RigidbodyType2D.Kinematic;
+                    DetectType = DetectType.Swiping;
+                    EnableTopDown = false;
+                    break;
+                case Mode.Pathway1:
+                case Mode.Pathway2:
+                    rb2D.bodyType = RigidbodyType2D.Kinematic;
+                    DetectType = DetectType.Dragging;
+                    EnableTopDown = true;
+                    break;
+            }
+        }
+        #endregion
+
+        #region Pathway Mode
+
+        private IEnumerator OnCollisonWithCone()
+        {
+            isStop = true;
+            characterAnimation.PlayDizzyAnim();
+
+            Holder.PlayAnim?.Invoke();
+
+            yield return new WaitForSeconds(1);
+
+            if (neighborCrossCone.cone != null)
+            {
+                var force = 0.0f;
+                var distance = neighborCrossCone.cone.transform.position.y - transform.position.y;
+                var moveDirection = distance < 0 ? Direction.Down : Direction.Up;
+                while (force < Mathf.Abs(distance) / 2)
+                {
+                    AutoMoving(moveDirection);
+                    yield return new WaitForEndOfFrame();
+                    force += conePassingForce * Time.deltaTime;
+                }
+            }
+
+            isStop = false;
+            neighborCrossCone = (null, 0, true);
+            characterAnimation.PlayRunAnim();
+        }
+
+        public void FindWaytoPassObstacle(TrafficCone cone)
+        {
+            if (cone.IsLine1 != neighborCrossCone.isLine1)
+            {
+                var distance = Vector2.Distance(cone.transform.position, transform.position);
+                if (distance < neighborCrossCone.distance)
+                {
+                    neighborCrossCone = (cone, distance, neighborCrossCone.isLine1);
+                }
             }
         }
 
         #endregion
 
-        #region Running Mode
-
+        #region Hurdling Mode
         private IEnumerator OnCollisonWithBarrier()
         {
             characterAnimation.PlayDizzyAnim();
@@ -318,53 +399,57 @@ namespace WFSport.Gameplay.RelayMode
 
             canJumping = true;
         }
-        private IEnumerator OnCollisonWithCone()
-        {
-            isStop = true;
-            // Continue Heree
 
-            yield return new WaitForSeconds(1);
-
-            isStop = false;
-        }
-
-        private void Jumping()
+        private void OnJumping()
         {
             isStop = false;
             characterAnimation.PlayJumpAnim();
             rb2D.AddForce(Vector2.up * jumpingForce);
         }
 
-        private void AutoMoving()
+        private void AutoMoving(Direction direction)
         {
-            transform.Translate(Vector3.right * mySpeed);
+            switch (direction)
+            {
+                case Direction.Up:
+                    transform.Translate(Vector3.up * mySpeed * Time.deltaTime);
+                    break;
+                case Direction.Down:
+                    transform.Translate(Vector3.down * mySpeed * Time.deltaTime);
+                    break;
+                case Direction.Left:
+                    transform.Translate(Vector3.left * mySpeed * Time.deltaTime);
+                    break;
+                case Direction.Right:
+                    transform.Translate(Vector3.right * mySpeed * Time.deltaTime);
+                    break;
+            }
         }
 
-        private void OnCheckingRunningMode()
+        private void OnHurdlingMode()
         {
-            if (playerMode != Mode.Running) return;
+            if (playerMode != Mode.Hurdling) return;
 
             if (canJumping)
             {
                 canJumping = false;
-                Jumping();
+                OnJumping();
             }
         }
-
         #endregion
-        #region Swiping Mode
 
-        private void OnCheckingSwipingMode()
+        #region Passthrough Mode
+        private void OnPassthroughMode()
         {
-            if (playerMode != Mode.Swiping) return;
+            if (playerMode != Mode.Passthrough) return;
 
-            if (currentSwipingDirection == SwipingDirection.Up)
+            if (currentSwipingDirection == Direction.Up)
             {
                 if (myLane <= 0) return;
                 myLane--;
                 OnSwitchLane();
             }
-            else if (currentSwipingDirection == SwipingDirection.Down)
+            else if (currentSwipingDirection == Direction.Down)
             {
                 if (myLane >= maxLane - 1) return;
                 myLane++;
@@ -376,21 +461,20 @@ namespace WFSport.Gameplay.RelayMode
         {
             switch (currentSwipingDirection)
             {
-                case SwipingDirection.Up:
-                    OnCheckingSwipingMode();
-                    OnCheckingRunningMode();
+                case Direction.Up:
+                    OnPassthroughMode();
+                    OnHurdlingMode();
                     break;
-                case SwipingDirection.Down:
-                    currentSwipingDirection = SwipingDirection.Down;
-                    OnCheckingSwipingMode();
+                case Direction.Down:
+                    currentSwipingDirection = Direction.Down;
+                    OnPassthroughMode();
                     break;
-                case SwipingDirection.Left:
+                case Direction.Left:
                     break;
-                case SwipingDirection.Right:
+                case Direction.Right:
                     break;
             }
         }
-
         #endregion
 
     }

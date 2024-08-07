@@ -9,12 +9,12 @@ namespace WFSport.Gameplay
         public void Init();
         public void OnUpdate();
 
-        public enum Mode
+        public enum DetectType
         {
             Swiping,
-            Running
+            Dragging
         }
-        public enum SwipingDirection
+        public enum Direction
         {
             Up,
             Down,
