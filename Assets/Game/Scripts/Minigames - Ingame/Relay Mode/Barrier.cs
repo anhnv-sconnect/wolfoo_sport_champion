@@ -11,6 +11,7 @@ namespace WFSport.Gameplay
         [SerializeField] Animator animator;
         [SerializeField] string callapseAnimName;
         [SerializeField] ParticleSystem smokeFx;
+        private Collider2D myCollider;
 
         public void Callapse()
         {
@@ -34,14 +35,15 @@ namespace WFSport.Gameplay
             if (collision.collider.CompareTag(TAG.PLAYER))
             {
                 Holder.PlaySound?.Invoke();
+                myCollider.isTrigger = true;
                 Callapse();
             }
         }
-
-        public override void Init()
+        private void Start()
         {
             animator.enabled = false;
             gameObject.SetActive(true);
+            myCollider = GetComponentInChildren<Collider2D>();
         }
     }
 }

@@ -92,6 +92,7 @@ public class CharacterWorldAnimation : MonoBehaviour
     {
         if (animState == AnimState.Run) return;
         animState = AnimState.Run;
+        if (runAnim == null) return;
         AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, runAnim, true);
     }
     private void PlayIdle()
@@ -99,6 +100,7 @@ public class CharacterWorldAnimation : MonoBehaviour
         if (animState == AnimState.Idle)
             return;
         animState = AnimState.Idle;
+        if (idleAnim == null) return;
         AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, idleAnim, true);
     }
     private void PlayJump()
@@ -106,6 +108,7 @@ public class CharacterWorldAnimation : MonoBehaviour
         if (animState == AnimState.Jump)
             return;
         animState = AnimState.Jump;
+        if (jumpAnim == null) return;
         AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, jumpAnim, false);
     }
     private void PlayHappy()
@@ -113,45 +116,52 @@ public class CharacterWorldAnimation : MonoBehaviour
         if (animState == AnimState.Happy)
             return;
         animState = AnimState.Happy;
-        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, happyAnim, false);
+        if (happyAnim == null) return;
+    //    AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, happyAnim, false);
     }
     private void PlaySad()
     {
         if (animState == AnimState.Sad)
             return;
         animState = AnimState.Sad;
-        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, sadAnim, false);
+        if (sadAnim == null) return;
+     //   AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, sadAnim, false);
     }
     private void PlaySpecial()
     {
         if (animState == AnimState.Special)
             return;
         animState = AnimState.Special;
-        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, specialAnim, false);
+        if (specialAnim == null) return;
+    //    AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, specialAnim, false);
     }
     private void PlayWaveHand()
     {
         if (animState == AnimState.WaveHand) return;
         animState = AnimState.WaveHand;
-        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, wavehandAnim, false);
+        if (wavehandAnim == null) return;
+    //    AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, wavehandAnim, false);
     }
     private void PlayDizzy(bool isLoop)
     {
         if (animState == AnimState.Dizzy) return;
         animState = AnimState.Dizzy;
-        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, dizzyAnim, isLoop);
+        if (dizzyAnim == null) return;
+     //   AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, dizzyAnim, isLoop);
     }
     private void PlaySlow(bool isLoop)
     {
         if (animState == AnimState.Slow) return;
         animState = AnimState.Slow;
-        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, slowAnim, isLoop);
+        if (slowAnim == null) return;
+    //    AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, slowAnim, isLoop);
     }
     private void PlayRunFast(bool isLoop)
     {
         if (animState == AnimState.RunFast) return;
         animState = AnimState.RunFast;
-        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, runFastAnim, isLoop);
+        if (runFastAnim == null) return;
+    //    AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, runFastAnim, isLoop);
     }
     public float GetTimeAnimation(AnimState animState)
     {

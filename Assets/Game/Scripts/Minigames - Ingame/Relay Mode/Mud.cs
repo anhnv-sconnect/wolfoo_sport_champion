@@ -7,10 +7,6 @@ namespace WFSport.Gameplay.RelayMode
 {
     public class Mud : Obstacle
     {
-        public override void Init()
-        {
-
-        }
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (collision.CompareTag(TAG.PLAYER))

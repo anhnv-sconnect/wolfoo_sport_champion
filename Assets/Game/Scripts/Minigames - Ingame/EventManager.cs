@@ -13,5 +13,6 @@ namespace WFSport.Gameplay
         public static Action<RelayMode.TrafficCone> OnTracking;
         public static Action<Base.Player> OnPlayerClaimNewStar;
         public static Action<Base.Player> OnPlayerIsMoving;
+        public static Action<Base.Player> OnPlayerIsPassedHalfStage;
     }
 }

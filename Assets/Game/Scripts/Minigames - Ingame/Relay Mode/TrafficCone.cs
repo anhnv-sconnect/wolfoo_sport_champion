@@ -22,7 +22,6 @@ namespace WFSport.Gameplay.RelayMode
         public float Lane { get => line; }
 
 #if UNITY_EDITOR
-        [NaughtyAttributes.OnValueChanged("OnRegisterCreatingEventChanged")]
         [SerializeField] bool isCreating;
         [NaughtyAttributes.ShowIf("isCreating")]
         [SerializeField] float createRange;
@@ -49,14 +48,6 @@ namespace WFSport.Gameplay.RelayMode
         {
             if (myLayer == null) myLayer = GetComponent<SpriteRenderer>();
             myLayer.sortingOrder = (int)(transform.position.y * -100);
-        }
-
-        private void OnRegisterCreatingEventChanged()
-        {
-            if(isCreating)
-            {
-                lastCone = this;
-            }
         }
         public void OnCreating()
         {
@@ -125,11 +116,6 @@ namespace WFSport.Gameplay.RelayMode
         }
         private void OnCollisionEnter2D(Collision2D collision)
         {
-        }
-
-        public override void Init()
-        {
-            gameObject.SetActive(true);
         }
     }
 }

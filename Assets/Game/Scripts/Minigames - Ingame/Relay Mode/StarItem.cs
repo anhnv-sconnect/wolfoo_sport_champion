@@ -9,6 +9,15 @@ namespace WFSport.Gameplay
         protected override void OnTriggerWithPlayer()
         {
             gameObject.SetActive(false);
+            StopIdleAnim();
+        }
+        private void Start()
+        {
+            PlayIdleAnim();
+        }
+        private void OnDestroy()
+        {
+            StopIdleAnim();
         }
     }
 }

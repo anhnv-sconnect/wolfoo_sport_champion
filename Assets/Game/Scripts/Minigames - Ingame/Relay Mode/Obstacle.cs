@@ -1,3 +1,6 @@
+using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,11 +11,10 @@ namespace WFSport
 {
     public abstract class Obstacle : MonoBehaviour
     {
-        public abstract void Init();
-
         [Dropdown("GetRoadValues")]
         [OnValueChanged("OnChangeLine")]
         [SerializeField] public float line;
+        private TweenerCore<Vector3, Vector3, VectorOptions> _tweenIdling;
 
         protected virtual DropdownList<float> GetRoadValues()
         {

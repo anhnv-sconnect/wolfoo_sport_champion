@@ -9,6 +9,15 @@ namespace WFSport.Gameplay.RelayMode
         protected override void OnTriggerWithPlayer()
         {
             gameObject.SetActive(false);
+            StopIdleAnim();
+        }
+        private void Start()
+        {
+            PlayIdleAnim();
+        }
+        private void OnDestroy()
+        {
+            StopIdleAnim();   
         }
     }
 }

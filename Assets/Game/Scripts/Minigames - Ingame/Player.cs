@@ -15,6 +15,7 @@ namespace WFSport.Gameplay.Base
             OnScreen,
             OnCharacter
         }
+        public abstract void Play();
         public abstract void Init();
         public abstract void OnUpdate();
         public abstract void OnSwipe();
