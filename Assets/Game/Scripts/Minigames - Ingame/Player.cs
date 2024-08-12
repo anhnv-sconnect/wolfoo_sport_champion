@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
-using static WFSport.Gameplay.IPlayer;
 using UnityEngine.Rendering;
+using static WFSport.Gameplay.IPlayer;
+using static WFSport.Gameplay.IMinigame;
 
 namespace WFSport.Gameplay.Base
 {
@@ -16,13 +17,16 @@ namespace WFSport.Gameplay.Base
             OnCharacter
         }
         public abstract void Play();
+        public abstract void Lose();
         public abstract void Init();
         public abstract void OnUpdate();
         public abstract void OnSwipe();
         public abstract void OnDragging(Vector3 force);
-        public abstract void OnBeginDrag(DragEventType dragEventType);
-        public abstract void OnDrag(DragEventType dragEventType);
-        public abstract void OnEndDrag(DragEventType dragEventType);
+        public abstract void OnTouching(Vector3 position);
+        /// <summary>
+        /// Pause & Stop State will stop everything in Player
+        /// </summary>
+        protected abstract GameState GameplayState { get; set; }
 
         [SerializeField] private DragEventType dragEvent;
         [SerializeField] private DetectType detectType;
@@ -33,7 +37,6 @@ namespace WFSport.Gameplay.Base
         [SerializeField] bool enableTopDownPosition;
 
         protected Direction currentSwipingDirection;
-        protected DragEventType DragEvent { get => dragEvent; }
 
         protected bool SwipingMode { get => detectType == DetectType.Swiping; }
         protected bool DraggingMode { get => detectType == DetectType.Dragging; }
@@ -51,6 +54,7 @@ namespace WFSport.Gameplay.Base
 
         private void Update()
         {
+            if (GameplayState == GameState.Pausing || GameplayState == GameState.Stopping) return;
             if(dragEvent == DragEventType.OnScreen)
             {
 #if UNITY_EDITOR
@@ -68,29 +72,29 @@ namespace WFSport.Gameplay.Base
 
         private void OnMouseDown()
         {
+            if (GameplayState == GameState.Pausing || GameplayState == GameState.Stopping) return;
             if(dragEvent == DragEventType.OnCharacter)
             {
                 touchBeginPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 touchPos = touchBeginPos;
                 lastTouchPos = touchPos;
-                OnBeginDrag(dragEvent);
                 OnBeginDrag();
             }
         }
         private void OnMouseDrag()
         {
+            if (GameplayState == GameState.Pausing || GameplayState == GameState.Stopping) return;
             if (dragEvent == DragEventType.OnCharacter)
             {
                 touchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                OnDrag(dragEvent);
                 OnDrag();
             }
         }
         private void OnMouseUp()
         {
+            if (GameplayState == GameState.Pausing || GameplayState == GameState.Stopping) return;
             if (dragEvent == DragEventType.OnCharacter)
             {
-                OnEndDrag(dragEvent);
                 OnEndDrag();
             }
         }
@@ -112,18 +116,16 @@ namespace WFSport.Gameplay.Base
                 touchBeginPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 touchPos = touchBeginPos;
                 lastTouchPos = touchPos;
-                OnBeginDrag(dragEvent);
+                OnTouching(touchBeginPos);
                 OnBeginDrag();
             }
             if (Input.GetMouseButton(0))
             {
                 touchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                OnDrag(dragEvent);
                 OnDrag();
             }
             if (Input.GetMouseButtonUp(0))
             {
-                OnEndDrag(dragEvent);
                 OnEndDrag();
             }
         }
@@ -137,7 +139,6 @@ namespace WFSport.Gameplay.Base
                 if (touch.phase == TouchPhase.Moved)
                 {
                     touchPos = touch.position;
-                    OnDrag(dragEvent);
                     OnDrag();
                 }
 
@@ -150,13 +151,12 @@ namespace WFSport.Gameplay.Base
                         touchBeginPos = touch.position;
                         touchPos = touchBeginPos;
                         lastTouchPos = touchPos;
-                        OnBeginDrag(dragEvent);
+                        OnTouching(touchBeginPos);
                         OnBeginDrag();
                     }
 
                     if (touch.phase == TouchPhase.Ended)
                     {
-                        OnEndDrag(dragEvent);
                         OnEndDrag();
                     }
                 }
@@ -174,7 +174,7 @@ namespace WFSport.Gameplay.Base
             OnSwipe();
         }
 
-        private void OnBeginDrag()
+        protected virtual void OnBeginDrag()
         {
             if (SwipingMode)
             {
@@ -182,7 +182,7 @@ namespace WFSport.Gameplay.Base
             }
         }
 
-        private void OnDrag()
+        protected virtual void OnDrag()
         {
             if(DraggingMode)
             {
@@ -226,7 +226,7 @@ namespace WFSport.Gameplay.Base
             }
         }
 
-        private void OnEndDrag()
+        protected virtual void OnEndDrag()
         {
             if (SwipingMode)
             {

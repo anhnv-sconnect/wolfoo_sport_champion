@@ -486,7 +486,6 @@ MonoBehaviour:
   boostSpeed: 10
   jumpingForce: 500
   conePassingForce: 5
-  switchLaneForce: 0
   speedBoostingTime: 2
   protectedTimer: 5
   totalProtectTime: 1

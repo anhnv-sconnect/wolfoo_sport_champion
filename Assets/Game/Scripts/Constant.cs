@@ -30,6 +30,8 @@ namespace WFSport
             public const float BELOW_LIMIT = -3.2f;
             public const float ABOVE_LIMIT = 1.2f;
             public const float MID = (BELOW_LIMIT + ABOVE_LIMIT) / 2;
+
+            public const float DELAY_FINISHED_TIME = 2;
         }
     }
 }

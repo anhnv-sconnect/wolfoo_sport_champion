@@ -50,7 +50,7 @@ namespace WFSport.Gameplay
         protected void PlayIdleAnim()
         {
             _tweenIdling?.Kill();
-            _tweenIdling = transform.DOMove(transform.position + Vector3.up * 0.5f, 1)
+            _tweenIdling = transform.DOLocalMove(transform.localPosition + Vector3.up * 0.5f, 1)
                 .SetEase(Ease.Linear)
                 .SetLoops(-1, LoopType.Yoyo);
         }

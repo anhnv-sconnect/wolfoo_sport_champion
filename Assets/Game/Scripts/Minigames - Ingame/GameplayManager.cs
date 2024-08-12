@@ -1,5 +1,11 @@
+using AnhNV.GameBase;
+using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
+using SCN;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace WFSport.Gameplay.RelayMode
@@ -11,22 +17,35 @@ namespace WFSport.Gameplay.RelayMode
         [SerializeField] private LevelStage[] levelData;
         [SerializeField] private Player playerPb;
         [SerializeField] private Player.Mode CurrentMode;
+        [SerializeField] private Vector3 cameraRange;
+        [SerializeField] private int limitPlayTimer;
+        [SerializeField] private int levelScore;
+
+        private IMinigame.Data myData;
 
         private int levelIdx;
-        private Transform[] maps;
-        private IMinigame.Data myData;
-        private MinigameUI ui;
-        private int levelScore;
         private int playerScore;
-        private Dictionary<Player.Mode, List<LevelStage>> levels;
-
         private int mapCount;
+        private int totalMode = (int)System.Enum.GetValues(typeof(Player.Mode)).Cast<Player.Mode>().Last();
+
+        private Camera camera_;
+        private Transform[] maps;
+        private MinigameUI ui;
+
+        private Dictionary<Player.Mode, List<LevelStage>> levels;
         private (Transform Current, Transform Next) map;
-        private (LevelStage Current, Player.Mode CurMode, LevelStage Next) level;
+        private (LevelStage Current, LevelStage Next) level;
         private (Player Current, Player Next) player;
+
+        private TweenerCore<Vector3, Vector3, VectorOptions> camTween;
+        private Tutorial tutorialSwipeUp;
+        private TutorialSwipe currentTutStep;
+        private Barrier tutBarrier;
+        private List<Barrier> tutBarriers = new List<Barrier>();
 
         public Transform GameplayHolder { get => transform; }
         public IMinigame.Data ExternalData { get => myData; set => myData = value; }
+
 
         private void Awake()
         {
@@ -34,41 +53,134 @@ namespace WFSport.Gameplay.RelayMode
         }
         private void Start()
         {
-            if (myData == null)
-            {
-                myData = new IMinigame.Data()
-                {
-                    coin = 0,
-                    score = 0,
-                };
-            }
-            levelScore = 10;
-
-            levelIdx = (int)CurrentMode;
-            level = (null, CurrentMode, null);
-
-            // Set Map
-            InitMode();
-            SetupMap();
-            CreatePlayer();
-            CreateLevel();
-
-            player.Current.Play();
-
-            EventManager.OnInitGame?.Invoke();
+            OnGameStart();
 
             EventManager.OnPlayerClaimNewStar += OnClaimExperience;
             EventManager.OnPlayerIsMoving += OnPlayerIsMoving;
             EventManager.OnPlayerIsPassedHalfStage += OnPlayerIsPassedHalfStage;
             EventManager.OnFinishStage += OnFinishStage;
+            EventManager.OnTimeOut += OnTimeOut;
+            EventManager.OnBarrierCompareDistanceWithPlayer += OnCompareDistancePlayer;
+            EventDispatcher.Instance.RegisterListener<EventKeyBase.OpenDialog>(OnOpenDialog);
+            EventDispatcher.Instance.RegisterListener<EventKeyBase.OnClosingDialog>(OnClosingDialog);
+
+            EventManager.OnInitGame?.Invoke();
         }
 
         private void OnDestroy()
         {
+            camTween?.Kill();
             EventManager.OnPlayerClaimNewStar -= OnClaimExperience;
             EventManager.OnPlayerIsMoving -= OnPlayerIsMoving;
             EventManager.OnPlayerIsPassedHalfStage -= OnPlayerIsPassedHalfStage;
             EventManager.OnFinishStage -= OnFinishStage;
+            EventManager.OnTimeOut -= OnTimeOut;
+            EventManager.OnBarrierCompareDistanceWithPlayer -= OnCompareDistancePlayer;
+            EventDispatcher.Instance.RemoveListener<EventKeyBase.OpenDialog>(OnOpenDialog);
+            EventDispatcher.Instance.RemoveListener<EventKeyBase.OnClosingDialog>(OnClosingDialog);
+        }
+
+        public void OnGamePause()
+        {
+            ui.PauseTime();
+            player.Current.Pause(true);
+        }
+
+        public void OnGameResume()
+        {
+            ui.PlayTime();
+            player.Current.Play();
+        }
+
+        public void OnGameStart()
+        {
+            if (myData == null)
+            {
+                myData = new IMinigame.Data()
+                {
+                    coin = 0,
+                    score = levelScore,
+                };
+            }
+            levelScore = myData.score;
+
+            levelIdx = (int)CurrentMode;
+            level = (null, null);
+
+            camera_ = Camera.main;
+
+            ui.Setup(limitPlayTimer);
+
+            // Set Map
+            InitMode();
+            SetupMap();
+            SetupNextStage();
+
+            SetupTutorial();
+
+            StartCoroutine("PlayNextLevel");
+        }
+
+        private void OnCompareDistancePlayer(Barrier barrier, float distance)
+        {
+            if (!tutorialSwipeUp.IsAllStepCompleted && barrier != tutBarrier && distance < 3f)
+            {
+                tutBarrier = barrier;
+                tutBarriers.Add(tutBarrier);
+
+                player.Current.Pause(false);
+
+                currentTutStep = tutorialSwipeUp.GetNextStep<TutorialSwipe>();
+                currentTutStep.Setup(player.Current.transform, AnimatorHelper.Direction.Up);
+                currentTutStep.Play();
+                currentTutStep.OnTutorialComplete += OnCompleteStep;
+            }
+        }
+        private void OnCompleteStep()
+        {
+            currentTutStep.OnTutorialComplete -= OnCompleteStep;
+
+            OnPlayerIsMoving(player.Current);
+            currentTutStep.Stop();
+            player.Current.Play();
+            
+        }
+
+        private void SetupTutorial()
+        {
+            
+            var tutorialController = TutorialController.Instance;
+
+            tutorialSwipeUp = tutorialController.CreateTutorial("RelayMode");
+            tutorialController.CreateStep<TutorialSwipe>(tutorialSwipeUp);
+            tutorialController.CreateStep<TutorialSwipe>(tutorialSwipeUp);
+            tutorialController.CreateStep<TutorialSwipe>(tutorialSwipeUp);
+        }
+
+        public void OnGameStop()
+        {
+        }
+
+        private void OnClosingDialog(EventKeyBase.OnClosingDialog obj)
+        {
+            if (obj.dialog == PopupManager.DialogName.Pause)
+            {
+                OnGameResume();
+            }
+        }
+
+        private void OnOpenDialog(EventKeyBase.OpenDialog obj)
+        {
+            if (obj.dialog == PopupManager.DialogName.Pause)
+            {
+                OnGamePause();
+            }
+        }
+
+        private void OnTimeOut()
+        {
+            player.Current.Lose();
+            OnGameStop();
         }
 
         private void InitMode()
@@ -100,36 +212,73 @@ namespace WFSport.Gameplay.RelayMode
 
         private void OnFinishStage()
         {
-           
+            if (level.Current.IsFinal)
+            {
+                Debug.Log("Completed All Level !!!!!!!!!!!");
+                ui.PauseTime();
+                OnGameStop();
+            }
+            else
+            {
+                level.Current = level.Next;
+                player.Current = player.Next;
+
+                StartCoroutine("PlayNextLevel");
+            }
+        }
+
+        private IEnumerator PlayNextLevel()
+        {
+            Holder.PlayTutorial?.Invoke();
+            /// Wait Until tutorial is Completed
+
+            yield return new WaitForEndOfFrame();
+
+            CamMovingTo(player.Current.transform, 1, () =>
+            {
+                ui.PlayTime();
+                player.Current.Play();
+            });
         }
 
         private void OnPlayerIsPassedHalfStage(Base.Player player)
         {
-            if(level.Current.IsFinal)
+            Debug.Log("OnPlayerIsPassedHalfStage.....");
+            if(!level.Current.IsFinal)
             {
-                Debug.Log("Completed All Level!!!!!!!!!!!");
-            }
-            else
-            {
-                CreateLevel();
-                CreatePlayer();
+                SetupNextStage();
             }
         }
 
-        private void CreatePlayer()
+        private void SetupNextStage()
         {
-            var pos = Vector3.zero;
-            if (level.Next == null)
+            CreateNextLevel();
+            CreateNextPlayer();
+        }
+
+        /// <summary>
+        /// Create a Player follwing Level Postion
+        /// </summary>
+        private void CreateNextPlayer()
+        {
+            if (player.Current == null) // Init First Player
             {
-                pos = new Vector3(-4.5f, playerPb.transform.position.y, playerPb.transform.position.z);
+                var pos = new Vector3(level.Current.BeginerPoint.position.x, playerPb.transform.position.y, playerPb.transform.position.z);
+
+                player.Current = Instantiate(playerPb, transform);
+                player.Current.transform.position = pos;
+                player.Current.Setup(level.Current.Mode);
+                level.Current.Assign(player.Current);
             }
             else
             {
-                pos = level.Next.transform.position + Vector3.right * 2;
+                var pos = new Vector3(level.Next.BeginerPoint.position.x, playerPb.transform.position.y, playerPb.transform.position.z);
+
+                player.Next = Instantiate(playerPb, transform);
+                player.Next.transform.position = pos;
+                player.Next.Setup(level.Next.Mode);
+                level.Next.Assign(player.Next);
             }
-            player.Current = Instantiate(playerPb,transform);
-            player.Current.transform.position = pos;
-            player.Current.Setup(level.CurMode);
         }
 
         private Player.Mode GetLevelMode(int id)
@@ -141,30 +290,53 @@ namespace WFSport.Gameplay.RelayMode
                 case 1:
                     return Player.Mode.Passthrough;
                 case 2:
+                    levelIdx++;
+                    return Player.Mode.Pathway2;
+                case 3:
                     return Player.Mode.Pathway2;
             }
             return Player.Mode.Hurdling;
         }
-
-        void CreateLevel()
+        void CreateNextLevel()
         {
-            if (level.Next == null) { level.Next = levels[CurrentMode][Random.Range(0, levels[CurrentMode].Count)]; }
-            if (player.Current == null) CreatePlayer();
+            if(level.Current == null) /// Init First Level
+            {
+                var nextMode = GetLevelMode(levelIdx);
+                var nextLevelPb = levels[nextMode][Random.Range(0, levels[nextMode].Count)];
 
-            var levelPb = level.Next;
-            var myLevel = Instantiate(levelPb,
-                new Vector3(player.Current.transform.position.x + 4.5f, levelPb.transform.position.y, levelPb.transform.position.z),
-                levelPb.transform.rotation,
-                transform);
-            myLevel.Assign(level.CurMode == Player.Mode.Pathway2);
+                var lastPos = Vector2.zero;
+
+                var myLevel = Instantiate(nextLevelPb,
+                    new Vector3(
+                        lastPos.x + (nextLevelPb.transform.position.x - nextLevelPb.BeginerPoint.position.x),
+                        nextLevelPb.transform.position.y,
+                        nextLevelPb.transform.position.z),
+                    nextLevelPb.transform.rotation,
+                    transform);
+                myLevel.Assign(levelIdx == totalMode);
+                level.Current = myLevel;
+                level.Next = myLevel;
+            }
+            else
+            {
+                var nextMode = GetLevelMode(levelIdx);
+                var nextLevelPb = levels[nextMode][Random.Range(0, levels[nextMode].Count)];
+
+                var lastPos = level.Current.FinisherPoint.position;
+
+                var myLevel = Instantiate(nextLevelPb,
+                    new Vector3(
+                        lastPos.x + Mathf.Abs(nextLevelPb.BeginerPoint.position.x) + 7,
+                        nextLevelPb.transform.position.y,
+                        nextLevelPb.transform.position.z),
+                    nextLevelPb.transform.rotation,
+                    transform);
+                myLevel.Assign(levelIdx == totalMode);
+                level.Next = myLevel;
+            }
 
             levelIdx++;
-            if (levelIdx == 3) levelIdx = 0;
-
-            var nextMode = GetLevelMode(levelIdx);
-            var nextLevel = levels[nextMode][Random.Range(0, levels[nextMode].Count)];
-
-            level = (myLevel, myLevel.Mode, nextLevel);
+            if (levelIdx > totalMode) levelIdx = 0;
         }
         void SetupMap()
         {
@@ -177,32 +349,29 @@ namespace WFSport.Gameplay.RelayMode
 
         private void OnPlayerIsMoving(Base.Player player)
         {
-            if(player.transform.position.x >= map.Next.position.x)
+            CamFollowingPlayer(this.player.Current);
+            if(this.player.Current.transform.position.x >= map.Next.position.x)
             {
                 SetupMap();
             }
+        }
+        private void CamFollowingPlayer(Player player)
+        {
+            camera_.transform.position = new Vector3(player.transform.position.x + cameraRange.x, camera_.transform.position.y, camera_.transform.position.z);
+        }
+        internal void CamMovingTo(Transform trans, float time, System.Action OnComplete)
+        {
+            camTween?.Kill();
+            camTween = camera_.transform.DOMoveX(trans.position.x + cameraRange.x, time).OnComplete(() =>
+            {
+                OnComplete?.Invoke();
+            });
         }
 
         private void OnClaimExperience(Base.Player player)
         {
             playerScore++;
             ui.UpdateLoadingBar((float)playerScore / levelScore);
-        }
-
-        public void OnGamePause()
-        {
-        }
-
-        public void OnGameResume()
-        {
-        }
-
-        public void OnGameStart()
-        {
-        }
-
-        public void OnGameStop()
-        {
         }
     }
 }

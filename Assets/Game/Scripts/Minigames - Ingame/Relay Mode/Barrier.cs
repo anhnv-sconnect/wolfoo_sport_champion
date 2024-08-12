@@ -2,9 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WFSport.Gameplay.Base;
 using static WFSport.Base.Constant;
 
-namespace WFSport.Gameplay
+namespace WFSport.Gameplay.RelayMode
 {
     public class Barrier : Obstacle
     {
@@ -12,23 +13,27 @@ namespace WFSport.Gameplay
         [SerializeField] string callapseAnimName;
         [SerializeField] ParticleSystem smokeFx;
         private Collider2D myCollider;
+        private bool isPassed;
+        private float distance;
 
-        public void Callapse()
-        {
-            PlayCallapseAnim();
-        }
         #region ANIMATION MEthod
         private void OnAnimCollapseCompleted()
         {
             gameObject.SetActive(false);
         }
-
         #endregion
+
+        internal void ResetDefault()
+        {
+            isPassed = false;
+            animator.ResetTrigger(callapseAnimName);
+            animator.enabled = false;
+            gameObject.SetActive(true);
+        }
 
         private void PlayCallapseAnim()
         {
             animator.enabled = true;
-        //    animator.Play(callapseAnimName, 0, 0);
         }
         private void OnCollisionEnter2D(Collision2D collision)
         {
@@ -36,7 +41,7 @@ namespace WFSport.Gameplay
             {
                 Holder.PlaySound?.Invoke();
                 myCollider.isTrigger = true;
-                Callapse();
+                PlayCallapseAnim();
             }
         }
         private void Start()
@@ -44,6 +49,28 @@ namespace WFSport.Gameplay
             animator.enabled = false;
             gameObject.SetActive(true);
             myCollider = GetComponentInChildren<Collider2D>();
+        }
+
+        private void OnPlayerIsMoving(Base.Player obj)
+        {
+            if(!isPassed)
+            {
+                var player = obj as Player;
+                isPassed = player.IsRightMoving ? (player.transform.position.x > transform.position.x) : (player.transform.position.x < transform.position.x);
+                distance = Vector2.Distance(transform.position, player.transform.position);
+
+                EventManager.OnBarrierCompareDistanceWithPlayer?.Invoke(this, distance);
+            }
+        }
+
+        private void OnEnable()
+        {
+            EventManager.OnPlayerIsMoving += OnPlayerIsMoving;
+        }
+
+        private void OnDisable()
+        {
+            EventManager.OnPlayerIsMoving -= OnPlayerIsMoving;
         }
     }
 }

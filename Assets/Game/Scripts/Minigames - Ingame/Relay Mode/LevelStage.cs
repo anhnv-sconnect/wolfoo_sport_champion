@@ -8,18 +8,23 @@ namespace WFSport.Gameplay.RelayMode
 {
     public class LevelStage : MonoBehaviour
     {
-        [SerializeField] Player.Mode mode;
+        [SerializeField] private Player.Mode mode;
+        [SerializeField] private Transform beginPoint;
+        [SerializeField] private FinishPointing finisher;
 
-        private FinishPointing finisher;
-        private Vector3 halfPos;
         private bool isDispatched;
+        private Base.Player player;
+        private bool canTracking = true;
 
         public bool IsFinal { get; private set; }
+        public Vector2 HalfPos => ((finisher.transform.position - beginPoint.position) / 2f);
+        public Transform FinisherPoint { get => finisher.transform; }
+        public Transform BeginerPoint { get => beginPoint; }
         public Player.Mode Mode { get => mode; }
 
         private void OnEnable()
         {
-            EventManager.OnPlayerIsMoving += OnPlayerIsMoving;    
+            EventManager.OnPlayerIsMoving += OnPlayerIsMoving;
         }
         private void OnDisable()
         {
@@ -28,20 +33,31 @@ namespace WFSport.Gameplay.RelayMode
 
         private void OnPlayerIsMoving(Base.Player player)
         {
-            if(!isDispatched && player.transform.position.x > halfPos.x)
+            if (!canTracking || this.player != player) return;
+            StartCoroutine("OnTrackingPlayer");
+        }
+        private IEnumerator OnTrackingPlayer()
+        {
+            canTracking = false;
+            yield return new WaitForEndOfFrame();
+            canTracking = true;
+
+            if (!isDispatched && player.transform.position.x > HalfPos.x)
             {
                 isDispatched = true;
                 EventManager.OnPlayerIsPassedHalfStage?.Invoke(player);
             }
         }
 
+        internal void Assign(Player player)
+        {
+            this.player = player;
+        }
         internal void Assign(bool isLastStage)
         {
-            finisher = GetComponentInChildren<FinishPointing>();
             if (isLastStage) finisher.SetFinal();
             else finisher.SetNormal();
 
-            halfPos = finisher.transform.position - transform.position;
             IsFinal = isLastStage;
         }
     }

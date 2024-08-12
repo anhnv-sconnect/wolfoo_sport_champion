@@ -25,7 +25,7 @@ namespace WFSport.Gameplay
             Bot
         }
 
-        public enum ResultState
+        public enum MatchResult
         {
             Win,
             Lose,

@@ -12,5 +12,6 @@ namespace WFSport
         public static Action PlayAnim;
         public static Action PlayTutorial;
         public static Action PlayFirebase;
+        public static Action<string> OpenDialog;
     }
 }
