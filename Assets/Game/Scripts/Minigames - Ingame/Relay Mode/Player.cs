@@ -40,11 +40,12 @@ namespace WFSport.Gameplay.RelayMode
         private Mode playerMode;
         private GameState gameState;
         private Rigidbody2D rb2D;
-
+        private Vector3 startPos;
         private int curStageIdx;
         private int myLane = 1;
         private int maxLane = 3;
         private bool isStop = true;
+        private bool isTutorialing;
         private bool canJumping;
         private bool isInited;
 
@@ -85,6 +86,8 @@ namespace WFSport.Gameplay.RelayMode
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
+            if (isTutorialing) return;
+
             if (!isStop && collision.collider.CompareTag(TAG.GROUND))
             {
                 Holder.PlaySound?.Invoke();
@@ -365,6 +368,7 @@ namespace WFSport.Gameplay.RelayMode
             isInited = true;
 
             rb2D = GetComponent<Rigidbody2D>();
+            startPos = transform.position;
         }
 
         public void CreateNew()
@@ -375,10 +379,23 @@ namespace WFSport.Gameplay.RelayMode
             characterAnimation.transform.localPosition = new Vector3(0, -1, 0);
             characterAnimation.transform.rotation = Quaternion.Euler(Vector3.up * 180);
         }
+        public void AssignTutorial()
+        {
+            isTutorialing = true;
+            canJumping = false;
+            GameplayState = GameState.Playing;
+            characterAnimation.PlayRunAnim();
+        }
+        public void PlayTutorial()
+        {
+            Pause(false);
+            canJumping = true;
+        }
         public override void Play()
         {
             characterAnimation.PlayRunAnim();
             GameplayState = GameState.Playing;
+            isTutorialing = false;
         }
         public void Pause(bool isSystem)
         {
@@ -396,11 +413,16 @@ namespace WFSport.Gameplay.RelayMode
             characterAnimation.PlaySadAnim();
             GameplayState = GameState.Stopping;
         }
+        public override void ResetDefault()
+        {
+            transform.position = startPos;
+            Setup(playerMode);
+        }
         public void Setup(Mode mode)
         {
             Init();
-            playerMode = mode;
 
+            playerMode = mode;
             IsRightMoving = true;
 
             if (characterAnimation == null) CreateNew();

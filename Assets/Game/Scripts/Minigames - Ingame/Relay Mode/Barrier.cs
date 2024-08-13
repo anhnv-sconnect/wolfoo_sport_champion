@@ -25,8 +25,10 @@ namespace WFSport.Gameplay.RelayMode
 
         internal void ResetDefault()
         {
+            myCollider.isTrigger = false;
             isPassed = false;
-            animator.ResetTrigger(callapseAnimName);
+            animator.Rebind();
+            animator.Update(0);
             animator.enabled = false;
             gameObject.SetActive(true);
         }

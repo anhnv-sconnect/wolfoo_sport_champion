@@ -57,6 +57,14 @@ public class CharacterUIAnimation : MonoBehaviour
         if (_tween.IsActive()) return;
         _tween = DOVirtual.DelayedCall(GetTimeAnimation(animState), () => PlayIdle());
     }
+    public void PlayRunAnim()
+    {
+        PlayRun();
+    }
+    public void PlayIdleAnim()
+    {
+        PlayIdle();
+    }
     #region Anim by Spine
     private void PlayMove()
     {
@@ -98,6 +106,13 @@ public class CharacterUIAnimation : MonoBehaviour
             return;
         animState = AnimState.Special;
         AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, specialAnim, false);
+    }
+    private void PlayRun()
+    {
+        if (animState == AnimState.Run)
+            return;
+        animState = AnimState.Run;
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, runAnim, true);
     }
     private void PlayWaveHand()
     {

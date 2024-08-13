@@ -1,7 +1,9 @@
 Time Begin Poject: 31/7/2024
 
-Mode Relay: 1/8/2024 - (3,4 nghỉ)
+Mode Relay: 1/8/2024 - (3,4,11 nghỉ) - 13/8
 Safe Area
+
+<!!!> Nên tạo 1 con player tutorial riêng <!!!>
 
 MiniGame
 I. Nước tăng lực

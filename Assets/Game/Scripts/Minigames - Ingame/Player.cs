@@ -19,6 +19,7 @@ namespace WFSport.Gameplay.Base
         public abstract void Play();
         public abstract void Lose();
         public abstract void Init();
+        public abstract void ResetDefault();
         public abstract void OnUpdate();
         public abstract void OnSwipe();
         public abstract void OnDragging(Vector3 force);

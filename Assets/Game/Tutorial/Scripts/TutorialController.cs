@@ -20,6 +20,8 @@ namespace AnhNV.GameBase
         {
             if (isOrdered) return;
             isOrdered = true;
+
+            // INit Config Data
         }
         public void ReleaseAll()
         {

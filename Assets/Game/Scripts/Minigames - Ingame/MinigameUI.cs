@@ -19,9 +19,13 @@ namespace WFSport.Gameplay
         [SerializeField] private Button backBtn;
         [SerializeField] private Button backBtn2;
         [SerializeField] private Image[] starImgs;
+        [SerializeField] private LoadingBlur loadingPanelPb;
+        [SerializeField] private LoadingCounting countingPanelPb;
         
         private int totalTime;
         private int totalStarClaimed;
+        private LoadingBlur loadingPanel;
+        private LoadingCounting countingPanel;
         private TweenerCore<float, float, FloatOptions> _tweenLoadingBar;
         private TweenerCore<Vector3, Vector3, VectorOptions> _tweenStar;
 
@@ -35,6 +39,7 @@ namespace WFSport.Gameplay
         private void OnDestroy()
         {
             _tweenLoadingBar?.Kill();
+            _tweenStar?.Kill();
             EventManager.OnInitGame -= InitScreen;
         }
 
@@ -89,6 +94,21 @@ namespace WFSport.Gameplay
             /// Anim Setup Timing
             totalTime = time;
             Holder.PlayAnim?.Invoke();
+        }
+
+        internal void OpenCountingToStart(System.Action OnCompleted)
+        {
+            if (countingPanel == null) countingPanel = Instantiate(countingPanelPb, transform);
+            countingPanel.ShowToHide();
+            countingPanel.OnHide = OnCompleted;
+        }
+
+        internal void OpenLoading(System.Action OnCompleted, System.Action OnShowing )
+        {
+            if (loadingPanel == null) loadingPanel = Instantiate(loadingPanelPb, transform);
+            loadingPanel.ShowToHide(1);
+            loadingPanel.OnHide = OnCompleted;
+            loadingPanel.OnShow = OnShowing;
         }
 
         private void InitScreen()
