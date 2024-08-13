@@ -6,6 +6,8 @@ namespace WFSport.Gameplay.CatchMoreToysMode
 {
     public class Player : Base.Player
     {
+        [SerializeField] private GameplayConfig config;
+
         private IMinigame.GameState gameState;
 
         protected override IMinigame.GameState GameplayState { get => gameState; set => gameState = value; }
@@ -17,6 +19,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         }
         #endregion
 
+        #region Override Methods
         public override void Init()
         {
         }
@@ -27,6 +30,9 @@ namespace WFSport.Gameplay.CatchMoreToysMode
 
         public override void OnDragging(Vector3 force)
         {
+            transform.Translate(new Vector3(force.x * config.velocity * Time.deltaTime, 0, 0));
+            if (transform.position.x < config.limitLeft) transform.position = new Vector3(config.limitLeft, transform.position.y, transform.position.z);
+            if (transform.position.x > config.limitRight) transform.position = new Vector3(config.limitRight, transform.position.y, transform.position.z);
         }
 
         public override void OnSwipe()
@@ -48,5 +54,6 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         public override void ResetDefault()
         {
         }
+        #endregion
     }
 }

@@ -59,6 +59,7 @@ MonoBehaviour:
   dizzyAnim: dizzy
   slowAnim: Run_Slow
   runFastAnim: Run_Happy
+  pushAnim: push2
 --- !u!114 &7680318311673223361
 MonoBehaviour:
   m_ObjectHideFlags: 0

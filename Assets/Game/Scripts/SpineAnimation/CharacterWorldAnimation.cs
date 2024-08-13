@@ -26,9 +26,11 @@ public class CharacterWorldAnimation : MonoBehaviour
     [SerializeField, SpineAnimation] private string slowAnim;
     [Header("RunFast")]
     [SerializeField, SpineAnimation] private string runFastAnim;
+    [Header("Push")]
+    [SerializeField, SpineAnimation] private string pushAnim;
+
     private AnimState animState;
     private Tween _tween;
-
 
     private void Awake()
     {
@@ -87,6 +89,11 @@ public class CharacterWorldAnimation : MonoBehaviour
         _tween?.Kill();
         PlayDizzy(isLoop);
     }
+    public void PlayPushAnim(bool isLoop = true)
+    {
+        _tween?.Kill();
+        PlayPush(isLoop);
+    }
     #region Anim by Spine
     private void PlayMove()
     {
@@ -117,7 +124,7 @@ public class CharacterWorldAnimation : MonoBehaviour
             return;
         animState = AnimState.Happy;
         if (happyAnim == null) return;
-    //    AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, happyAnim, false);
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, happyAnim, false);
     }
     private void PlaySad()
     {
@@ -125,7 +132,7 @@ public class CharacterWorldAnimation : MonoBehaviour
             return;
         animState = AnimState.Sad;
         if (sadAnim == null) return;
-     //   AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, sadAnim, false);
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, sadAnim, false);
     }
     private void PlaySpecial()
     {
@@ -133,35 +140,42 @@ public class CharacterWorldAnimation : MonoBehaviour
             return;
         animState = AnimState.Special;
         if (specialAnim == null) return;
-    //    AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, specialAnim, false);
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, specialAnim, false);
     }
     private void PlayWaveHand()
     {
         if (animState == AnimState.WaveHand) return;
         animState = AnimState.WaveHand;
         if (wavehandAnim == null) return;
-    //    AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, wavehandAnim, false);
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, wavehandAnim, false);
     }
     private void PlayDizzy(bool isLoop)
     {
         if (animState == AnimState.Dizzy) return;
         animState = AnimState.Dizzy;
         if (dizzyAnim == null) return;
-     //   AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, dizzyAnim, isLoop);
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, dizzyAnim, isLoop);
     }
     private void PlaySlow(bool isLoop)
     {
         if (animState == AnimState.Slow) return;
         animState = AnimState.Slow;
         if (slowAnim == null) return;
-    //    AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, slowAnim, isLoop);
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, slowAnim, isLoop);
     }
     private void PlayRunFast(bool isLoop)
     {
         if (animState == AnimState.RunFast) return;
         animState = AnimState.RunFast;
         if (runFastAnim == null) return;
-    //    AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, runFastAnim, isLoop);
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, runFastAnim, isLoop);
+    }
+    private void PlayPush(bool isLoop)
+    {
+        if (animState == AnimState.Push) return;
+        animState = AnimState.Push;
+        if (runFastAnim == null) return;
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, pushAnim, isLoop);
     }
     public float GetTimeAnimation(AnimState animState)
     {
@@ -200,6 +214,9 @@ public class CharacterWorldAnimation : MonoBehaviour
             case AnimState.RunFast:
                 myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(runFastAnim);
                 break;
+            case AnimState.Push:
+                myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(pushAnim);
+                break;
         }
 
         if (myAnimation == null) return 0;
@@ -221,6 +238,7 @@ public class CharacterWorldAnimation : MonoBehaviour
         Dizzy,
         Slow,
         RunFast,
+        Push,
     }
     #endregion
    

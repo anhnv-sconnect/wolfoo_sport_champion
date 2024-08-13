@@ -21,7 +21,6 @@ namespace WFSport.Gameplay.RelayMode
         public bool IsLine1 { get => isLine1; }
         public float Lane { get => line; }
 
-#if UNITY_EDITOR
         [SerializeField] bool isCreating;
         [NaughtyAttributes.ShowIf("isCreating")]
         [SerializeField] float createRange;
@@ -69,7 +68,6 @@ namespace WFSport.Gameplay.RelayMode
                 }
             }
         }
-#endif
 
         private void Start()
         {

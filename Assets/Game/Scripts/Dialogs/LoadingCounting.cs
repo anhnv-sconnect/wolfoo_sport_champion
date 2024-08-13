@@ -47,31 +47,6 @@ namespace WFSport
             }
         }
 
-        //private IEnumerator DelayCounting()
-        //{
-
-        //    gameObject.SetActive(true);
-        //    _sequence = DOTween.Sequence();
-        //    _sequence.Append(kat.transform.DOMoveX(characterMoves[1].position.x, 1).OnStart(() =>
-        //    {
-        //        kat.PlayRunAnim();
-        //    })).OnComplete(() =>
-        //    {
-        //        for (int i = 0; i < countingObjs.Length; i++)
-        //        {
-        //            int index = i;
-        //            countingObjs[index].SetActive(i == count);
-        //            count++;
-        //            _sequence.Append(countingObjs[index].transform.DOScale(1, 1).OnStart(() =>
-        //            {
-        //                kat.PlayIdleAnim();
-        //                kat.PlayWaveHandAnim();
-        //                Debug.Log("1");
-        //            }));
-        //        }
-        //    });
-        //}
-
         public void ShowToHide()
         {
             Init();
@@ -87,6 +62,7 @@ namespace WFSport
                     kat.PlayIdleAnim();
                     kat.PlayWaveHandAnim();
                     countingObjs[count].SetActive(true);
+                    Holder.PlaySound?.Invoke();
                 }))
                 .AppendCallback(() => count++)
                 .Append(countingObjs[1].transform.DOScale(1, 1).OnStart(() =>
@@ -95,6 +71,7 @@ namespace WFSport
                     kat.PlayWaveHandAnim();
                     countingObjs[count].SetActive(true);
                     countingObjs[count - 1].SetActive(false);
+                    Holder.PlaySound?.Invoke();
                 }))
                 .AppendCallback(() => count++)
                 .Append(countingObjs[2].transform.DOScale(1, 1).OnStart(() =>
@@ -103,6 +80,7 @@ namespace WFSport
                     kat.PlayWaveHandAnim();
                     countingObjs[count].SetActive(true);
                     countingObjs[count - 1].SetActive(false);
+                    Holder.PlaySound?.Invoke();
                 }))
                 .AppendCallback(() => count++)
                 .Append(countingObjs[3].transform.DOScale(1, 1).OnStart(() =>
@@ -111,6 +89,7 @@ namespace WFSport
                     kat.PlayWaveHandAnim();
                     countingObjs[count].SetActive(true);
                     countingObjs[count - 1].SetActive(false);
+                    Holder.PlaySound?.Invoke();
                 }))
                 .AppendCallback(() =>
                 {

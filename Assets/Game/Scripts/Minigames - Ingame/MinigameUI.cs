@@ -17,7 +17,6 @@ namespace WFSport.Gameplay
         [SerializeField] private Image fillBar;
         [SerializeField] private TMP_Text timeTxt;
         [SerializeField] private Button backBtn;
-        [SerializeField] private Button backBtn2;
         [SerializeField] private Image[] starImgs;
         [SerializeField] private LoadingBlur loadingPanelPb;
         [SerializeField] private LoadingCounting countingPanelPb;
@@ -32,7 +31,6 @@ namespace WFSport.Gameplay
         private void Start()
         {
             backBtn.onClick.AddListener(OnClickBackBtn);
-            backBtn2.onClick.AddListener(OnClickBackBtn2);
             EventManager.OnInitGame += InitScreen;
         }
 
@@ -45,12 +43,9 @@ namespace WFSport.Gameplay
 
         private void OnClickBackBtn()
         {
+            Holder.PlaySound?.Invoke();
             Holder.OpenDialog?.Invoke("PauseDialog");
             EventDispatcher.Instance.Dispatch(new EventKeyBase.OpenDialog { dialog = PopupManager.DialogName.Pause});
-        }
-        private void OnClickBackBtn2()
-        {
-            EventDispatcher.Instance.Dispatch(new EventKeyBase.OnClosingDialog { dialog = PopupManager.DialogName.Pause });
         }
 
         private IEnumerator CountTime()
@@ -89,8 +84,6 @@ namespace WFSport.Gameplay
             {
                 star.transform.localScale = Vector3.zero;
             }
-
-
             /// Anim Setup Timing
             totalTime = time;
             Holder.PlayAnim?.Invoke();

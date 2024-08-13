@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace AnhNV.GameBase
 {
-    [CreateAssetMenu(fileName = "Tutorial Data", menuName = "Scriptable Objects/" + "Tutorial Data")]
+    [CreateAssetMenu(fileName = "Tutorial Data", menuName = "Tutorial Data Config")]
     public class TutorialConfigData : ScriptableObject
     {
         public TutorialStep[] tutorialSteps;

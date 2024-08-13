@@ -11,6 +11,7 @@ namespace WFSport
                 public const string PLAYER = "Player";
                 public const string BONUSITEM = "BonusItem";
                 public const string FINISH = "Finish";
+                public const string DEATHZONE = "Death";
             }
 
             public static TAG Tag;
