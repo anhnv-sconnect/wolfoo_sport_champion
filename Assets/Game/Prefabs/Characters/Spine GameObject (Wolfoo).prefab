@@ -34,7 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!114 &2722655553069342194
 MonoBehaviour:
@@ -56,9 +56,11 @@ MonoBehaviour:
   sadAnim: Sad_idle
   specialAnim: Special
   wavehandAnim: Waving
-  dizzyAnim: dizzy
+  dizzyAnim: Stuned
   slowAnim: Run_Slow
-  runFastAnim: Run_Happy
+  runFastAnim: Run_ninja
+  pushAnim: push_Fast
+  throwAnim: Throw_Right
 --- !u!114 &2115124906092011077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -173,8 +175,6 @@ MeshRenderer:
   - {fileID: 2100000, guid: e7bbb8a5d5cce454ca1c16ddbde30e90, type: 2}
   - {fileID: 2100000, guid: 8abd2751f870072409e1b07bb80e5bd7, type: 2}
   - {fileID: 2100000, guid: e7bbb8a5d5cce454ca1c16ddbde30e90, type: 2}
-  - {fileID: 2100000, guid: 8abd2751f870072409e1b07bb80e5bd7, type: 2}
-  - {fileID: 2100000, guid: 98a93822794336542a9cca887bc41bfc, type: 2}
   - {fileID: 2100000, guid: 8abd2751f870072409e1b07bb80e5bd7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0

@@ -187,7 +187,7 @@ namespace WFSport.Gameplay.Base
         {
             if(DraggingMode)
             {
-                dragForce = touchPos - lastTouchPos;
+                dragForce = (touchPos - lastTouchPos) * Time.deltaTime * 10000;
 
                 if (dragForce.y > dragRange)
                 {

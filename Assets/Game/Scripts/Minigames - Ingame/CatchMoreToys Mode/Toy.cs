@@ -1,3 +1,5 @@
+using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,47 +9,36 @@ namespace WFSport.Gameplay.CatchMoreToysMode
 {
     public class Toy : Item
     {
-        [SerializeField] private float velocity;
-        [SerializeField] private float force;
-        [SerializeField] private float torqueForce;
-        [SerializeField] private Vector2 randomTimer;
-        [SerializeField] private Rigidbody2D rb;
+        [SerializeField] ParticleSystem lightingFx;
+        private Player player;
 
-        [NaughtyAttributes.Button]
-        private void Spawn()
-        {
-            if (!Application.isPlaying) return;
-
-            var item = Instantiate(this, transform.parent);
-            item.Fly();
-        }
-
-        private void Start()
-        {
-            rb = GetComponent<Rigidbody2D>();
-        }
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (collision.CompareTag(Constant.TAG.DEATHZONE))
             {
-                Destroy(gameObject);
+                if (lightingFx != null) lightingFx.Play();
+                OnTouchedGround();
+            }
+
+        }
+        private void OnTriggerStay2D(Collider2D collision)
+        {
+            if (collision.CompareTag(Constant.TAG.PLAYER))
+            {
+                if(player == null)
+                {
+                    player = collision.GetComponent<Player>();
+                }
+                MoveToCart(player.Cart);
             }
         }
+        private void OnTriggerExit2D(Collider2D collision)
+        {
+            if (lightingFx != null) lightingFx.Stop();
+        }
+
         protected override void Init()
         {
-        }
-        private void Fly()
-        {
-            rb.bodyType = RigidbodyType2D.Dynamic;
-            rb.AddTorque(torqueForce);
-            StartCoroutine("OnFlying");
-        }
-        private IEnumerator OnFlying()
-        {
-            rb.AddForce(Vector2.right * UnityEngine.Random.Range(-force, force));
-            yield return new WaitForSeconds(UnityEngine.Random.Range(randomTimer.x, randomTimer.y));
-
-            StartCoroutine("OnFlying");
         }
     }
 }

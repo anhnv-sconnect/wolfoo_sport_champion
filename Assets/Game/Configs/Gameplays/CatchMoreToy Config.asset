@@ -14,4 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   limitLeft: -3.88
   limitRight: 5.4
-  velocity: 120
+  velocity: 1.2
+  stunningTime: 2
+  itemRandomPercentage: 60
+  bonusitemRandomPercentage: 80
+  obstacleRandomPercentage: 100
+  bonusItemSpawnTime:
+  - 20
+  - 30
+  obstacleSpawnTime:
+  - 25
+  - 45
+  reloadTime: 2
+  rightHandBoneNames:
+  - Item_right
+  - bantay_phai

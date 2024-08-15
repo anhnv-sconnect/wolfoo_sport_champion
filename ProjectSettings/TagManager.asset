@@ -8,6 +8,7 @@ TagManager:
   - Obstacle
   - BonusItem
   - Death
+  - Star
   layers:
   - Default
   - TransparentFX

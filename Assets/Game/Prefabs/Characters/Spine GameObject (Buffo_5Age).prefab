@@ -34,7 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8268553071728684739
 MonoBehaviour:
@@ -56,10 +56,11 @@ MonoBehaviour:
   sadAnim: Sad
   specialAnim: Waving_hand
   wavehandAnim: Waving
-  dizzyAnim: dizzy
+  dizzyAnim: Stuned
   slowAnim: Run_Slow
-  runFastAnim: Run_Happy
-  pushAnim: push2
+  runFastAnim: Run_ninja
+  pushAnim: push_Fast
+  throwAnim: Throw_Right
 --- !u!114 &7680318311673223361
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72,8 +73,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d247ba06193faa74d9335f5481b2b56c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skeletonDataAsset: {fileID: 11400000, guid: d3801acb78480de4ca40e43a13620bd6, type: 2}
-  initialSkinName: normal
+  skeletonDataAsset: {fileID: 11400000, guid: 89434026403c92c4e99e8da673d2add9, type: 2}
+  initialSkinName: Normal
   initialFlipX: 0
   initialFlipY: 0
   updateWhenInvisible: 3
@@ -171,9 +172,11 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: fe2e8b55f22838945aeae22eda02a04a, type: 2}
-  - {fileID: 2100000, guid: 802485d409204794bb4157e2189c4eb4, type: 2}
+  - {fileID: 2100000, guid: 37eea33073692404489a82001371c64d, type: 2}
   - {fileID: 2100000, guid: fe2e8b55f22838945aeae22eda02a04a, type: 2}
-  - {fileID: 2100000, guid: cdf4b047f548b7148b93646ddfb98a34, type: 2}
+  - {fileID: 2100000, guid: 37eea33073692404489a82001371c64d, type: 2}
+  - {fileID: 2100000, guid: fe2e8b55f22838945aeae22eda02a04a, type: 2}
+  - {fileID: 2100000, guid: b8555292760b0f84a9ae0ac469ebc5dd, type: 2}
   - {fileID: 2100000, guid: fe2e8b55f22838945aeae22eda02a04a, type: 2}
   - {fileID: 2100000, guid: 37eea33073692404489a82001371c64d, type: 2}
   - {fileID: 2100000, guid: fe2e8b55f22838945aeae22eda02a04a, type: 2}

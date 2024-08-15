@@ -56,10 +56,11 @@ MonoBehaviour:
   sadAnim: Sad
   specialAnim: Waving_hand
   wavehandAnim: Waving
-  dizzyAnim: dizzy
+  dizzyAnim: Stuned
   slowAnim: Run_Slow
-  runFastAnim: Run_Happy
-  pushAnim: push
+  runFastAnim: Run_ninja
+  pushAnim: push_Fast
+  throwAnim: Throw_Right
 --- !u!114 &2333381944212332598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -172,10 +173,11 @@ MeshRenderer:
   m_Materials:
   - {fileID: 2100000, guid: eba9000d94d733c4a921fce55895d587, type: 2}
   - {fileID: 2100000, guid: 9d38cb9565eb0b5428d063593e69782f, type: 2}
-  - {fileID: 2100000, guid: c61544c475923fd47aa1495ffce2e374, type: 2}
-  - {fileID: 2100000, guid: 9d38cb9565eb0b5428d063593e69782f, type: 2}
   - {fileID: 2100000, guid: eba9000d94d733c4a921fce55895d587, type: 2}
-  - {fileID: 2100000, guid: 9d38cb9565eb0b5428d063593e69782f, type: 2}
+  - {fileID: 2100000, guid: c61544c475923fd47aa1495ffce2e374, type: 2}
+  - {fileID: 2100000, guid: eba9000d94d733c4a921fce55895d587, type: 2}
+  - {fileID: 2100000, guid: c61544c475923fd47aa1495ffce2e374, type: 2}
+  - {fileID: 2100000, guid: eba9000d94d733c4a921fce55895d587, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -28,6 +28,8 @@ public class CharacterWorldAnimation : MonoBehaviour
     [SerializeField, SpineAnimation] private string runFastAnim;
     [Header("Push")]
     [SerializeField, SpineAnimation] private string pushAnim;
+    [Header("Throw")]
+    [SerializeField, SpineAnimation] private string throwAnim;
 
     private AnimState animState;
     private Tween _tween;
@@ -88,11 +90,31 @@ public class CharacterWorldAnimation : MonoBehaviour
     {
         _tween?.Kill();
         PlayDizzy(isLoop);
+        if (!isLoop)
+        {
+            _tween?.Kill();
+            _tween = DOVirtual.DelayedCall(GetTimeAnimation(animState), () => PlayIdle());
+        }
     }
     public void PlayPushAnim(bool isLoop = true)
     {
         _tween?.Kill();
         PlayPush(isLoop);
+        if (!isLoop)
+        {
+            _tween?.Kill();
+            _tween = DOVirtual.DelayedCall(GetTimeAnimation(animState), () => PlayIdle());
+        }
+    }
+    public void PlayThrowAnim(bool isLoop = true)
+    {
+        _tween?.Kill();
+        PlayThrow(isLoop);
+        if (!isLoop)
+        {
+            _tween?.Kill();
+            _tween = DOVirtual.DelayedCall(GetTimeAnimation(animState), () => PlayIdle());
+        }
     }
     #region Anim by Spine
     private void PlayMove()
@@ -139,43 +161,53 @@ public class CharacterWorldAnimation : MonoBehaviour
         if (animState == AnimState.Special)
             return;
         animState = AnimState.Special;
-        if (specialAnim == null) return;
         AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, specialAnim, false);
     }
     private void PlayWaveHand()
     {
         if (animState == AnimState.WaveHand) return;
         animState = AnimState.WaveHand;
-        if (wavehandAnim == null) return;
         AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, wavehandAnim, false);
     }
     private void PlayDizzy(bool isLoop)
     {
         if (animState == AnimState.Dizzy) return;
         animState = AnimState.Dizzy;
-        if (dizzyAnim == null) return;
         AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, dizzyAnim, isLoop);
     }
     private void PlaySlow(bool isLoop)
     {
         if (animState == AnimState.Slow) return;
         animState = AnimState.Slow;
-        if (slowAnim == null) return;
         AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, slowAnim, isLoop);
+        if (!isLoop)
+        {
+            _tween?.Kill();
+            _tween = DOVirtual.DelayedCall(GetTimeAnimation(animState), () => PlayIdle());
+        }
     }
     private void PlayRunFast(bool isLoop)
     {
         if (animState == AnimState.RunFast) return;
         animState = AnimState.RunFast;
-        if (runFastAnim == null) return;
         AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, runFastAnim, isLoop);
+        if (!isLoop)
+        {
+            _tween?.Kill();
+            _tween = DOVirtual.DelayedCall(GetTimeAnimation(animState), () => PlayIdle());
+        }
     }
     private void PlayPush(bool isLoop)
     {
         if (animState == AnimState.Push) return;
         animState = AnimState.Push;
-        if (runFastAnim == null) return;
         AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, pushAnim, isLoop);
+    }
+    private void PlayThrow(bool isLoop)
+    {
+        if (animState == AnimState.Throw) return;
+        animState = AnimState.Throw;
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, throwAnim, isLoop);
     }
     public float GetTimeAnimation(AnimState animState)
     {
@@ -217,6 +249,9 @@ public class CharacterWorldAnimation : MonoBehaviour
             case AnimState.Push:
                 myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(pushAnim);
                 break;
+            case AnimState.Throw:
+                myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(throwAnim);
+                break;
         }
 
         if (myAnimation == null) return 0;
@@ -239,6 +274,7 @@ public class CharacterWorldAnimation : MonoBehaviour
         Slow,
         RunFast,
         Push,
+        Throw,
     }
     #endregion
    
