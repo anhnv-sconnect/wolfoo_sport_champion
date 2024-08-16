@@ -12,10 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0249b318150b8147b89d3055511f95e, type: 3}
   m_Name: CatchMoreToy Config
   m_EditorClassIdentifier: 
-  limitLeft: -3.88
-  limitRight: 5.4
+  ipadSize: {x: 0.78, y: 0.78, z: 1}
+  normalSize: {x: 1, y: 1, z: 1}
+  limitLeft: -5.05
+  limitRight: 6.9
   velocity: 1.2
   stunningTime: 2
+  amplitudeRange: {x: 0.1, y: 2.5}
+  speed: {x: 2, y: 4}
+  torqueForceRange: {x: 0.5, y: 1.5}
   itemRandomPercentage: 60
   bonusitemRandomPercentage: 80
   obstacleRandomPercentage: 100
@@ -25,7 +30,9 @@ MonoBehaviour:
   obstacleSpawnTime:
   - 25
   - 45
-  reloadTime: 2
+  reloadTime: 1
   rightHandBoneNames:
   - Item_right
   - bantay_phai
+  tempurareSpeed: {x: 0, y: 4}
+  readyMachineIdx: 2

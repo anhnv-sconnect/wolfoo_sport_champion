@@ -168,9 +168,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dff6b50fc8345b9499f1babbfcfd2ce2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  amplitudeRange: {x: 2, y: 2.5}
-  speed: {x: 3, y: 4}
-  torqueForceRange: {x: 0.5, y: 1.5}
   rb: {fileID: 1772154582449223119}
   trail: {fileID: 6013581992648823023}
   lightingFx: {fileID: 0}

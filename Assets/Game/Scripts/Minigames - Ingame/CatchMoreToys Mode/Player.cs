@@ -18,6 +18,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         private Vector3 inititalPos;
         private bool isStunning;
         private Sequence _sequence;
+        private bool isPausing;
 
         protected override IMinigame.GameState GameplayState { get => gameState; set => gameState = value; }
         internal Transform Cart { get => cart; }
@@ -44,10 +45,10 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         private void OnGetItem()
         {
             _sequence?.Kill();
-           
             _sequence = DOTween.Sequence()
                 .AppendInterval(0.2f)
-                .Append(cart.DOShakeScale(0.5f, 1, 2, 30).OnStart(() => cart.transform.localScale = Vector3.one));
+                .Append(cart.DOScale(0.8f, 0.25f).OnStart(() => cart.localScale = Vector3.one))
+                .Append(cart.DOScale(1, 0.25f));
         }
         #endregion
 
@@ -66,17 +67,18 @@ namespace WFSport.Gameplay.CatchMoreToysMode
             {
                 score += 2;
                 UpdateScore();
-           //     OnGetItem();
+                OnGetItem();
             }
-            if (collision.CompareTag(TAG.STAR))
+            else if (collision.CompareTag(TAG.STAR))
             {
                 score++;
                 UpdateScore();
-          //      OnGetItem();
+                OnGetItem();
+                EventManager.OnPlayerClaimNewStar?.Invoke(this);
             }
-            if (collision.CompareTag(TAG.OBSTACLE))
+            else if(collision.CompareTag(TAG.OBSTACLE))
             {
-                Debug.Log("Collider with Obstacle");
+                OnGetItem();
                 StopCoroutine("OnStunning");
                 StartCoroutine("OnStunning");
             }
@@ -91,6 +93,8 @@ namespace WFSport.Gameplay.CatchMoreToysMode
             {
                 characters[i].PlayIdleAnim();
             }
+            score = 0;
+            UpdateScore();
         }
 
         public override void Lose()
@@ -99,7 +103,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
 
         public override void OnDragging(Vector3 force)
         {
-            if (isStunning) return;
+            if (isStunning || isPausing) return;
 
             var position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             transform.position = new Vector3(position.x, inititalPos.y, inititalPos.z);
@@ -115,10 +119,17 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         {
             base.OnEndDrag();
 
+            if (isStunning || isPausing) return;
+
             for (int i = 0; i < characters.Length; i++)
             {
                 characters[i].PlayIdleAnim();
             }
+        }
+
+        public override void Pause(bool isSystem)
+        {
+            isPausing = true;
         }
 
         public override void OnSwipe()
@@ -135,10 +146,22 @@ namespace WFSport.Gameplay.CatchMoreToysMode
 
         public override void Play()
         {
+            isPausing = false;
         }
 
         public override void ResetDefault()
         {
+            for (int i = 0; i < characters.Length; i++)
+            {
+                characters[i].PlayIdleAnim();
+            }
+            score = 0;
+            UpdateScore();
+
+            foreach (var item in cart.GetComponentsInChildren<Item>())
+            {
+                Destroy(item.gameObject);
+            }
         }
         #endregion
     }

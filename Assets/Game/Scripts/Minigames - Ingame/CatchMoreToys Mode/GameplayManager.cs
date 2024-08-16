@@ -1,3 +1,6 @@
+using AnhNV.GameBase;
+using SCN;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +10,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
 {
     public class GameplayManager : MonoBehaviour, IMinigame
     {
+        [SerializeField] Transform gameHolder;
         [SerializeField] Canvas bgCanvas;
         [SerializeField] GameplayConfig config;
         [SerializeField] ThrowingMachine[] throwMachines;
@@ -14,12 +18,15 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         [SerializeField] GameObject[] bonusItemData;
         [SerializeField] GameObject[] obstacleData;
         [SerializeField] CharacterWorldAnimation[] characters;
+        [SerializeField] Player player; 
 
         private IMinigame.Data myData;
         private MinigameUI ui;
         private ThrowingMachine curCharacter;
         private (int count, int index) obstacleSpawner;
         private (int count, int index) bonusItemSpawner;
+        private Tutorial tutorial;
+        private TutorialSwipe catchToyStep;
 
         public IMinigame.Data ExternalData { get => myData; set => myData = value; }
 
@@ -29,21 +36,136 @@ namespace WFSport.Gameplay.CatchMoreToysMode
             bgCanvas.worldCamera = Camera.main;
 
             /// Setup Object to Fit screen
+            if (Camera.main.aspect <= (1.35f))
+            {
+                //    Debug.Log("4:3");
+                gameHolder.localScale = config.ipadSize;
+            }
+            else
+            {
+                //     Debug.Log("3:2");
+                gameHolder.localScale = config.normalSize;
+            }
         }
         private void Start()
         {
             Init();
-            OnGameStart();
+            SetupTutorial();
+            PlayTutorial();
+        }
+
+        private void PlayTutorial()
+        {
+            PlayNextCharacter(config.readyMachineIdx);
+        }
+
+        private void OnTutorialCompleted()
+        {
+            EventManager.OnPlayerClaimNewStar -= OnPlayerCollectStar;
+            OnGamePause();
+            StartCoroutine("DelayToPlaygame");
+        }
+        private IEnumerator DelayToPlaygame()
+        {
+            yield return new WaitForSeconds(1);
+
+            ui.OpenLoading(() =>
+            {
+                ui.OpenCountingToStart(() =>
+                {
+                    OnGameStart();
+                });
+            },
+            () =>
+            {
+                ResetDefault();
+            });
+        }
+
+        private void SetupTutorial()
+        {
+            var tutorialController = TutorialController.Instance;
+
+            tutorial = tutorialController.CreateTutorial("CatchMoreToys");
+            catchToyStep = tutorialController.CreateStep<TutorialSwipe>(tutorial);
+            catchToyStep.Setup(player.transform, AnimatorHelper.Direction.Left);
+            catchToyStep.OnSwipeCorrectDirection += OnSwipeCorrect;
+
+            foreach (var item in throwMachines)
+            {
+                item.SetupTutorial();
+            }
+            player.Pause(false);
+
+            EventManager.OnToyIsFlying += OnToyIsFlying;
+            EventManager.OnPlayerClaimNewStar += OnPlayerCollectStar;
+        }
+        private void OnSwipeCorrect()
+        {
+            catchToyStep.OnSwipeCorrectDirection -= OnSwipeCorrect;
+            catchToyStep.Stop();
+            OnTutorialResume();
+        }
+
+        private void OnTutorialResume()
+        {
+            player.Play();
+            foreach (var item in throwMachines)
+            {
+                item.ResumeThrow();
+            }
+            EventDispatcher.Instance.Dispatch(new EventKey.OnGameResume { catchMoreToys = this });
+        }
+
+        private void OnToyIsFlying(Item item)
+        {
+            var distance = Vector2.Distance(item.transform.position, player.transform.position);
+            if(distance < 5)
+            {
+                EventManager.OnToyIsFlying -= OnToyIsFlying;
+                PlayTutorialNextStep();
+            }
+        }
+
+        private void PlayTutorialNextStep()
+        {
+            /// Tutorial is Blur background & Focus to Player
+            OnGamePause();
+            catchToyStep.Play();
+        }
+
+        void ResetDefault()
+        {
+            player.ResetDefault();
+            foreach (var item in throwMachines)
+            {
+                item.ResetDefault();
+            }
         }
 
         void Init()
         {
+            if(myData == null)
+            {
+                myData = new IMinigame.Data() { coin = 45, score = 45 };
+            }
+            ui.Setup(myData.score);
+
             /// Spawn character in ThrowingMachine
             foreach (var machine in throwMachines)
             {
                 var idx = UnityEngine.Random.Range(0, characters.Length);
                 var character = Instantiate(characters[idx], machine.transform);
                 machine.Setup(transform, this, config, character);
+            }
+        }
+
+        private void OnPlayerCollectStar(Base.Player obj)
+        {
+            if(!tutorial.IsAllStepCompleted)
+            {
+                catchToyStep.OnTutorialComplete?.Invoke();
+                OnTutorialCompleted();
             }
         }
 
@@ -111,12 +233,18 @@ namespace WFSport.Gameplay.CatchMoreToysMode
             }
             ui.PauseTime();
             StopCoroutine("CountSpawnTime");
+            EventDispatcher.Instance.Dispatch(new Gameplay.EventKey.OnGamePause { catchMoreToys = this });
         }
 
         public void OnGameResume()
         {
             ui.PlayTime();
             StartCoroutine("CountSpawnTime");
+            foreach (var item in throwMachines)
+            {
+                item.ResumeThrow();
+            }
+            EventDispatcher.Instance.Dispatch(new Gameplay.EventKey.OnGameResume { catchMoreToys = this });
         }
 
         private void PlayNextCharacter()
@@ -126,6 +254,17 @@ namespace WFSport.Gameplay.CatchMoreToysMode
             curCharacter.Throw(() =>
             {
                 PlayNextCharacter();
+            });
+        }
+        private void PlayNextCharacter(int idx)
+        {
+            curCharacter = throwMachines[idx];
+            curCharacter.Throw(() =>
+            {
+                if(!tutorial.IsAllStepCompleted)
+                {
+                    PlayNextCharacter(idx);
+                }
             });
         }
 
@@ -138,7 +277,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
 
         public void OnGameStop()
         {
+            EventDispatcher.Instance.Dispatch(new Gameplay.EventKey.OnGameStop { catchMoreToys = this });
         }
-
     }
 }

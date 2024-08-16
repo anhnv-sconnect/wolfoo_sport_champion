@@ -9769,9 +9769,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a09ed595c45c3e44793c92a4bab13daf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  amplitudeRange: {x: 2, y: 2.5}
-  speed: {x: 3, y: 4}
-  torqueForceRange: {x: 0.5, y: 1.5}
   rb: {fileID: 3605059239041442837}
   trail: {fileID: 6436282670560095741}
   smokeFx: {fileID: 3287291178741594730}

@@ -14,6 +14,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         {
             if (collision.CompareTag(Constant.TAG.DEATHZONE))
             {
+                smokeFx.Stop();
                 OnTouchedGround();
             }
             if(collision.CompareTag(Constant.TAG.PLAYER))

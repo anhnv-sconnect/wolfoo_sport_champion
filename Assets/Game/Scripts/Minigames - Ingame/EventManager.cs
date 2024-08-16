@@ -17,5 +17,6 @@ namespace WFSport.Gameplay
         public static Action<Base.Player> OnPlayerIsPassedHalfStage;
         public static Action OnTimeOut;
         public static Action<RelayMode.Barrier, float> OnBarrierCompareDistanceWithPlayer;
+        public static Action<CatchMoreToysMode.Item> OnToyIsFlying;
     }
 }

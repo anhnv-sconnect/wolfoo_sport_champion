@@ -19,7 +19,6 @@ namespace WFSport.Gameplay.CatchMoreToysMode
                 if (lightingFx != null) lightingFx.Play();
                 OnTouchedGround();
             }
-
         }
         private void OnTriggerStay2D(Collider2D collision)
         {
@@ -35,6 +34,8 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         private void OnTriggerExit2D(Collider2D collision)
         {
             if (lightingFx != null) lightingFx.Stop();
+            var collider = GetComponentInChildren<Collider2D>();
+            collider.enabled = false;
         }
 
         protected override void Init()

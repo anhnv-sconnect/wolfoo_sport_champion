@@ -19,9 +19,16 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         private GameplayConfig config;
         private GameplayManager gameManager;
         private CharacterWorldAnimation character;
-        private Tween _tween;
-        private System.Action OnThrew;
 
+        private System.Action OnThrew;
+        private bool isTempuraryValue;
+        private Sequence _sequence;
+
+        internal void ResetDefault()
+        {
+            hand.sprite = null;
+            isTempuraryValue = false;
+        }
         internal void Setup(Transform itemHolder, 
             GameplayManager gameplay, 
             GameplayConfig config, 
@@ -30,7 +37,6 @@ namespace WFSport.Gameplay.CatchMoreToysMode
             this.itemHolder = itemHolder;
             gameManager = gameplay;
             this.config = config;
-
             this.character = character;
 
             var boneFollower = hand.gameObject.AddComponent<BoneFollower>();
@@ -44,14 +50,21 @@ namespace WFSport.Gameplay.CatchMoreToysMode
 
             transform.localScale -= Vector3.one * 0.2f;
         }
+        internal void SetupTutorial()
+        {
+            isTempuraryValue = true;
+        }
         private void OnDestroy()
         {
-            _tween?.Kill();
+            _sequence?.Kill();
         }
         public void StopThrow()
         {
-            StopCoroutine("OnThrowing");
-            StopCoroutine("StartThrow");
+            _sequence?.Pause();
+        }
+        public void ResumeThrow()
+        {
+            _sequence?.Play();
         }
         private void GetNextItem()
         {
@@ -59,40 +72,50 @@ namespace WFSport.Gameplay.CatchMoreToysMode
             itemPb = collection.prefab;
             hand.sprite = collection.sprite;
         }
-        internal void StartThrow()
+        internal void StartAutoThrow()
         {
             isAutoThrowing = true;
             GetNextItem();
-            _tween = DOVirtual.DelayedCall(spawnTime, () =>
-            {
-                StartCoroutine("OnThrowing");
-            });
+            _sequence = DOTween.Sequence()
+                .AppendInterval(spawnTime)
+                .AppendCallback(() =>
+                {
+                    OnThrowing();
+                });
         }
         internal void Throw(System.Action OnCompleted)
         {
             isAutoThrowing = false;
             OnThrew = OnCompleted;
             GetNextItem();
-            StartCoroutine("OnThrowing");
+
+            _sequence?.Kill();
+            OnThrowing();
         }
-        private IEnumerator OnThrowing()
+        private void OnThrowing()
         {
-            character.PlayThrowAnim(false);
-            yield return new WaitForSeconds(character.GetTimeAnimation(CharacterWorldAnimation.AnimState.Throw) - 0.5f);
+            _sequence = DOTween.Sequence()
+                .AppendCallback(() =>
+                {
+                    character.PlayIdleAnim();
+                    character.PlayThrowAnim(false);
+                })
+                .AppendInterval(character.GetTimeAnimation(CharacterWorldAnimation.AnimState.Throw) - 0.5f)
+                .AppendCallback(() =>
+                {
+                    var item = Instantiate(itemPb, itemHolder).GetComponent<Item>();
+                    item.transform.position = hand.transform.position;
+                    item.Assign(config, isTempuraryValue);
+                    item.StartFlying();
 
-            OnThrew?.Invoke();
-
-            var item = Instantiate(itemPb, itemHolder).GetComponent<Item>();
-            item.transform.position = hand.transform.position;
-            item.StartFlying();
-
-            hand.sprite = null;
-
-            if(isAutoThrowing)
-            {
-                yield return new WaitForSeconds(config.reloadTime);
-                StartThrow();
-            }
+                    hand.sprite = null;
+                })
+                .AppendInterval(config.reloadTime)
+                .AppendCallback(() =>
+                {
+                    OnThrew?.Invoke();
+                    if (isAutoThrowing) { StartAutoThrow(); }
+                });
         }
     }
 }

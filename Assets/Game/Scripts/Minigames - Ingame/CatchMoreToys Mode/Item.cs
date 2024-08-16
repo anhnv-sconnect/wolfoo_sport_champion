@@ -1,4 +1,6 @@
 using DG.Tweening;
+using SCN;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,9 +11,6 @@ namespace WFSport.Gameplay.CatchMoreToysMode
     {
         protected abstract void Init();
 
-        [SerializeField] private Vector2 amplitudeRange = new Vector2(2,2.5f);
-        [SerializeField] private Vector2 speed = new Vector2(3, 4);
-        [SerializeField] private Vector2 torqueForceRange = new Vector2(0.5f, 1.5f);
         [SerializeField] private Rigidbody2D rb;
         [SerializeField] private GameObject trail;
 
@@ -21,43 +20,71 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         private float speedX;
 
         private SpriteRenderer spriteRenderer;
-        private bool isTouchedGround;
         private Sequence _sequence;
         private Transform cart;
         private bool isFlying;
+        private GameplayConfig config;
+        private bool isTemporaryValue;
+        protected bool isStoped;
+
+        internal void Assign(GameplayConfig config, bool isTemporaryValue)
+        {
+            this.config = config;
+            this.isTemporaryValue = isTemporaryValue;
+        }
 
         private void Start()
         {
             initialPosition = transform.position;
-            amplitude = UnityEngine.Random.Range(amplitudeRange.x, amplitudeRange.y);
-            speedX = UnityEngine.Random.Range(-speed.x, speed.x);
+            amplitude = UnityEngine.Random.Range(config.amplitudeRange.x, config.amplitudeRange.y);
+            speedX = !isTemporaryValue ? UnityEngine.Random.Range(-config.speed.x, config.speed.x)
+                : UnityEngine.Random.Range(-config.tempurareSpeed.x, config.tempurareSpeed.x);
             spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
             Init();
-        }
-        private void Update()
-        {
-            if (!isFlying) return;
 
-            float timeY = count * speed.y;
-            float timeX = count * speedX;
-            float newX = initialPosition.x + amplitude * Mathf.Sin(timeX);
-            float newY = initialPosition.y - timeY;
-
-            transform.position = new Vector2(newX, newY);
-            transform.Rotate(Vector3.forward * (UnityEngine.Random.Range(torqueForceRange.x, torqueForceRange.y)));
-
-            count += Time.deltaTime;
+            EventDispatcher.Instance.RegisterListener<Gameplay.EventKey.OnGameResume>(OnGameResume);
+            EventDispatcher.Instance.RegisterListener<Gameplay.EventKey.OnGamePause>(OnGameStop);
         }
         private void OnDestroy()
         {
             _sequence?.Kill();
+
+            EventDispatcher.Instance.RemoveListener<Gameplay.EventKey.OnGameResume>(OnGameResume);
+            EventDispatcher.Instance.RemoveListener<Gameplay.EventKey.OnGamePause>(OnGameStop);
+        }
+
+        private void OnGameResume(EventKey.OnGameResume obj)
+        {
+            isFlying = true;
+        }
+
+        private void OnGameStop(EventKey.OnGamePause obj)
+        {
+            isFlying = false;
+        }
+
+        private void Update()
+        {
+            if (!isFlying || isStoped) return;
+
+            float timeY = count * config.speed.y;
+            float timeX = count * amplitude;
+            float newX = initialPosition.x + speedX * Mathf.Sin(timeX);
+            float newY = initialPosition.y - timeY;
+
+            transform.position = new Vector2(newX, newY);
+            transform.Rotate(Vector3.forward * (UnityEngine.Random.Range(config.torqueForceRange.x, config.torqueForceRange.y)));
+
+            count += Time.deltaTime;
+
+            EventManager.OnToyIsFlying?.Invoke(this);
         }
         protected virtual void OnTouchedGround()
         {
             StopFlying();
+            isStoped = true;
             trail.SetActive(false);
-            isTouchedGround = true;
             _sequence?.Kill();
             _sequence = DOTween.Sequence()
                 .Append(spriteRenderer.DOFade(0, 1))
@@ -70,7 +97,6 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         }
         protected void MoveToCart(Transform cart)
         {
-            if (isTouchedGround) return;
             if (this.cart == null)
             {
                 this.cart = cart;
@@ -84,7 +110,6 @@ namespace WFSport.Gameplay.CatchMoreToysMode
 
         internal virtual void StartFlying()
         {
-            if (isTouchedGround) return;
             isFlying = true;
         }
         internal virtual void StopFlying()
