@@ -47,7 +47,6 @@ namespace WFSport.Gameplay.RelayMode
         public Transform GameplayHolder { get => transform; }
         public IMinigame.Data ExternalData { get => myData; set => myData = value; }
 
-
         private void Awake()
         {
             ui = FindAnyObjectByType<MinigameUI>();
@@ -143,12 +142,12 @@ namespace WFSport.Gameplay.RelayMode
                 currentTutStep = tutorialSwipeUp.GetNextStep<TutorialSwipe>();
                 currentTutStep.Setup(player.Current.transform, AnimatorHelper.Direction.Up);
                 currentTutStep.Play();
-                currentTutStep.OnTutorialComplete += OnCompleteStep;
+                currentTutStep.OnSwipeCorrectDirection += OnCompleteStep;
             }
         }
         private void OnCompleteStep()
         {
-            currentTutStep.OnTutorialComplete -= OnCompleteStep;
+            currentTutStep.OnSwipeCorrectDirection -= OnCompleteStep;
 
             Debug.Log("ON COmpleted Step");
             currentTutStep.Stop();

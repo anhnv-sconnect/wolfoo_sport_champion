@@ -11,12 +11,15 @@ namespace AnhNV.GameBase
         [SerializeField] Animator animator;
         [SerializeField] string playDownName;
         [SerializeField] string playUpName;
+        [SerializeField] string playRightName;
+        [SerializeField] string playLeftName;
         [SerializeField] Transform pointer;
         [SerializeField] Transform arrow;
         [SerializeField] Canvas canvas;
 
         private Direction swipeMode;
         private string tutorialID;
+        public System.Action OnSwipeCorrectDirection;
 
         public override string TutorialID { get => tutorialID; set => tutorialID = value; }
 
@@ -40,8 +43,10 @@ namespace AnhNV.GameBase
                     animator.Play(playDownName, 0, 0);
                     break;
                 case Direction.Left:
+                    animator.Play(playLeftName, 0, 0);
                     break;
                 case Direction.Right:
+                    animator.Play(playRightName, 0, 0);
                     break;
             }
         }
@@ -54,10 +59,9 @@ namespace AnhNV.GameBase
         protected override void OnSwiping(Direction direction)
         {
             base.OnSwiping(direction);
-            Debug.Log("OnSwipinggggg");
             if(direction == swipeMode)
             {
-                OnTutorialComplete?.Invoke();
+                OnSwipeCorrectDirection?.Invoke();
             }
         }
         /// <summary>
@@ -67,8 +71,8 @@ namespace AnhNV.GameBase
         public void Setup(Transform target, Direction swipeDirection)
         {
             canvas.worldCamera = Camera.main;
-            SetPointer(target.position);
             swipeMode = swipeDirection;
+            SetPointer(target.position);
         }
 
         private void SetPointer(Vector3 endPos)
@@ -79,7 +83,10 @@ namespace AnhNV.GameBase
             pointer.localPosition = new Vector3(pointer.localPosition.x, pointer.localPosition.y, 0);
             arrow.localPosition = new Vector3(arrow.localPosition.x, arrow.localPosition.y, 0);
 
-            pointer.transform.localRotation = Quaternion.Euler(new Vector3(0, endPos.x < 0 ? 180 : 0, -40));
+            if (swipeMode == Direction.Down || swipeMode == Direction.Up)
+            {
+                pointer.transform.localRotation = Quaternion.Euler(new Vector3(0, endPos.x < 0 ? 180 : 0, -40));
+            }
         }
 
         public override void Release()

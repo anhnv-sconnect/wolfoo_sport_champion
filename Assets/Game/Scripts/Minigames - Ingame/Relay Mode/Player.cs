@@ -397,7 +397,7 @@ namespace WFSport.Gameplay.RelayMode
             GameplayState = GameState.Playing;
             isTutorialing = false;
         }
-        public void Pause(bool isSystem)
+        public override void Pause(bool isSystem)
         {
             if (isSystem)
             {

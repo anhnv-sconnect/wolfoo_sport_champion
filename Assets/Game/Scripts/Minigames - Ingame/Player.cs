@@ -18,6 +18,7 @@ namespace WFSport.Gameplay.Base
         }
         public abstract void Play();
         public abstract void Lose();
+        public abstract void Pause(bool isSystem);
         public abstract void Init();
         public abstract void ResetDefault();
         public abstract void OnUpdate();

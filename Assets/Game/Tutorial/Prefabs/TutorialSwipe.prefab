@@ -706,6 +706,8 @@ MonoBehaviour:
   animator: {fileID: 5555961135922867153}
   playDownName: Playing_Down
   playUpName: Playing_Up
+  playRightName: Playing_Right
+  playLeftName: Playing_Left
   pointer: {fileID: 2030991940095077403}
   arrow: {fileID: 6547467672249194622}
   canvas: {fileID: 8812104038912301973}

@@ -24,6 +24,13 @@ namespace AnhNV.GameBase
         private bool isSwiping;
         private Vector3 touchBeginPos;
         private Vector3 touchPos;
+        //private bool isWaitingEvent;
+
+        //internal void WaitForUntil(in bool completeValue) // Register Event Value is Changing
+        //{
+        //    isWaitingEvent = true;
+
+        //}
 
         protected void RegisterSwipeEvent()
         {
@@ -84,6 +91,17 @@ namespace AnhNV.GameBase
             {
                 isSwiping = true;
                 OnSwiping(Direction.Down);
+            }
+
+            if (touchPos.x - touchBeginPos.x > 2)
+            {
+                isSwiping = true;
+                OnSwiping(Direction.Right);
+            }
+            else if (-touchPos.x + touchBeginPos.x > 2)
+            {
+                isSwiping = true;
+                OnSwiping(Direction.Left);
             }
         }
 
