@@ -24,6 +24,10 @@ namespace WFSport.Gameplay.Base
         public abstract void OnUpdate();
         public abstract void OnSwipe();
         public abstract void OnDragging(Vector3 force);
+        /// <summary>
+        /// Call When first Touching on screen
+        /// </summary>
+        /// <param name="position"></param>
         public abstract void OnTouching(Vector3 position);
         /// <summary>
         /// Pause & Stop State will stop everything in Player

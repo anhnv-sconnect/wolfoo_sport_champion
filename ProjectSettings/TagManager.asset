@@ -9,6 +9,7 @@ TagManager:
   - BonusItem
   - Death
   - Star
+  - Limited
   layers:
   - Default
   - TransparentFX
