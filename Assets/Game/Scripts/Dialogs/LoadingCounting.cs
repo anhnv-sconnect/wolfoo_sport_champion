@@ -29,16 +29,19 @@ namespace WFSport
 
         public override void Hide()
         {
+            gameObject.SetActive(false);
         }
 
         public override void Show()
         {
+            gameObject.SetActive(true);
         }
         private void Init()
         {
             if (isInited) return;
             isInited = true;
 
+            count = 0;
             kat.transform.position = characterMoves[0].position;
             foreach (var item in countingObjs)
             {
@@ -50,8 +53,8 @@ namespace WFSport
         public void ShowToHide()
         {
             Init();
+            Show();
 
-            gameObject.SetActive(true);
             _sequence = DOTween.Sequence()
                 .Append(kat.transform.DOMoveX(characterMoves[1].position.x, 1).OnStart(() =>
                 {
@@ -94,7 +97,7 @@ namespace WFSport
                 .AppendCallback(() =>
                 {
                     OnHide?.Invoke();
-                    gameObject.SetActive(false);
+                    Hide();
                 });
         }
     }

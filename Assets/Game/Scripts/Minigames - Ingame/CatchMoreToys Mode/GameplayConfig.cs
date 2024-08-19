@@ -7,17 +7,17 @@ namespace WFSport.Gameplay.CatchMoreToysMode
     [CreateAssetMenu(fileName = "CatchMoreToy Config", menuName = "Gameplay Data/Catch More Toy", order = 1)]
     public class GameplayConfig : ScriptableObject
     {
-        [Header("=============== SCREEN ===============")]
+        [Header("============================== SCREEN ==============================")]
         public Vector3 ipadSize;
         public Vector3 normalSize;
 
-        [Header("=============== PLAYER ===============")]
+        [Header("============================== PLAYER ==============================")]
         public float limitLeft;
         public float limitRight;
         public float velocity;
         public float stunningTime;
 
-        [Header("=============== BOT ===============")]
+        [Header("============================== BOT ==============================")]
         public Vector2 amplitudeRange = new Vector2(2, 2.5f);
         public Vector2 speed = new Vector2(3, 4);
         public Vector2 torqueForceRange = new Vector2(0.5f, 1.5f);
@@ -29,7 +29,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         [Range(0, 100)] public float reloadTime;
         public string[] rightHandBoneNames;
 
-        [Header("=============== TUTORIAl ===============")]
+        [Header("============================== TUTORIAl ==============================")]
         public Vector2 tempurareSpeed;
         public int readyMachineIdx ;
 

@@ -2,7 +2,7 @@ Time Begin Poject: 31/7/2024
 
 Mode Relay: 1/8/2024 - (3,4,11 nghỉ) - 13/8
 Safe Area
-Mode CatchMoreToys: 13/8/2024
+Mode CatchMoreToys: 13/8/2024 - (17,28 nghi) - 19/08/2024
 
 <!!!> Nên tạo 1 con player tutorial riêng <!!!>
 

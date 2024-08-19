@@ -18,7 +18,6 @@ namespace WFSport.Gameplay.RelayMode
         [SerializeField] private Player playerPb;
         [SerializeField] private Player.Mode CurrentMode;
         [SerializeField] private Vector3 cameraRange;
-        [SerializeField] private int limitPlayTimer;
         [SerializeField] private int levelScore;
 
         private IMinigame.Data myData;
@@ -58,8 +57,8 @@ namespace WFSport.Gameplay.RelayMode
             EventManager.OnPlayerClaimNewStar += OnClaimExperience;
             EventManager.OnPlayerIsMoving += OnPlayerIsMoving;
             EventManager.OnPlayerIsPassedHalfStage += OnPlayerIsPassedHalfStage;
-            EventManager.OnFinishStage += OnFinishStage;
-            EventManager.OnTimeOut += OnTimeOut;
+            EventManager.OnFinishStage += OnGameWining;
+            EventManager.OnTimeOut += OnGameLosing;
             EventManager.OnBarrierCompareDistanceWithPlayer += OnCompareDistancePlayer;
             EventDispatcher.Instance.RegisterListener<EventKeyBase.OpenDialog>(OnOpenDialog);
             EventDispatcher.Instance.RegisterListener<EventKeyBase.OnClosingDialog>(OnClosingDialog);
@@ -74,11 +73,34 @@ namespace WFSport.Gameplay.RelayMode
             EventManager.OnPlayerClaimNewStar -= OnClaimExperience;
             EventManager.OnPlayerIsMoving -= OnPlayerIsMoving;
             EventManager.OnPlayerIsPassedHalfStage -= OnPlayerIsPassedHalfStage;
-            EventManager.OnFinishStage -= OnFinishStage;
-            EventManager.OnTimeOut -= OnTimeOut;
+            EventManager.OnFinishStage -= OnGameWining;
+            EventManager.OnTimeOut -= OnGameLosing;
             EventManager.OnBarrierCompareDistanceWithPlayer -= OnCompareDistancePlayer;
             EventDispatcher.Instance.RemoveListener<EventKeyBase.OpenDialog>(OnOpenDialog);
             EventDispatcher.Instance.RemoveListener<EventKeyBase.OnClosingDialog>(OnClosingDialog);
+        }
+
+        public void OnGameWining()
+        {
+            if (level.Current.IsFinal)
+            {
+                Debug.Log("Completed All Level !!!!!!!!!!!");
+                ui.PauseTime();
+                OnGameStop();
+            }
+            else
+            {
+                level.Current = level.Next;
+                player.Current = player.Next;
+
+                StartCoroutine("PlayNextLevel");
+            }
+        }
+
+        public void OnGameLosing()
+        {
+            player.Current.Lose();
+            OnGameStop();
         }
 
         public void OnGamePause()
@@ -110,7 +132,7 @@ namespace WFSport.Gameplay.RelayMode
 
             camera_ = Camera.main;
 
-            ui.Setup(limitPlayTimer);
+            ui.Setup(myData.playTime);
 
             // Set Map
             InitMode();
@@ -212,12 +234,6 @@ namespace WFSport.Gameplay.RelayMode
             }
         }
 
-        private void OnTimeOut()
-        {
-            player.Current.Lose();
-            OnGameStop();
-        }
-
         private void InitMode()
         {
             // Init Map
@@ -243,23 +259,6 @@ namespace WFSport.Gameplay.RelayMode
                 }
             }
 
-        }
-
-        private void OnFinishStage()
-        {
-            if (level.Current.IsFinal)
-            {
-                Debug.Log("Completed All Level !!!!!!!!!!!");
-                ui.PauseTime();
-                OnGameStop();
-            }
-            else
-            {
-                level.Current = level.Next;
-                player.Current = player.Next;
-
-                StartCoroutine("PlayNextLevel");
-            }
         }
 
         private IEnumerator PlayNextLevel()

@@ -43,7 +43,7 @@ namespace AnhNV.GameBase
         }
         public void OnAnimComplete()
         {
-            OnTutorialComplete?.Invoke();
+            Completed();
             highlightTarget.SetParent(startObjectParent);
             gameObject.SetActive(false);
         }

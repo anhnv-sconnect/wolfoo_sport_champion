@@ -10,7 +10,7 @@ namespace AnhNV.GameBase
     {
         public string ID { get; private set; }
         public string Name { get; private set; }
-        public bool IsAllStepCompleted { get; private set; }
+        public bool IsAllStepCompleted { get => mySteps.TrueForAll(a => a.IsCompleted); }
 
         private int countStep;
         private List<TutorialStep> mySteps;
@@ -39,7 +39,6 @@ namespace AnhNV.GameBase
             if (countStep >= mySteps.Count)
             {
                 Debug.Log("All tutorial Step is COMPLETED !!");
-                IsAllStepCompleted = true;
                 return null;
             }
 
@@ -49,7 +48,6 @@ namespace AnhNV.GameBase
             if (countStep >= mySteps.Count)
             {
                 Debug.Log("All tutorial Step is COMPLETED !!");
-                IsAllStepCompleted = true;
             }
 
             return step;

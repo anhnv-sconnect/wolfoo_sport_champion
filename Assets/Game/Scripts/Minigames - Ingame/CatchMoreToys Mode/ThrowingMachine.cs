@@ -44,7 +44,10 @@ namespace WFSport.Gameplay.CatchMoreToysMode
             var isValid = false;
             for (int i = 0; i < config.rightHandBoneNames.Length; i++)
             {
-                if (!isValid) boneFollower.SetBone(config.rightHandBoneNames[i]);
+                if (!isValid)
+                {
+                    isValid = boneFollower.SetBone(config.rightHandBoneNames[i]);
+                }
                 else break;
             }
 

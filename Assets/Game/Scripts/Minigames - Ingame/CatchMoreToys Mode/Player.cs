@@ -22,6 +22,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
 
         protected override IMinigame.GameState GameplayState { get => gameState; set => gameState = value; }
         internal Transform Cart { get => cart; }
+        public int Score { get => score; }
 
         #region MY METHODS
         private void UpdateScore()

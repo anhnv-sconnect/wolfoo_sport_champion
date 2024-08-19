@@ -52,6 +52,29 @@ namespace WFSport.Gameplay.CatchMoreToysMode
             Init();
             SetupTutorial();
             PlayTutorial();
+
+            EventManager.OnPlayerClaimNewStar += OnPlayerCollectStar;
+            EventManager.OnFinishStage += OnGameWining;
+            EventManager.OnTimeOut += OnGameLosing;
+        }
+        private void OnDestroy()
+        {
+            EventManager.OnPlayerClaimNewStar -= OnPlayerCollectStar;
+            EventManager.OnFinishStage -= OnGameWining;
+            EventManager.OnTimeOut -= OnGameLosing;
+        }
+
+        public void OnGameWining()
+        {
+            ui.PauseTime();
+            OnGamePause();
+            // On Endgame
+        }
+
+        public void OnGameLosing()
+        {
+            ui.PauseTime();
+            OnGamePause();
         }
 
         private void PlayTutorial()
@@ -61,13 +84,14 @@ namespace WFSport.Gameplay.CatchMoreToysMode
 
         private void OnTutorialCompleted()
         {
-            EventManager.OnPlayerClaimNewStar -= OnPlayerCollectStar;
+            catchToyStep.Completed();
             OnGamePause();
             StartCoroutine("DelayToPlaygame");
         }
         private IEnumerator DelayToPlaygame()
         {
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(2);
+
 
             ui.OpenLoading(() =>
             {
@@ -98,7 +122,6 @@ namespace WFSport.Gameplay.CatchMoreToysMode
             player.Pause(false);
 
             EventManager.OnToyIsFlying += OnToyIsFlying;
-            EventManager.OnPlayerClaimNewStar += OnPlayerCollectStar;
         }
         private void OnSwipeCorrect()
         {
@@ -147,9 +170,9 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         {
             if(myData == null)
             {
-                myData = new IMinigame.Data() { coin = 45, score = 45 };
+                myData = new IMinigame.Data() { coin = 45, score = 45, playTime = 60 };
             }
-            ui.Setup(myData.score);
+            ui.Setup(myData.playTime);
 
             /// Spawn character in ThrowingMachine
             foreach (var machine in throwMachines)
@@ -164,9 +187,11 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         {
             if(!tutorial.IsAllStepCompleted)
             {
-                catchToyStep.OnTutorialComplete?.Invoke();
                 OnTutorialCompleted();
+                return;
             }
+
+            ui.UpdateLoadingBar((float)player.Score / myData.score);
         }
 
         private IEnumerator CountSpawnTime()

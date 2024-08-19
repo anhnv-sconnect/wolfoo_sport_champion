@@ -1,4 +1,5 @@
 using SCN;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,7 +18,7 @@ namespace AnhNV.GameBase
         public abstract void Release();
 
         public bool IsPlaying { get; protected set; }
-        public System.Action OnTutorialComplete;
+        public bool IsCompleted { get; protected set; }
         public System.Action OnClickTutorial;
 
         [SerializeField] EventTrigger eventTrigger;
@@ -31,6 +32,11 @@ namespace AnhNV.GameBase
         //    isWaitingEvent = true;
 
         //}
+
+        internal void Completed()
+        {
+            IsCompleted = true;
+        }
 
         protected void RegisterSwipeEvent()
         {
