@@ -155,7 +155,7 @@ namespace WFSport.Gameplay.LatinDanceMode
         private CharacterWorldAnimation CreatePartner()
         {
             var partner = Instantiate(partnerPb, transform);
-            partner.GetComponent<BoxCollider2D>().enabled = false;
+            partner.gameObject.layer = LAYER.CHARACTER;
             partner.ChangeSkin(CharacterWorldAnimation.SkinType.Prince);
             partner.transform.localPosition = new Vector3(-2, 10, 0);
             characters[1] = partner;
@@ -169,7 +169,7 @@ namespace WFSport.Gameplay.LatinDanceMode
         {
             wolfoo = Instantiate(wolfooPb, transform);
             wolfoo.ChangeSkin(CharacterWorldAnimation.SkinType.Prince);
-            wolfoo.GetComponent<BoxCollider2D>().enabled = false;
+            wolfoo.gameObject.layer = LAYER.CHARACTER;
             wolfoo.transform.localPosition = Vector3.zero;
             characters[0] = wolfoo;
             circles[0].SetParent(wolfoo.transform);

@@ -14,8 +14,14 @@ namespace WFSport
                 public const string DEATHZONE = "Death";
                 public const string STAR = "Star";
             }
+            public struct LAYER
+            {
+                public const int UI = 5;
+                public const int CHARACTER = 6;
+            }
 
             public static TAG Tag;
+            public static LAYER Layer;
         }
     }
 
