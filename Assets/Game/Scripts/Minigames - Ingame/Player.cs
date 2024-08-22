@@ -60,7 +60,7 @@ namespace WFSport.Gameplay.Base
 
         private void Update()
         {
-            if (GameplayState == GameState.Pausing || GameplayState == GameState.Stopping) return;
+            if (GameplayState != GameState.Playing) return;
             if(dragEvent == DragEventType.OnScreen)
             {
 #if UNITY_EDITOR
@@ -78,7 +78,7 @@ namespace WFSport.Gameplay.Base
 
         private void OnMouseDown()
         {
-            if (GameplayState == GameState.Pausing || GameplayState == GameState.Stopping) return;
+            if (GameplayState != GameState.Playing) return;
             if(dragEvent == DragEventType.OnCharacter)
             {
                 touchBeginPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -89,7 +89,7 @@ namespace WFSport.Gameplay.Base
         }
         private void OnMouseDrag()
         {
-            if (GameplayState == GameState.Pausing || GameplayState == GameState.Stopping) return;
+            if (GameplayState != GameState.Playing) return;
             if (dragEvent == DragEventType.OnCharacter)
             {
                 touchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -98,7 +98,7 @@ namespace WFSport.Gameplay.Base
         }
         private void OnMouseUp()
         {
-            if (GameplayState == GameState.Pausing || GameplayState == GameState.Stopping) return;
+            if (GameplayState != GameState.Playing) return;
             if (dragEvent == DragEventType.OnCharacter)
             {
                 OnEndDrag();

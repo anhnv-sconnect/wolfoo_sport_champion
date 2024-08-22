@@ -171,7 +171,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         {
             if(myData == null)
             {
-                myData = new IMinigame.Data() { coin = 45, playTime = 180,
+                myData = new IMinigame.Data() { coin = 45, playTime = 60,
                     timelineScore = new int[] { 15, 30, 45 } };
             }
             finalScore = myData.timelineScore[myData.timelineScore.Length - 1];
