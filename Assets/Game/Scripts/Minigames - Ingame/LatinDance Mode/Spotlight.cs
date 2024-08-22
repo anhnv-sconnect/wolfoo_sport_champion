@@ -1,3 +1,6 @@
+using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,15 +14,25 @@ namespace WFSport.Gameplay.LatinDanceMode
         private float length;
         private SpriteRenderer spriteRenderer;
         private bool isPlaying;
+        private TweenerCore<Color, Color, ColorOptions> _tween;
+
+        public bool IsPlaying { get => isPlaying; }
 
         // Start is called before the first frame update
         void Start()
         {
+            if(spriteRenderer == null)
+            {
+                spriteRenderer = GetComponent<SpriteRenderer>();
+                spriteRenderer.DOFade(0, 0);
+            }
             initialScale = transform.localScale;
-            spriteRenderer = GetComponent<SpriteRenderer>();
             length = spriteRenderer.sprite.rect.size.y / 100;
         }
-
+        private void OnDestroy()
+        {
+            _tween?.Kill();
+        }
 
         // Update is called once per frame
         void Update()
@@ -34,14 +47,24 @@ namespace WFSport.Gameplay.LatinDanceMode
         internal void Setup(Transform target)
         {
             player = target;
+            spriteRenderer = GetComponent<SpriteRenderer>();
+            spriteRenderer.DOFade(0, 0);
         }
         internal void Play()
         {
             isPlaying = true;
+            _tween = spriteRenderer.DOFade(1, 0.5f);
         }
         internal void Stop()
         {
             isPlaying = false;
+            _tween = spriteRenderer.DOFade(0, 0.5f);
+        }
+        internal void Stop(Transform target)
+        {
+            if (target != player) return;
+            isPlaying = false;
+            _tween = spriteRenderer.DOFade(0, 0.5f);
         }
 
         private void CalculateDistance()

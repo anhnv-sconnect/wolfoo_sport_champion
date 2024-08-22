@@ -34,7 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!114 &2722655553069342194
 MonoBehaviour:
@@ -48,6 +48,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1e72194cc6b8a043bd2bdfbc6b5e58c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skinList:
+  - Normal
+  - Red_Prince
+  - Sport
+  - Christmas
   SkeletonAnim: {fileID: 2115124906092011077}
   idleAnim: Idle
   runAnim: Run_c
@@ -61,6 +66,12 @@ MonoBehaviour:
   runFastAnim: Run_ninja
   pushAnim: push_Fast
   throwAnim: Throw_Right
+  skating1Anim: Skating1
+  skating2Anim: Skating2
+  skating3Anim: Skating3
+  skating4Anim: Skating4
+  skating5Anim: Skating5
+  jumpWinAnim: Jump_Win
 --- !u!114 &2115124906092011077
 MonoBehaviour:
   m_ObjectHideFlags: 0

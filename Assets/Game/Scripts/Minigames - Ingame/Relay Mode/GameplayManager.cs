@@ -122,17 +122,17 @@ namespace WFSport.Gameplay.RelayMode
                 myData = new IMinigame.Data()
                 {
                     coin = 0,
-                    score = levelScore,
+                    playTime = 180,
+                    timelineScore = new int[] { levelScore / 3, levelScore * 2 / 3, levelScore }
                 };
             }
-            levelScore = myData.score;
+            levelScore = myData.timelineScore[myData.timelineScore.Length - 1];
 
             levelIdx = (int)CurrentMode;
             level = (null, null);
-
             camera_ = Camera.main;
 
-            ui.Setup(myData.playTime);
+            ui.Setup(myData.playTime, myData.timelineScore);
 
             // Set Map
             InitMode();
@@ -141,7 +141,7 @@ namespace WFSport.Gameplay.RelayMode
 
             SetupTutorial();
             PlayTutorial();
-       //     StartCoroutine("PlayNextLevel");
+            //     StartCoroutine("PlayNextLevel");
         }
 
         private void PlayTutorial()

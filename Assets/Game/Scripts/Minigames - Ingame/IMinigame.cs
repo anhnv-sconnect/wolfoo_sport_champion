@@ -16,6 +16,7 @@ namespace WFSport.Gameplay
 
         public enum GameState
         {
+            None,
             Playing,
             Pausing,
             Stopping,
@@ -41,14 +42,13 @@ namespace WFSport.Gameplay
         public class Data
         {
             public int coin;
-            public int score;
             public int playTime;
+            public int[] timelineScore;
 
             public Data()
             {
                 coin = 0;
-                score = 0;
-                playTime = 60;
+                playTime = 180;
             }
         }
     }

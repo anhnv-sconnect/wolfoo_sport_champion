@@ -18,11 +18,6 @@ namespace WFSport.Gameplay.LatinDanceMode
         private Sequence _sequence;
         private TweenerCore<Vector3, Vector3, VectorOptions> tweenAnim;
 
-        private void Start()
-        {
-            Init();
-            PlayIdleAnim();
-        }
         private void OnDestroy()
         {
             tweenAnim?.Kill();
@@ -54,13 +49,14 @@ namespace WFSport.Gameplay.LatinDanceMode
             Holder.PlaySound?.Invoke();
             _sequence = DOTween.Sequence()
                 .AppendCallback(() => spriteRender.sprite = exploreSprite)
-                .Append(transform.DOScale(2, 0.5f).OnStart(() =>
+                .Append(transform.DOScale(2, 0.25f).OnStart(() =>
                 {
                     // Play Particle
                 }))
                 .AppendCallback(() =>
                 {
                     gameObject.SetActive(false);
+                    EventManager.OnHide?.Invoke(this);
                 });
         }
         internal void Setup(Sprite sprite, Vector2 position)
@@ -70,6 +66,10 @@ namespace WFSport.Gameplay.LatinDanceMode
             spriteRender.sprite = sprite;
 
             Init();
+        }
+        internal void Hide()
+        {
+            gameObject.SetActive(false);
         }
         internal void Spawn()
         {

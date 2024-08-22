@@ -18,5 +18,11 @@ namespace WFSport.Gameplay
         public static Action OnTimeOut;
         public static Action<RelayMode.Barrier, float> OnBarrierCompareDistanceWithPlayer;
         public static Action<CatchMoreToysMode.Item> OnToyIsFlying;
+        public static Action<LatinDanceMode.BonusItem> OnHide;
+        /// <summary>
+        /// Param1 : Target, Param2: isFocusing (Black Screen -> highlight Target)
+        /// </summary>
+        public static Action<Transform, bool> OnHighlight;
+        public static Action<Transform> OnStopHighlight;
     }
 }

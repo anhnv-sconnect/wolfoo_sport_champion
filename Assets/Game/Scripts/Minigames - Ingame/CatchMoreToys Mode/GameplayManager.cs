@@ -27,6 +27,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         private (int count, int index) bonusItemSpawner;
         private Tutorial tutorial;
         private TutorialSwipe catchToyStep;
+        private int finalScore;
 
         public IMinigame.Data ExternalData { get => myData; set => myData = value; }
 
@@ -170,9 +171,11 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         {
             if(myData == null)
             {
-                myData = new IMinigame.Data() { coin = 45, score = 45, playTime = 60 };
+                myData = new IMinigame.Data() { coin = 45, playTime = 180,
+                    timelineScore = new int[] { 15, 30, 45 } };
             }
-            ui.Setup(myData.playTime);
+            finalScore = myData.timelineScore[myData.timelineScore.Length - 1];
+            ui.Setup(myData.playTime, myData.timelineScore);
 
             /// Spawn character in ThrowingMachine
             foreach (var machine in throwMachines)
@@ -191,7 +194,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
                 return;
             }
 
-            ui.UpdateLoadingBar((float)player.Score / myData.score);
+            ui.UpdateLoadingBar((float)player.Score / finalScore);
         }
 
         private IEnumerator CountSpawnTime()

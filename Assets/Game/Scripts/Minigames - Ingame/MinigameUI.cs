@@ -28,6 +28,8 @@ namespace WFSport.Gameplay
         private TweenerCore<float, float, FloatOptions> _tweenLoadingBar;
         private TweenerCore<Vector3, Vector3, VectorOptions> _tweenStar;
 
+        private float[] timeline;
+
         private void Start()
         {
             backBtn.onClick.AddListener(OnClickBackBtn);
@@ -76,19 +78,27 @@ namespace WFSport.Gameplay
             StopCoroutine("CountTime");
         }
 
-        internal void Setup(int time)
+        internal void Setup(int time, int[] timeline)
         {
-            /// Init
+            // Init playtime
             fillBar.fillAmount = 0;
             foreach (var star in starImgs)
             {
                 star.transform.localScale = Vector3.zero;
             }
+
+            // Init timeline
+            float total = timeline[timeline.Length - 1];
+            this.timeline = new float[timeline.Length];
+            for (int i = 0; i < timeline.Length; i++)
+            {
+                this.timeline[i] = (float)timeline[i] / total;
+            }
+
             /// Anim Setup Timing
             totalTime = time;
             Holder.PlayAnim?.Invoke();
         }
-
         internal void OpenCountingToStart(System.Action OnCompleted)
         {
             if (countingPanel == null) countingPanel = Instantiate(countingPanelPb, transform);
@@ -111,10 +121,12 @@ namespace WFSport.Gameplay
 
         internal void UpdateLoadingBar(float value)
         {
+            if (value > 1) return;
+
             _tweenLoadingBar?.Kill();
             _tweenLoadingBar = fillBar.DOFillAmount(value, 0.5f).OnComplete(() =>
             {
-                if(fillBar.fillAmount >= (totalStarClaimed + 1f) / (starImgs.Length + 0))
+                if(fillBar.fillAmount >= timeline[totalStarClaimed])
                 {
                     // Continue Here
                     totalStarClaimed++;

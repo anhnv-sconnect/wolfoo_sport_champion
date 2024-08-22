@@ -4,6 +4,9 @@ using Helper;
 using Spine.Unity;
 public class CharacterWorldAnimation : MonoBehaviour
 {
+    [Header("<======== SKIN =======>")]
+    [SerializeField, SpineSkin] string[] skinList;
+
     [Header("<======== SPINE =======>")]
     public SkeletonAnimation SkeletonAnim;
     [Header("Idle")]
@@ -30,12 +33,33 @@ public class CharacterWorldAnimation : MonoBehaviour
     [SerializeField, SpineAnimation] private string pushAnim;
     [Header("Throw")]
     [SerializeField, SpineAnimation] private string throwAnim;
+    [Header("Skate1")]
+    [SerializeField, SpineAnimation] private string skating1Anim;
+    [Header("Skate2")]
+    [SerializeField, SpineAnimation] private string skating2Anim;
+    [Header("Skate3")]
+    [SerializeField, SpineAnimation] private string skating3Anim;
+    [Header("Skate4")]
+    [SerializeField, SpineAnimation] private string skating4Anim;
+    [Header("Skate5")]
+    [SerializeField, SpineAnimation] private string skating5Anim;
+    [Header("JumpWin")]
+    [SerializeField, SpineAnimation] private string jumpWinAnim;
 
     private AnimState animState;
     private Tween _tween;
 
-    private void Awake()
+    public enum SkinType
     {
+        Normal,
+        Prince, 
+        Sport,
+        Christmas
+    }
+    public void ChangeSkin(SkinType colorType)
+    {
+        SkeletonAnim.Skeleton.SetSkin(skinList[(int)colorType]);
+        SkeletonAnim.Skeleton.SetSlotsToSetupPose();
     }
     private void OnDestroy()
     {
@@ -115,6 +139,94 @@ public class CharacterWorldAnimation : MonoBehaviour
             _tween?.Kill();
             _tween = DOVirtual.DelayedCall(GetTimeAnimation(animState), () => PlayIdle());
         }
+    }
+    public void PlayJumpWinAnim(bool isLoop = true)
+    {
+        _tween?.Kill();
+        PlayJumpWin(isLoop);
+        if (!isLoop)
+        {
+            _tween?.Kill();
+            _tween = DOVirtual.DelayedCall(GetTimeAnimation(animState), () => PlayIdle());
+        }
+    }
+    public void PlaySkateAnim(AnimState skateAnim, bool isLoop = true)
+    {
+        _tween?.Kill();
+        switch (skateAnim)
+        {
+            case AnimState.Skate1:
+                PlaySkate1(isLoop);
+                break;
+            case AnimState.Skate2:
+                PlaySkate2(isLoop);
+                break;
+            case AnimState.Skate3:
+                PlaySkate3(isLoop);
+                break;
+            case AnimState.Skate4:
+                PlaySkate4(isLoop);
+                break;
+            case AnimState.Skate5:
+                PlaySkate5(isLoop);
+                break;
+            default:
+                PlaySkate1(isLoop);
+                break;
+        }
+        if (!isLoop)
+        {
+            _tween?.Kill();
+            _tween = DOVirtual.DelayedCall(GetTimeAnimation(animState), () => PlayIdle());
+        }
+    }
+    public AnimState GetRandomSkateAnim()
+    {
+        var rd = UnityEngine.Random.Range((int)AnimState.Skate1, (int)AnimState.Skate5 + 1);
+        switch (rd)
+        {
+            case (int)AnimState.Skate1:
+                return AnimState.Skate1;
+            case (int)AnimState.Skate2:
+                return AnimState.Skate2;
+            case (int)AnimState.Skate3:
+                return AnimState.Skate3;
+            case (int)AnimState.Skate4:
+                return AnimState.Skate4;
+            case (int)AnimState.Skate5:
+                return AnimState.Skate5;
+            default:
+                return AnimState.Skate1;
+        }
+    }
+    public void PlayRandomSkateAnim()
+    {
+        _tween?.Kill();
+        var rd = UnityEngine.Random.Range((int)AnimState.Skate1, (int)AnimState.Skate5 + 1);
+        switch (rd)
+        {
+            case (int) AnimState.Skate1:
+                PlaySkate1(false);
+                break;
+            case (int) AnimState.Skate2:
+                PlaySkate2(false);
+                break;
+            case (int) AnimState.Skate3:
+                PlaySkate3(false);
+                break;
+            case (int) AnimState.Skate4:
+                PlaySkate4(false);
+                break;
+            case (int) AnimState.Skate5:
+                PlaySkate5(false);
+                break;
+            default:
+                PlaySkate1(false);
+                break;
+        }
+
+        _tween?.Kill();
+        _tween = DOVirtual.DelayedCall(GetTimeAnimation(animState), () => PlayRandomSkateAnim());
     }
     #region Anim by Spine
     private void PlayMove()
@@ -209,6 +321,42 @@ public class CharacterWorldAnimation : MonoBehaviour
         animState = AnimState.Throw;
         AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, throwAnim, isLoop);
     }
+    private void PlaySkate1(bool isLoop)
+    {
+        if (animState == AnimState.Skate1) return;
+        animState = AnimState.Skate1;
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, skating1Anim, isLoop);
+    }
+    private void PlaySkate2(bool isLoop)
+    {
+        if (animState == AnimState.Skate2) return;
+        animState = AnimState.Skate2;
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, skating2Anim, isLoop);
+    }
+    private void PlaySkate3(bool isLoop)
+    {
+        if (animState == AnimState.Skate3) return;
+        animState = AnimState.Skate3;
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, skating3Anim, isLoop);
+    }
+    private void PlaySkate4(bool isLoop)
+    {
+        if (animState == AnimState.Skate4) return;
+        animState = AnimState.Skate4;
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, skating4Anim, isLoop);
+    }
+    private void PlaySkate5(bool isLoop)
+    {
+        if (animState == AnimState.Skate5) return;
+        animState = AnimState.Skate5;
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, skating5Anim, isLoop);
+    }
+    private void PlayJumpWin(bool isLoop)
+    {
+        if (animState == AnimState.JumpWin) return;
+        animState = AnimState.JumpWin;
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, jumpWinAnim, isLoop);
+    }
     public float GetTimeAnimation(AnimState animState)
     {
         Spine.Animation myAnimation = null;
@@ -252,6 +400,24 @@ public class CharacterWorldAnimation : MonoBehaviour
             case AnimState.Throw:
                 myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(throwAnim);
                 break;
+            case AnimState.Skate1:
+                myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(skating1Anim);
+                break;
+            case AnimState.Skate2:
+                myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(skating2Anim);
+                break;
+            case AnimState.Skate3:
+                myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(skating3Anim);
+                break;
+            case AnimState.Skate4:
+                myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(skating4Anim);
+                break;
+            case AnimState.Skate5:
+                myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(skating5Anim);
+                break;
+            case AnimState.JumpWin:
+                myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(jumpWinAnim);
+                break;
         }
 
         if (myAnimation == null) return 0;
@@ -275,6 +441,27 @@ public class CharacterWorldAnimation : MonoBehaviour
         RunFast,
         Push,
         Throw,
+        /// <summary>
+        /// Normal Skating
+        /// </summary>
+        Skate1,
+        /// <summary>
+        /// Forward Inclined Skating
+        /// </summary>
+        Skate2,
+        /// <summary>
+        /// One leg Skating
+        /// </summary>
+        Skate3,
+        /// <summary>
+        /// Behind Inclined Skating
+        /// </summary>
+        Skate4,
+        /// <summary>
+        /// Forward Inclined Skating 2
+        /// </summary>
+        Skate5,
+        JumpWin,
     }
     #endregion
    
