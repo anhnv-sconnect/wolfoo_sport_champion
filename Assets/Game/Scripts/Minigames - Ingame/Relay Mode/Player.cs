@@ -323,12 +323,13 @@ namespace WFSport.Gameplay.RelayMode
                 return gameState;
             }
         }
-
-        public override void OnTouching(Vector3 position)
+        protected override void OnBeginDrag()
         {
-            if(playerMode == Mode.Hurdling)
+            base.OnBeginDrag();
+
+            if (playerMode == Mode.Hurdling)
             {
-                if(isStunning && canTouch)
+                if (isStunning && canTouch)
                 {
                     isStop = false;
                     isStunning = false;
@@ -336,6 +337,9 @@ namespace WFSport.Gameplay.RelayMode
                     canJumping = true;
                 }
             }
+        }
+        public override void OnTouching(Vector3 position)
+        {
         }
 
         public override void OnDragging(Vector3 force)

@@ -13,6 +13,7 @@ namespace WFSport
                 public const string FINISH = "Finish";
                 public const string DEATHZONE = "Death";
                 public const string STAR = "Star";
+                public const string SNOW = "Snow";
             }
             public struct LAYER
             {

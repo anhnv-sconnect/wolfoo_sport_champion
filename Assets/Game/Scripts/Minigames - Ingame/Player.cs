@@ -122,7 +122,6 @@ namespace WFSport.Gameplay.Base
                 touchBeginPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 touchPos = touchBeginPos;
                 lastTouchPos = touchPos;
-                OnTouching(touchBeginPos);
                 OnBeginDrag();
             }
             if (Input.GetMouseButton(0))
@@ -157,7 +156,6 @@ namespace WFSport.Gameplay.Base
                         touchBeginPos = touch.position;
                         touchPos = touchBeginPos;
                         lastTouchPos = touchPos;
-                        OnTouching(touchBeginPos);
                         OnBeginDrag();
                     }
 
@@ -182,6 +180,7 @@ namespace WFSport.Gameplay.Base
 
         protected virtual void OnBeginDrag()
         {
+            OnTouching(touchPos);
             if (SwipingMode)
             {
                 isSwiping = false;
@@ -190,6 +189,7 @@ namespace WFSport.Gameplay.Base
 
         protected virtual void OnDrag()
         {
+            OnTouching(touchPos);
             if(DraggingMode)
             {
                 dragForce = (touchPos - lastTouchPos) * Time.deltaTime * 10000;
@@ -234,6 +234,7 @@ namespace WFSport.Gameplay.Base
 
         protected virtual void OnEndDrag()
         {
+            OnTouching(touchPos);
             if (SwipingMode)
             {
                 isSwiping = false;

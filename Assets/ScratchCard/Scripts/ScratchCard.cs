@@ -294,6 +294,7 @@ public class ScratchCard : MonoBehaviour
 	/// <param name="position"></param>
     public void ScratchHole(Vector2 position)
     {
+		position = GetScratchPosition(position);
 	    cardRenderer.ScratchHole(position);
 	    IsScratched = true;
     }

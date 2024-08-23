@@ -6,6 +6,8 @@ namespace WFSport.Gameplay.SnowballMode
 {
     public class GameplayManager : MonoBehaviour, IMinigame
     {
+        [SerializeField] Snow[] snows;
+
         private IMinigame.Data myData;
 
         public IMinigame.Data ExternalData { get => myData; set => myData = value; }
@@ -13,7 +15,6 @@ namespace WFSport.Gameplay.SnowballMode
         // Start is called before the first frame update
         void Start()
         {
-
         }
         public void OnGameLosing()
         {
