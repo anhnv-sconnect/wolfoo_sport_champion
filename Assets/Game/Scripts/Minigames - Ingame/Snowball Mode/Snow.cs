@@ -1,3 +1,7 @@
+using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,39 +11,47 @@ namespace WFSport.Gameplay.SnowballMode
 {
     public class Snow : MonoBehaviour
     {
-        private Vector2 range;
+        private bool isCompleted;
+        private Rigidbody2D rigidBd;
         private ScratchCardManager myCard;
+        private TweenerCore<Color, Color, ColorOptions> _tween;
 
         private void Start()
         {
+            rigidBd = GetComponent<Rigidbody2D>();
             myCard = GetComponent<ScratchCardManager>();
+            myCard.Progress.OnProgress += OnScratching;
         }
-        private void OnDrawGizmos()
+        private void OnDestroy()
         {
-            var player = FindAnyObjectByType<Player>();
-            if (player == null) return;
-            var size = player.GetComponent<BoxCollider2D>().size;
-            var direction = player.transform.position - transform.position;
-            var angle = Mathf.Atan(direction.x/ direction.y) * Mathf.Rad2Deg;
-            var length = (size.y / 2) / (Mathf.Sin(angle));
-            var playerRange = direction.normalized * length;
-
-            Debug.Log(angle);
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(transform.position, playerRange);
+            _tween?.Kill();
+            myCard.Progress.OnProgress -= OnScratching;
         }
+
+        private void OnScratching(float progress)
+        {
+            if (isCompleted) return;
+            if(progress >= 0.95f)
+            {
+                isCompleted = true;
+                rigidBd.simulated = false;
+                var card = myCard.SpriteCard.GetComponent<SpriteRenderer>();
+                _tween?.Kill();
+                _tween = card.DOFade(0, 1).OnComplete(() =>
+                {
+                    gameObject.SetActive(false);
+                });
+            }
+        }
+
         private void OnTriggerStay2D(Collider2D collision)
         {
-            if (collision.CompareTag(TAG.PLAYER))
+            if (!isCompleted && collision.CompareTag(TAG.PLAYER))
             {
                 var direction = collision.bounds.center - transform.position;
-                var angle = Vector2.Dot(collision.bounds.center, transform.position) * Mathf.PI;
-
-                //    var range = direction.normalized * (direction.magnitude - Vector2.Distance());
-                var range = Vector3.zero;
-                Debug.Log(angle);
-                var pos = Camera.main.WorldToScreenPoint(collision.transform.position - range);
-                myCard.Card.ScratchHole(pos);
+                var range = direction.normalized * collision.bounds.extents.x;
+                var pos = Camera.main.WorldToScreenPoint(collision.bounds.center);
+                myCard.Card.ScratchHole(pos, collision.bounds.extents.x * collision.transform.localScale.x);
             }
         }
         internal void EnableScratch()

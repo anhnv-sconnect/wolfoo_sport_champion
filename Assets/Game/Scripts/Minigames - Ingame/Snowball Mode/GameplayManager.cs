@@ -6,7 +6,8 @@ namespace WFSport.Gameplay.SnowballMode
 {
     public class GameplayManager : MonoBehaviour, IMinigame
     {
-        [SerializeField] Snow[] snows;
+        [SerializeField] private GameplayConfig config;
+        [SerializeField] private SnowmanStage stage;
 
         private IMinigame.Data myData;
 

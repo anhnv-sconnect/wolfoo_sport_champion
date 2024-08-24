@@ -298,6 +298,17 @@ public class ScratchCard : MonoBehaviour
 	    cardRenderer.ScratchHole(position);
 	    IsScratched = true;
     }
+	/// <summary>
+	/// Scratches hole
+	/// </summary>
+	/// <param name="position"></param>
+    public void ScratchHole(Vector2 position, float scale)
+    {
+		BrushScale = Vector2.one + Vector2.one * scale;
+		position = GetScratchPosition(position);
+		cardRenderer.ScratchHole(position);
+	    IsScratched = true;
+    }
     
 	/// <summary>
 	/// Scratches line
