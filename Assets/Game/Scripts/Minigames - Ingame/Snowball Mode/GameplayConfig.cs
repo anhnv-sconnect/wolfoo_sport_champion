@@ -14,5 +14,9 @@ namespace WFSport.Gameplay.SnowballMode
 
         [Header("================ PLAYER SETTING ================")]
         public float velocity = 0.01f;
+        /// <summary>
+        /// x: Left direct, y: Up direct, z: Right direct, w: Down direct
+        /// </summary>
+        public Vector4 limitPosition;
     }
 }

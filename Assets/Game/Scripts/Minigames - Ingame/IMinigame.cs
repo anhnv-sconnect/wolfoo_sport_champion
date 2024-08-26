@@ -43,7 +43,7 @@ namespace WFSport.Gameplay
         {
             public int coin;
             public int playTime;
-            public int[] timelineScore;
+            public float[] timelineScore;
 
             public Data()
             {

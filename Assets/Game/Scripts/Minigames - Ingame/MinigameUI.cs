@@ -78,7 +78,7 @@ namespace WFSport.Gameplay
             StopCoroutine("CountTime");
         }
 
-        internal void Setup(int time, int[] timeline)
+        internal void Setup(int time, float[] timeline)
         {
             // Init playtime
             fillBar.fillAmount = 0;
@@ -92,7 +92,7 @@ namespace WFSport.Gameplay
             this.timeline = new float[timeline.Length];
             for (int i = 0; i < timeline.Length; i++)
             {
-                this.timeline[i] = (float)timeline[i] / total;
+                this.timeline[i] = timeline[i] / total;
             }
 
             /// Anim Setup Timing

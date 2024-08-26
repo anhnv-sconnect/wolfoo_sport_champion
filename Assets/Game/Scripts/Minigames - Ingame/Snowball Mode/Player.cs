@@ -12,6 +12,10 @@ namespace WFSport.Gameplay.SnowballMode
         [SerializeField] private GameplayConfig config;
         [SerializeField] private CharacterWorldAnimation wolfoo;
         [SerializeField] private Transform ball;
+        [SerializeField] private Transform stageSignal;
+        [SerializeField] private Transform stageArea;
+        [SerializeField] private Transform arrow;
+        [SerializeField] private Transform rotationHolder;
 
         private IMinigame.GameState gamestate;
         private Vector3 lastTouch;
@@ -23,11 +27,13 @@ namespace WFSport.Gameplay.SnowballMode
         private Vector3 initBallScale;
         private Vector3 initBallPos;
         private Vector3 maxBallRange;
+        private float arrowLength;
         private float ballValue;
 
         private bool isReadyToReleaseBall;
         private bool candrag;
         private Sequence throwAnim;
+        private bool canMoveCam;
 
         protected override IMinigame.GameState GameplayState { get => gamestate; set => gamestate = value; }
 
@@ -35,8 +41,8 @@ namespace WFSport.Gameplay.SnowballMode
         // Start is called before the first frame update
         void Start()
         {
-            GameplayState = IMinigame.GameState.Playing;
             Init();
+            Play();
         }
         private void OnTriggerEnter2D(Collider2D collision)
         {
@@ -55,27 +61,55 @@ namespace WFSport.Gameplay.SnowballMode
             {
                 if(isReadyToReleaseBall)
                 {
+                    Pause(false);
+                    isReadyToReleaseBall = false;
+
                     var stage = collision.GetComponent<SnowmanStage>();
                     if (stage == null) return;
-                    ReleaseBall(stage.GetNextSnowballPos);
+
+                    var emptyPosInStage = stage.GetNextSnowballEmpty;
+                    var camBeginPos = cam.transform.position;
+                    throwAnim = DOTween.Sequence()
+                        .Append(cam.transform.DOMove(
+                            new Vector3(stage.transform.position.x, stage.transform.position.y, cam.transform.position.z),
+                            0.5f));
+                    throwAnim.OnComplete(() =>
+                    {
+                        ReleaseBall(emptyPosInStage.position, () =>
+                        {
+                            stage.BuildNextSnowball(() =>
+                            {
+                                // PLay Game
+                                throwAnim = DOTween.Sequence()
+                                 .Append(cam.transform.DOMove(camBeginPos, 0.5f).SetEase(Ease.Linear));
+                                throwAnim.OnComplete(() =>
+                                {
+                                    EventManager.OnFinishStage?.Invoke();
+                                  //  Play();
+                                });
+                            });
+                        });
+                    });
                 }
             }
         }
         #endregion
 
         #region METHODS
-        internal void ReleaseBall(Vector3 position)
+        internal void ReleaseBall(Vector3 position, System.Action OnCompleted)
         {
             candrag = false;
+            canMoveCam = false;
 
             throwAnim = DOTween.Sequence()
                 .AppendCallback(() => wolfoo.PlayThrowAnim(false))
-                .AppendInterval(0.5f)
+                .AppendInterval(0.7f)
                 .Append(ball.DOJump(position, 1, 1, 0.5f))
                 .Join(ball.DOScale(Vector2.one * 0.8f, 0.5f));
 
             throwAnim.OnComplete(() =>
             {
+                OnCompleted?.Invoke();
                 ResetBall();
             });
 
@@ -83,8 +117,9 @@ namespace WFSport.Gameplay.SnowballMode
         private void ResetBall()
         {
             ballValue = 0;
-            transform.localScale = initBallScale;
-            transform.localPosition = initBallPos;
+            ball.transform.localScale = initBallScale;
+            ball.transform.localPosition = initBallPos;
+            isReadyToReleaseBall = false;
         }
         private void ScaleBall()
         {
@@ -105,6 +140,8 @@ namespace WFSport.Gameplay.SnowballMode
         protected override void OnEndDrag()
         {
             base.OnEndDrag();
+
+            if (!candrag) return;
             wolfoo.PlayIdleAnim();
         }
 
@@ -120,6 +157,8 @@ namespace WFSport.Gameplay.SnowballMode
             var maxScale = 2;
             maxBallScale = initBallScale * maxScale;
             maxBallRange = initBallPos + Vector3.one * ballRadius / 2 * maxScale;
+
+            arrowLength = Vector2.Distance(arrow.position, stageSignal.position) / 2;
         }
 
         public override void Lose()
@@ -133,11 +172,15 @@ namespace WFSport.Gameplay.SnowballMode
             var range = transform.position.x - lastTouch.x;
             if (range * range > 3)
             {
-                transform.rotation = Quaternion.Euler(Vector3.up * (range > 0 ? 180 : 0));
+                rotationHolder.rotation = Quaternion.Euler(Vector3.up * (range > 0 ? 180 : 0));
             }
 
             if (transform.position != lastTouch)
             {
+                lastTouch.x = lastTouch.x < config.limitPosition.x ? config.limitPosition.x : lastTouch.x;
+                lastTouch.y = lastTouch.y < config.limitPosition.w ? config.limitPosition.w : lastTouch.y;
+                lastTouch.x = lastTouch.x > config.limitPosition.z ? config.limitPosition.z : lastTouch.x;
+                lastTouch.y = lastTouch.y > config.limitPosition.y ? config.limitPosition.y : lastTouch.y;
                 transform.position = Vector2.Lerp(transform.position, lastTouch, config.velocity);
             }
 
@@ -152,19 +195,39 @@ namespace WFSport.Gameplay.SnowballMode
         {
             lastTouch = position;
         }
-
         public override void OnUpdate()
         {
             if (GameplayState != IMinigame.GameState.Playing) return;
-            cam.transform.position = new Vector3(transform.position.x, transform.position.y, camPos.z);
+            if (canMoveCam)
+            {
+                cam.transform.position = new Vector3(transform.position.x, transform.position.y, camPos.z);
+            }
+
+            if (isReadyToReleaseBall)
+            {
+                var direction = stageSignal.position - stageArea.position;
+                float angle = Mathf.Asin(direction.x / direction.magnitude) * Mathf.Rad2Deg;
+                if (direction.y > 0) angle = 180 - angle;
+                arrow.localPosition = direction.normalized * -1 * arrowLength;
+                arrow.rotation = Quaternion.Euler(Vector3.forward * angle);
+            }
+            stageSignal.gameObject.SetActive(isReadyToReleaseBall);
         }
 
-        public override void Pause(bool isSystem)
+        public override void Pause(bool isSystem = false)
         {
+            if (!isSystem)
+            {
+                candrag = false;
+                canMoveCam = false;
+            }
         }
 
         public override void Play()
         {
+            GameplayState = IMinigame.GameState.Playing;
+            candrag = true;
+            canMoveCam = true;
         }
 
         public override void ResetDefault()

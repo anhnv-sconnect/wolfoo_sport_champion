@@ -9,7 +9,7 @@ namespace WFSport
 {
     public class SnowmanStage : MonoBehaviour
     {
-        [SerializeField] GameObject[] redCircles;
+        [SerializeField] SpriteRenderer[] snowballs;
         [SerializeField] SpriteRenderer[] snowmanIdleRenders;
         [SerializeField] Sprite[] snowmanData;
         [SerializeField] Animator animator;
@@ -20,15 +20,16 @@ namespace WFSport
         [SerializeField] Image snowmanImg;
         private int snowballCounting;
         private int idxSnowman;
+        private GameObject[] redCircles;
 
         public Action OnBuildComplete { get; private set; }
-        public Vector3 GetNextSnowballPos
+        public Transform GetNextSnowballEmpty
         {
             get
             {
                 var idx = 0;
                 if (snowballCounting < redCircles.Length) idx = snowballCounting;
-                return redCircles[idx].transform.position;
+                return redCircles[idx].transform;
             }
         }
 
@@ -46,6 +47,16 @@ namespace WFSport
         private void Init()
         {
             idxSnowman = UnityEngine.Random.Range(0, snowmanData.Length);
+            redCircles = new GameObject[snowballs.Length];
+            for (int i = 0; i < snowballs.Length; i++)
+            {
+                snowballs[i].enabled = false;
+                redCircles[i] = snowballs[i].transform.GetChild(0).gameObject;
+            }
+            for (int i = 0;  i < snowmanIdleRenders.Length;  i++)
+            {
+                snowmanIdleRenders[i].enabled = false;
+            }
         }
 
         internal void BuildNextSnowball(System.Action OnCompleted)
@@ -58,12 +69,18 @@ namespace WFSport
                 return;
             }
             redCircles[snowballCounting].SetActive(false);
+            snowballs[snowballCounting].enabled = true;
+
             snowballCounting++;
 
             if ((snowballCounting % 2) == 0)
             {
                 SetupSnowmanData();
-                PlayRepresentSnowman();
+                StartCoroutine("PlayRepresentSnowman");
+            }
+            else
+            {
+                OnBuildComplete?.Invoke();
             }
         }
 
@@ -71,6 +88,13 @@ namespace WFSport
         {
             animator.enabled = false;
             animator.gameObject.SetActive(false);
+
+            var snowmanIdle = snowmanIdleRenders[(snowballCounting / 2) - 1];
+            snowmanIdle.enabled = true;
+            for (int i = 0; i < snowmanIdle.transform.childCount; i++)
+            {
+                snowmanIdle.transform.GetChild(i).gameObject.SetActive(false);
+            }
 
             OnBuildComplete?.Invoke();
         }
@@ -80,17 +104,19 @@ namespace WFSport
             var sprite = snowmanData[idxSnowman];
             snowmanImg.sprite = sprite;
 
-            var idx = snowballCounting - 1;
+            var idx = (snowballCounting / 2) - 1;
             snowmanIdleRenders[idx].sprite = sprite;
 
             idxSnowman++;
             if (idxSnowman == snowmanData.Length) idxSnowman = 0;
         }
-        internal void PlayRepresentSnowman()
+        internal IEnumerator PlayRepresentSnowman()
         {
-            animator.Play(openAnimName, 0, 0);
+            yield return new WaitForSeconds(1);
+
             animator.enabled = true;
             animator.gameObject.SetActive(true);
+            animator.Play(openAnimName, 0, 0);
         }
         internal void StopRepresent()
         {

@@ -18,7 +18,7 @@ namespace WFSport.Gameplay.RelayMode
         [SerializeField] private Player playerPb;
         [SerializeField] private Player.Mode CurrentMode;
         [SerializeField] private Vector3 cameraRange;
-        [SerializeField] private int levelScore;
+        [SerializeField] private float levelScore;
 
         private IMinigame.Data myData;
 
@@ -123,7 +123,7 @@ namespace WFSport.Gameplay.RelayMode
                 {
                     coin = 0,
                     playTime = 180,
-                    timelineScore = new int[] { levelScore / 3, levelScore * 2 / 3, levelScore }
+                    timelineScore = new float[] { levelScore / 3, levelScore * 2 / 3, levelScore }
                 };
             }
             levelScore = myData.timelineScore[myData.timelineScore.Length - 1];

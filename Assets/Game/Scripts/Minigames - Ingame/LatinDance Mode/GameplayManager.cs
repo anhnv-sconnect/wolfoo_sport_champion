@@ -19,7 +19,7 @@ namespace WFSport.Gameplay.LatinDanceMode
         [SerializeField] Player player;
 
         private IMinigame.Data myData;
-        private int finalScore;
+        private float finalScore;
         private MinigameUI ui;
         private float score;
 
@@ -151,7 +151,7 @@ namespace WFSport.Gameplay.LatinDanceMode
                 {
                     playTime = 180,
                     coin = 0,
-                    timelineScore = new int[] { 20, 50, 80 }
+                    timelineScore = new float[] { 20, 50, 80 }
                 };
             }
             finalScore = myData.timelineScore[2];

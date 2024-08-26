@@ -11,6 +11,7 @@ namespace WFSport.Gameplay.SnowballMode
 {
     public class Snow : MonoBehaviour
     {
+        [SerializeField] private float completeValue = 0.95f;
         private bool isCompleted;
         private Rigidbody2D rigidBd;
         private ScratchCardManager myCard;
@@ -31,7 +32,7 @@ namespace WFSport.Gameplay.SnowballMode
         private void OnScratching(float progress)
         {
             if (isCompleted) return;
-            if(progress >= 0.95f)
+            if(progress >= completeValue)
             {
                 isCompleted = true;
                 rigidBd.simulated = false;

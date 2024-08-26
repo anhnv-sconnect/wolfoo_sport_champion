@@ -347,7 +347,7 @@ Transform:
   - {fileID: 6936522597146213332}
   - {fileID: 4863619936484906828}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2409280126861417465
 MonoBehaviour:
@@ -391,6 +391,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a48e8bb75e1f0684ea18f6645c802f2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  completeValue: 0.9
 --- !u!50 &7206353951257631813
 Rigidbody2D:
   serializedVersion: 4

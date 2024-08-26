@@ -27,7 +27,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         private (int count, int index) bonusItemSpawner;
         private Tutorial tutorial;
         private TutorialSwipe catchToyStep;
-        private int finalScore;
+        private float finalScore;
 
         public IMinigame.Data ExternalData { get => myData; set => myData = value; }
 
@@ -172,7 +172,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
             if(myData == null)
             {
                 myData = new IMinigame.Data() { coin = 45, playTime = 60,
-                    timelineScore = new int[] { 15, 30, 45 } };
+                    timelineScore = new float[] { 15, 30, 45 } };
             }
             finalScore = myData.timelineScore[myData.timelineScore.Length - 1];
             ui.Setup(myData.playTime, myData.timelineScore);
