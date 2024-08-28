@@ -24,5 +24,9 @@ namespace WFSport.Gameplay
         /// </summary>
         public static Action<Transform, bool> OnHighlight;
         public static Action<Transform> OnStopHighlight;
+        public static Action OnScratching;
+        public static Action<ArcheryMode.Marker> OnMarkerIsSpawing;
+        public static Action<ArcheryMode.Marker> OnMarkerIsHiding;
+        public static Action<ArcheryMode.Arrow> OnShooting;
     }
 }

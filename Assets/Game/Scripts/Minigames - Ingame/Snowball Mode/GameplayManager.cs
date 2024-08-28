@@ -1,3 +1,4 @@
+using AnhNV.GameBase;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,14 +8,20 @@ namespace WFSport.Gameplay.SnowballMode
 {
     public class GameplayManager : MonoBehaviour, IMinigame
     {
+        [SerializeField] private CharacterWorldAnimation[] audiences;
+        [SerializeField] private CharacterWorldAnimation wolfooPb;
         [SerializeField] private GameplayConfig config;
         [SerializeField] private SnowmanStage stage;
         [SerializeField] private Player player;
+        [SerializeField] private Player tutorialPlayer;
+        [SerializeField] private Transform[] seats;
+        [SerializeField] private Transform otherItemInMapHolder;
 
         private IMinigame.Data myData;
         private MinigameUI ui;
         private float totalSnowballClaimed;
         private float maxScore;
+        private Tutorial tutorial;
 
         public IMinigame.Data ExternalData { get => myData; set => myData = value; }
 
@@ -25,7 +32,18 @@ namespace WFSport.Gameplay.SnowballMode
             EventManager.OnTimeOut += OnGameLosing;
 
             Init();
-            OnGameStart();
+            //    CreateTutorial();
+            ui.OpenCountingToStart(() =>
+            {
+                OnGameStart();
+            });
+        }
+
+        private void CreateTutorial()
+        {
+            tutorial = TutorialController.Instance.CreateTutorial("Snowball");
+            var step = TutorialController.Instance.CreateStep<TutorialSwipe>(tutorial);
+            step.Setup(tutorialPlayer.transform, AnimatorHelper.Direction.Left);
         }
 
         private void OnDestroy()
@@ -33,6 +51,7 @@ namespace WFSport.Gameplay.SnowballMode
             EventManager.OnFinishStage -= OnSnowballCreated;
             EventManager.OnTimeOut -= OnGameLosing;
         }
+
 
         private void Init()
         {
@@ -51,6 +70,27 @@ namespace WFSport.Gameplay.SnowballMode
 
             var length = myData.timelineScore.Length;
             maxScore = myData.timelineScore[length - 1];
+
+            foreach (var item in seats)
+            {
+                var rdIdx = UnityEngine.Random.Range(0, audiences.Length);
+                var audience = Instantiate(audiences[rdIdx], item);
+                audience.transform.position = new Vector3(item.transform.position.x, item.transform.position.y, 1);
+                audience.ChangeSkin(CharacterWorldAnimation.SkinType.Christmas);
+                audience.PlayIdleAnim();
+            }
+            var wolfoo = Instantiate(wolfooPb, player.transform);
+            player.Setup(wolfoo);
+
+            foreach (var item in otherItemInMapHolder.GetComponentsInChildren<SpriteRenderer>())
+            {
+                item.sortingOrder = CalculateTopDownPosition(item.transform);
+            }
+        }
+
+        private int CalculateTopDownPosition(Transform target)
+        {
+            return (int)((target.position.y) * -100);
         }
 
         private void OnSnowballCreated()

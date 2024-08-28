@@ -48,6 +48,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1e72194cc6b8a043bd2bdfbc6b5e58c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skinList:
+  - Normal
+  - Gentleman
+  - Sport
+  - Christmas
   SkeletonAnim: {fileID: 7680318311673223361}
   idleAnim: Idle
   runAnim: Run_c
@@ -61,6 +66,12 @@ MonoBehaviour:
   runFastAnim: Run_ninja
   pushAnim: push_Fast
   throwAnim: Throw_Right
+  skating1Anim: 
+  skating2Anim: 
+  skating3Anim: 
+  skating4Anim: 
+  skating5Anim: 
+  jumpWinAnim: 
 --- !u!114 &7680318311673223361
 MonoBehaviour:
   m_ObjectHideFlags: 0

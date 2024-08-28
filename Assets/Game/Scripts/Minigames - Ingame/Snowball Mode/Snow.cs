@@ -23,6 +23,7 @@ namespace WFSport.Gameplay.SnowballMode
             myCard = GetComponent<ScratchCardManager>();
             myCard.Progress.OnProgress += OnScratching;
         }
+
         private void OnDestroy()
         {
             _tween?.Kill();
@@ -43,16 +44,15 @@ namespace WFSport.Gameplay.SnowballMode
                     gameObject.SetActive(false);
                 });
             }
+            EventManager.OnScratching?.Invoke();
         }
 
         private void OnTriggerStay2D(Collider2D collision)
         {
             if (!isCompleted && collision.CompareTag(TAG.PLAYER))
             {
-                var direction = collision.bounds.center - transform.position;
-                var range = direction.normalized * collision.bounds.extents.x;
                 var pos = Camera.main.WorldToScreenPoint(collision.bounds.center);
-                myCard.Card.ScratchHole(pos, collision.bounds.extents.x * collision.transform.localScale.x);
+                myCard.Card.ScratchHole(pos, collision.bounds.extents.x);
             }
         }
         internal void EnableScratch()

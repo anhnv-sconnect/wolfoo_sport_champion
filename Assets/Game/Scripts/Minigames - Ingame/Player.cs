@@ -106,6 +106,10 @@ namespace WFSport.Gameplay.Base
         }
 
         #endregion
+        public static int SortingLayer(Vector2 position)
+        {
+            return (int)(position.y * -100);
+        }
 
         private void CalculateTopDownPosition()
         {
@@ -113,7 +117,7 @@ namespace WFSport.Gameplay.Base
             {
                 myLayer = GetComponent<SortingGroup>();
             }
-            myLayer.sortingOrder = (int)((transform.position.y) * -100);
+            myLayer.sortingOrder = SortingLayer(transform.position);
         }
         private void DetectTouchingWindow()
         {

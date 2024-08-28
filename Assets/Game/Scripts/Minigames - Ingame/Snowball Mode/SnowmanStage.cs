@@ -117,9 +117,11 @@ namespace WFSport
             animator.enabled = true;
             animator.gameObject.SetActive(true);
             animator.Play(openAnimName, 0, 0);
+            Holder.PlaySound?.Invoke();
         }
         internal void StopRepresent()
         {
+            Holder.PlaySound?.Invoke();
             animator.Play(closeAnimName, 0, 0);
         }
     }

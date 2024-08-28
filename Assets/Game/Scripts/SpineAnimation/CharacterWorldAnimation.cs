@@ -45,6 +45,10 @@ public class CharacterWorldAnimation : MonoBehaviour
     [SerializeField, SpineAnimation] private string skating5Anim;
     [Header("JumpWin")]
     [SerializeField, SpineAnimation] private string jumpWinAnim;
+    [Header("Throwback")]
+    [SerializeField, SpineAnimation] private string throwBackAnim;
+    [Header("BackIdle")]
+    [SerializeField, SpineAnimation] private string backIdleAnim;
 
     private AnimState animState;
     private Tween _tween;
@@ -149,6 +153,21 @@ public class CharacterWorldAnimation : MonoBehaviour
             _tween?.Kill();
             _tween = DOVirtual.DelayedCall(GetTimeAnimation(animState), () => PlayIdle());
         }
+    }
+    public void PlayThrowbackAnim(bool isLoop = true)
+    {
+        _tween?.Kill();
+        PlayThrowback(isLoop);
+        if (!isLoop)
+        {
+            _tween?.Kill();
+            _tween = DOVirtual.DelayedCall(GetTimeAnimation(animState), () => PlayBackIdle(true));
+        }
+    }
+    public void PlayBackIdleAnim()
+    {
+        _tween?.Kill();
+        PlayBackIdle(true);
     }
     public void PlaySkateAnim(AnimState skateAnim, bool isLoop = true)
     {
@@ -357,6 +376,18 @@ public class CharacterWorldAnimation : MonoBehaviour
         animState = AnimState.JumpWin;
         AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, jumpWinAnim, isLoop);
     }
+    private void PlayThrowback(bool isLoop)
+    {
+        if (animState == AnimState.Throwback) return;
+        animState = AnimState.Throwback;
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, throwBackAnim, isLoop);
+    }
+    private void PlayBackIdle(bool isLoop)
+    {
+        if (animState == AnimState.BackIdle) return;
+        animState = AnimState.BackIdle;
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, backIdleAnim, isLoop);
+    }
     public float GetTimeAnimation(AnimState animState)
     {
         Spine.Animation myAnimation = null;
@@ -418,6 +449,12 @@ public class CharacterWorldAnimation : MonoBehaviour
             case AnimState.JumpWin:
                 myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(jumpWinAnim);
                 break;
+            case AnimState.Throwback:
+                myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(throwBackAnim);
+                break;
+            case AnimState.BackIdle:
+                myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(backIdleAnim);
+                break;
         }
 
         if (myAnimation == null) return 0;
@@ -462,6 +499,8 @@ public class CharacterWorldAnimation : MonoBehaviour
         /// </summary>
         Skate5,
         JumpWin,
+        Throwback,
+        BackIdle,
     }
     #endregion
    

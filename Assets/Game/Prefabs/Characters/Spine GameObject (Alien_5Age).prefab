@@ -48,6 +48,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1e72194cc6b8a043bd2bdfbc6b5e58c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skinList:
+  - Nomal
+  - Prom
+  - Sport
+  - Winter
   SkeletonAnim: {fileID: 4840502051631992168}
   idleAnim: Idle
   runAnim: Run_c
@@ -61,6 +66,12 @@ MonoBehaviour:
   runFastAnim: Run_ninja
   pushAnim: push_Fast
   throwAnim: Throw_Right
+  skating1Anim: 
+  skating2Anim: 
+  skating3Anim: 
+  skating4Anim: 
+  skating5Anim: 
+  jumpWinAnim: 
 --- !u!114 &4840502051631992168
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95,7 +106,7 @@ MonoBehaviour:
     materialsInsideMask: []
     materialsOutsideMask: []
   disableRenderingOnOverride: 1
-  _animationName: 
+  _animationName: Idle
   loop: 1
   timeScale: 1
 --- !u!33 &7747834638958203223
@@ -128,6 +139,7 @@ MeshRenderer:
   m_Materials:
   - {fileID: 2100000, guid: 6645d9500a7903d4a823c3e46dd14ea8, type: 2}
   - {fileID: 2100000, guid: d07c608608f8bc14297a5a906e87be9c, type: 2}
+  - {fileID: 2100000, guid: 6645d9500a7903d4a823c3e46dd14ea8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
