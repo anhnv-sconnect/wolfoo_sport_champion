@@ -15,5 +15,17 @@ namespace WFSport.Gameplay.ArcheryMode
         [Header("==================== MARKER ====================")]
         public float randomSpawnTime;
         public float delayHideTime;
+        public int randomRange;
+        public int movingSpeed;
+        public int movingMarkerSpacing;
+        public float[] movingMarkerYPos;
+        public MovingMarkerTime[] movingMarkerSpawnTimes;
+
+        [System.Serializable]
+        public struct MovingMarkerTime
+        {
+            public float spawnTime;
+            public int totalSpawningMarker;
+        }
     }
 }

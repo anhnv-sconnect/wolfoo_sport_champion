@@ -17,3 +17,23 @@ MonoBehaviour:
   bowDrawingTime: 1
   randomSpawnTime: 3
   delayHideTime: 0.5
+  randomRange: 5
+  movingSpeed: 3
+  movingMarkerSpacing: 2
+  movingMarkerYPos:
+  - -1.6
+  - -0.1
+  - -2.8
+  movingMarkerSpawnTimes:
+  - spawnTime: 5
+    totalSpawningMarker: 1
+  - spawnTime: 6
+    totalSpawningMarker: 2
+  - spawnTime: 7
+    totalSpawningMarker: 3
+  - spawnTime: 8
+    totalSpawningMarker: 4
+  - spawnTime: 9
+    totalSpawningMarker: 4
+  - spawnTime: 10
+    totalSpawningMarker: 5
