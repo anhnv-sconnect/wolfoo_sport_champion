@@ -251,6 +251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5f28e91121a40e4c9efd0d2319c8ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isSpecial: 0
   markedHole: {fileID: 1423170729723446657}
   myCollider: {fileID: 6187299367632110376}
   myRenderer: {fileID: 192204187362119473}

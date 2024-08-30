@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,14 +15,17 @@ namespace WFSport.Gameplay.ArcheryMode
         [SerializeField] private IdleMarker[] idleMarkers;
         [SerializeField] private MovingMarker[] movingMarkerPbs;
         [SerializeField] private GameplayConfig config;
+        [SerializeField] private Transform specialArrowIcon;
 
         private IMinigame.Data myData;
         private MinigameUI ui;
         private IdleMarker[] curRandomMarkers;
-        [SerializeField] private MovingMarker[] curMovingMarkers;
+        private MovingMarker[] poolingMovingMarkers;
         private int markedCount;
         private float countTime;
         private int movingMarkedCount;
+        private int totalSpecialMarker;
+        private Sequence _tweenSpecialArrow;
 
         public IMinigame.Data ExternalData { get => myData; set => myData = value; }
 
@@ -51,6 +55,26 @@ namespace WFSport.Gameplay.ArcheryMode
             EventManager.OnShooting -= OnArrowShooting;
             StopCoroutine("SetupNextMarker");
             StopCoroutine("CountingTime");
+            _tweenSpecialArrow?.Kill();
+        }
+
+        private void PlayAnimPlayerGetSpecialArrow(Vector3 startPos, Vector3 endPos, System.Action OnComplete = null)
+        {
+            specialArrowIcon.transform.position = startPos;
+            specialArrowIcon.transform.localScale = Vector3.one * 2;
+
+            _tweenSpecialArrow?.Kill();
+            _tweenSpecialArrow = DOTween.Sequence()
+                .AppendInterval(0.2f)
+                .AppendCallback(() => specialArrowIcon.gameObject.SetActive(true))
+                .Append(specialArrowIcon.DOMoveY(startPos.y + 0.5f, 0.5f))
+                .Append(specialArrowIcon.DOJump(endPos, 4, 1, 0.5f))
+                .Join(specialArrowIcon.DOScale(Vector3.one * 1, 0.5f));
+            _tweenSpecialArrow.OnComplete(() =>
+            {
+                specialArrowIcon.gameObject.SetActive(false);
+                OnComplete?.Invoke();
+            });
         }
 
         private IEnumerator CountingTime()
@@ -69,7 +93,22 @@ namespace WFSport.Gameplay.ArcheryMode
                 }
             }
 
+            for (int i = 0; i < config.specialItemSpawnTimelines.Length; i++)
+            {
+                var item = config.specialItemSpawnTimelines[i];
+                if (item == countTime)
+                {
+                    SpawnSpecialMarker();
+                    break;
+                }
+            }
+
             if(countTime < myData.playTime) { StartCoroutine("CountingTime"); }
+        }
+
+        private void SpawnSpecialMarker()
+        {
+            totalSpecialMarker++;
         }
 
         private void SpawnMovingMarker(int totalMarker)
@@ -80,14 +119,14 @@ namespace WFSport.Gameplay.ArcheryMode
             {
                 var rdPosIdx = UnityEngine.Random.Range(0, config.movingMarkerYPos.Length);
                 var rdMarkerIdx = UnityEngine.Random.Range(0, movingMarkerPbs.Length);
-                if (curMovingMarkers[movingMarkedCount] == null)
+                if (poolingMovingMarkers[movingMarkedCount] == null)
                 {
                     movingMarker = Instantiate(movingMarkerPbs[rdMarkerIdx], markerHolder);
-                    curMovingMarkers[movingMarkedCount] = movingMarker;
+                    poolingMovingMarkers[movingMarkedCount] = movingMarker;
                 }
                 else
                 {
-                    movingMarker = curMovingMarkers[movingMarkedCount];
+                    movingMarker = poolingMovingMarkers[movingMarkedCount];
                 }
                 movingMarker.Setup(config.delayHideTime,config.movingMarkerYPos[rdPosIdx], config.movingSpeed);
                 if (i > 0) { movingMarker.SetupNext(lastMarkerPos, config.movingMarkerSpacing); }
@@ -95,7 +134,7 @@ namespace WFSport.Gameplay.ArcheryMode
                 movingMarker.Show();
 
                 movingMarkedCount++;
-                movingMarkedCount = movingMarkedCount >= curMovingMarkers.Length ? 0 : movingMarkedCount;
+                movingMarkedCount = movingMarkedCount >= poolingMovingMarkers.Length ? 0 : movingMarkedCount;
             }
         }
 
@@ -103,22 +142,32 @@ namespace WFSport.Gameplay.ArcheryMode
         {
             foreach (var marker in idleMarkers)
             {
-                if (marker.IsInside(obj.transform.position))
+                if (!obj.IsAttached && marker.IsInside(obj.transform.position))
                 {
+                    obj.IsAttached = true;
                     markedCount++;
                     if(curRandomMarkers != null && markedCount >= curRandomMarkers.Length)
                     {
                         SpawnNextMarker();
                     }
+
+                    if(marker.IsSpecial)
+                    {
+                        PlayAnimPlayerGetSpecialArrow(obj.transform.position, player.BowPos, () =>
+                        {
+                            player.PlayWithSpecialItem();
+                        });
+                    }
                 }
             }
-            if(curMovingMarkers != null)
+
+            if(poolingMovingMarkers != null)
             {
-                for (int i = 0; i < curMovingMarkers.Length; i++)
+                for (int i = 0; i < poolingMovingMarkers.Length; i++)
                 {
-                    if (curMovingMarkers[i] != null && curMovingMarkers[i].IsInside(obj.transform.position))
+                    if (!obj.IsAttached && poolingMovingMarkers[i] != null && poolingMovingMarkers[i].IsInside(obj.transform.position))
                     {
-                  //      curMovingMarkers[i].Hide();
+                        obj.IsAttached = true;
                     }
                 }
             }
@@ -128,35 +177,29 @@ namespace WFSport.Gameplay.ArcheryMode
             var maxWidth = 0f;
             var deltaTime = 0f;
             var maxSpawningObject = 0;
-            var reloadMovingTime = 0f;
+            var data = config.movingMarkerSpawnTimes;
+            var rangeTime = data.Length > 0 ? data[data.Length - 1].spawnTime - data[0].spawnTime : 0f;
+            var totalObject = 0;
 
             foreach (var item in movingMarkerPbs)
             {
                 maxWidth = Mathf.Max(item.Width, maxWidth);
                 deltaTime = (config.movingMarkerSpacing + maxWidth) / config.movingSpeed;
             }
+            var distance = Camera.main.ScreenToWorldPoint(new Vector3(Camera.main.pixelWidth + maxWidth, 0, Camera.main.transform.position.z));
+
             for (int i = 0; i < config.movingMarkerSpawnTimes.Length; i++)
             {
                 var item = config.movingMarkerSpawnTimes[i];
                 maxSpawningObject = Mathf.Max(item.totalSpawningMarker, maxSpawningObject);
-                var range = 0f;
-                if (i == 0)
-                {
-                    reloadMovingTime = item.spawnTime;
-                    range = item.spawnTime;
-                }
-                if(i > 0) { range = item.spawnTime - config.movingMarkerSpawnTimes[i - 1].spawnTime; }
-                reloadMovingTime = Mathf.Min(reloadMovingTime, Mathf.Abs(range));
+                totalObject += config.movingMarkerSpawnTimes[i].totalSpawningMarker;
             }
 
-            var distance = Camera.main.ScreenToWorldPoint(new Vector3(Camera.main.pixelWidth + maxWidth, 0, Camera.main.transform.position.z));
-
-            var fps = Time.frameCount / Time.time;
             var totalMovingTime = (maxSpawningObject) * (deltaTime) + (distance.x / config.movingSpeed);
-            Debug.Log("TOtal TIMe " + totalMovingTime);
-            Debug.Log("Reload TIme " + reloadMovingTime);
-            int totalObject = (int)(totalMovingTime / reloadMovingTime) + maxSpawningObject;
-            curMovingMarkers = new MovingMarker[totalObject];
+            var totalReloadObject = rangeTime / totalMovingTime;
+            totalObject -= (int) totalReloadObject;
+
+            poolingMovingMarkers = new MovingMarker[totalObject];
         }
 
         private void Init()
@@ -174,6 +217,7 @@ namespace WFSport.Gameplay.ArcheryMode
 
             InitMovingMarker();
 
+            specialArrowIcon.gameObject.SetActive(false);
             player.Init();
         }
         private void SpawnNextMarker()
@@ -205,6 +249,11 @@ namespace WFSport.Gameplay.ArcheryMode
                     idx = UnityEngine.Random.Range(0, idleMarkers.Length);
                 }
                 idleMarkers[idx].Setup(config.delayHideTime);
+                if(totalSpecialMarker > 0)
+                {
+                    idleMarkers[idx].SetupSpecial();
+                    totalSpecialMarker--;
+                }
                 idleMarkers[idx].Show();
                 curRandomMarkers[i] = idleMarkers[idx];
             }

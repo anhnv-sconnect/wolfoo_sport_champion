@@ -27,13 +27,18 @@ MonoBehaviour:
   movingMarkerSpawnTimes:
   - spawnTime: 5
     totalSpawningMarker: 1
-  - spawnTime: 6
-    totalSpawningMarker: 2
-  - spawnTime: 7
-    totalSpawningMarker: 3
-  - spawnTime: 8
-    totalSpawningMarker: 4
-  - spawnTime: 9
-    totalSpawningMarker: 4
   - spawnTime: 10
+    totalSpawningMarker: 2
+  - spawnTime: 15
+    totalSpawningMarker: 3
+  - spawnTime: 20
+    totalSpawningMarker: 4
+  - spawnTime: 25
+    totalSpawningMarker: 4
+  - spawnTime: 30
     totalSpawningMarker: 5
+  specialItemSpawnTimelines:
+  - 5
+  - 10
+  - 15
+  specialAliveTime: 5

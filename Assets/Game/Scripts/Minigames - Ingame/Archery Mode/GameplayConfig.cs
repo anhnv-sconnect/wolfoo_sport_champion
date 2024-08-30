@@ -20,6 +20,8 @@ namespace WFSport.Gameplay.ArcheryMode
         public int movingMarkerSpacing;
         public float[] movingMarkerYPos;
         public MovingMarkerTime[] movingMarkerSpawnTimes;
+        public float[] specialItemSpawnTimelines;
+        public float specialAliveTime;
 
         [System.Serializable]
         public struct MovingMarkerTime

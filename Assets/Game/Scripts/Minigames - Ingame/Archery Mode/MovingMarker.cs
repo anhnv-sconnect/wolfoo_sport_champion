@@ -151,5 +151,10 @@ namespace WFSport.Gameplay.ArcheryMode
 
             return isInside;
         }
+
+        internal override void InitSpecial()
+        {
+
+        }
     }
 }

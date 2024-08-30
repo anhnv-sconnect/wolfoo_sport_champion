@@ -19,14 +19,28 @@ namespace WFSport.Gameplay.ArcheryMode
         private int count = 0;
         private Arrow[] arrows;
         private Arrow currentArrow;
+        private bool isSpecialMode;
 
         protected override IMinigame.GameState GameplayState { get => gameState; set => gameState = value; }
+        public Vector3 BowPos { get => bow.transform.position; }
 
         #region UNITY METHODS
 
         #endregion
 
         #region MY METHODS
+
+        internal void PlayWithSpecialItem()
+        {
+            isSpecialMode = true;
+            StopCoroutine("CountDownAliveSpecialTime");
+            StartCoroutine("CountDownAliveSpecialTime");
+        }
+        private IEnumerator CountDownAliveSpecialTime()
+        {
+            yield return new WaitForSeconds(config.specialAliveTime);
+            isSpecialMode = false;
+        }
 
         private void Shoot(Vector3 endPos)
         {
@@ -47,6 +61,7 @@ namespace WFSport.Gameplay.ArcheryMode
             }
             else arrow = arrows[count];
 
+            if (isSpecialMode) arrow.SetupSpecial(config.specialAliveTime);
             arrow.Setup(config.flySpeed, config.bowDrawingTime);
             currentArrow = arrow;
             arrows[count] = currentArrow;

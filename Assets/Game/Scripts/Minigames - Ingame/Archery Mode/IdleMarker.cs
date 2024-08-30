@@ -7,6 +7,7 @@ namespace WFSport.Gameplay.ArcheryMode
 {
     public class IdleMarker : Marker
     {
+        [SerializeField] SpriteRenderer specialItem;
         private float myLimit;
         private float delayHideTime;
         private Vector3 initLocalPos;
@@ -59,6 +60,9 @@ namespace WFSport.Gameplay.ArcheryMode
 
             markedHole.SetActive(false);
             gameObject.SetActive(false);
+            specialItem.gameObject.SetActive(false);
+
+            if (IsSpecial) InitSpecial();
 
             IsShowing = false;
             canCompare = true;
@@ -68,6 +72,9 @@ namespace WFSport.Gameplay.ArcheryMode
             markedHole.SetActive(false);
             gameObject.SetActive(false);
             IsShowing = false;
+
+            IsSpecial = false;
+            specialItem.gameObject.SetActive(false);
         }
 
         internal override void Hide()
@@ -94,6 +101,11 @@ namespace WFSport.Gameplay.ArcheryMode
                 .Append(transform.DORotate(initRotaton.eulerAngles, 0.1f));
             IsShowing = true;
         }
+        internal void SetupSpecial()
+        {
+            IsSpecial = true;
+            InitSpecial();
+        }
 
         internal void Setup(float delayHideTime)
         {
@@ -119,6 +131,11 @@ namespace WFSport.Gameplay.ArcheryMode
             }
 
             return isInside;
+        }
+
+        internal override void InitSpecial()
+        {
+            specialItem.gameObject.SetActive(true);
         }
     }
 }
