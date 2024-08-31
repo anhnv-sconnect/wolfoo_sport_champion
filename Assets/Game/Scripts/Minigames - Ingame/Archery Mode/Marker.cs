@@ -8,14 +8,15 @@ namespace WFSport.Gameplay.ArcheryMode
     public abstract class Marker : MonoBehaviour
     {
         [SerializeField] private bool isSpecial;
+        [SerializeField] protected SpriteRenderer myRenderer;
         [SerializeField] protected GameObject markedHole;
         [SerializeField] protected CircleCollider2D myCollider;
-        [SerializeField] protected SpriteRenderer myRenderer;
 
         internal abstract void Hide();
         internal abstract void Show();
         internal abstract void Init();
         internal abstract void InitSpecial();
+        internal abstract void OnHitCorrect(Vector3 position);
         internal abstract bool IsInside(Vector3 position);
 
         public bool IsShowing { get; protected set; }

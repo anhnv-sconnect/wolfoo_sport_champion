@@ -9,13 +9,15 @@ namespace WFSport.Gameplay.ArcheryMode
 {
     public class GameplayManager : MonoBehaviour, IMinigame
     {
+        [SerializeField] private GameplayConfig config;
         [SerializeField] private Player player;
+        [SerializeField] private Transform specialArrowIcon;
         [SerializeField] private Transform sortingLayerHolder;
         [SerializeField] private Transform markerHolder;
+        [SerializeField] private Transform bombHolder;
         [SerializeField] private IdleMarker[] idleMarkers;
         [SerializeField] private MovingMarker[] movingMarkerPbs;
-        [SerializeField] private GameplayConfig config;
-        [SerializeField] private Transform specialArrowIcon;
+        [SerializeField] private BombController bombController;
 
         private IMinigame.Data myData;
         private MinigameUI ui;
@@ -42,6 +44,10 @@ namespace WFSport.Gameplay.ArcheryMode
             {
                 records[i].GetComponent<SortingGroup>().sortingOrder = Base.Player.SortingLayer(records[i].transform.position);
                 idleMarkers[i] = records[i];
+            }
+            foreach (var item in bombHolder.GetComponentsInChildren<SpriteRenderer>())
+            {
+                item.sortingOrder = Base.Player.SortingLayer(item.transform.position);
             }
         }
         private void Start()
@@ -103,6 +109,15 @@ namespace WFSport.Gameplay.ArcheryMode
                 }
             }
 
+            for(int i = 0; i< config.bombSpawnTimelines.Length; i++)
+            {
+                var item = config.bombSpawnTimelines[i];
+                if (item == countTime)
+                {
+                    bombController.CreateBomb();
+                }
+            }
+
             if(countTime < myData.playTime) { StartCoroutine("CountingTime"); }
         }
 
@@ -145,6 +160,8 @@ namespace WFSport.Gameplay.ArcheryMode
                 if (!obj.IsAttached && marker.IsInside(obj.transform.position))
                 {
                     obj.IsAttached = true;
+                    marker.OnHitCorrect(obj.transform.position);
+
                     markedCount++;
                     if(curRandomMarkers != null && markedCount >= curRandomMarkers.Length)
                     {
@@ -158,6 +175,8 @@ namespace WFSport.Gameplay.ArcheryMode
                             player.PlayWithSpecialItem();
                         });
                     }
+
+                    return;
                 }
             }
 
@@ -168,9 +187,26 @@ namespace WFSport.Gameplay.ArcheryMode
                     if (!obj.IsAttached && poolingMovingMarkers[i] != null && poolingMovingMarkers[i].IsInside(obj.transform.position))
                     {
                         obj.IsAttached = true;
+                        poolingMovingMarkers[i].OnHitCorrect(obj.transform.position);
+                        return;
                     }
                 }
             }
+
+            var isShootedBomb = bombController.IsArrowShooted(obj);
+            if (isShootedBomb) {
+                // Decrease Score
+                StopCoroutine("OnShootedBomb");
+                StartCoroutine("OnShootedBomb");
+            }
+        }
+        private IEnumerator OnShootedBomb()
+        {
+            player.Pause(false);
+
+            yield return new WaitForSeconds(config.bombUsedTime);
+
+            player.Play();
         }
         private void InitMovingMarker()
         {
@@ -216,6 +252,7 @@ namespace WFSport.Gameplay.ArcheryMode
             ui = FindAnyObjectByType<MinigameUI>();
 
             InitMovingMarker();
+            bombController.Setup(config);
 
             specialArrowIcon.gameObject.SetActive(false);
             player.Init();

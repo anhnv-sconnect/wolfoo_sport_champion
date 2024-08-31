@@ -37,10 +37,11 @@ namespace WFSport.Gameplay.ArcheryMode
             Init();
         }
 
-        private void OnHitCorrect(Vector3 position)
+        internal override void OnHitCorrect(Vector3 position)
         {
             Holder.PlayParticle?.Invoke();
 
+            canCompare = false;
             markedHole.transform.position = position;
             markedHole.SetActive(true);
 
@@ -143,11 +144,6 @@ namespace WFSport.Gameplay.ArcheryMode
 
             var distance = (myCollider.bounds.center - position).magnitude;
             var isInside = distance < myLimit;
-            if (isInside)
-            {
-                canCompare = false;
-                OnHitCorrect(position);
-            }
 
             return isInside;
         }

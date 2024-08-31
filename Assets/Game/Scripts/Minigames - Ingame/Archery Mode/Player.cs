@@ -20,6 +20,7 @@ namespace WFSport.Gameplay.ArcheryMode
         private Arrow[] arrows;
         private Arrow currentArrow;
         private bool isSpecialMode;
+        private bool isReloading;
 
         protected override IMinigame.GameState GameplayState { get => gameState; set => gameState = value; }
         public Vector3 BowPos { get => bow.transform.position; }
@@ -71,9 +72,9 @@ namespace WFSport.Gameplay.ArcheryMode
         }
         private IEnumerator ReloadArrow()
         {
-            canShooting = false;
+            isReloading = true;
             yield return new WaitForSeconds(config.reloadTime);
-            canShooting = true;
+            isReloading = false;
         }
         private float GetFlyTime()
         {
@@ -116,7 +117,10 @@ namespace WFSport.Gameplay.ArcheryMode
 
         public override void OnTouching(Vector3 position)
         {
+            if (gameState == IMinigame.GameState.Pausing) return;
             if (!canShooting) return;
+            if (isReloading) return;
+
             if (position.y < bow.transform.position.y) return;
 
             position.z = 0;
@@ -131,6 +135,7 @@ namespace WFSport.Gameplay.ArcheryMode
 
         public override void Pause(bool isSystem)
         {
+            canShooting = false;
         }
 
         public override void Play()

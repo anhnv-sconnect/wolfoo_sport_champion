@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   reloadTime: 0.2
   flySpeed: 0.1
-  bowDrawingTime: 1
+  bowDrawingTime: 0.5
   randomSpawnTime: 3
   delayHideTime: 0.5
   randomRange: 5
@@ -25,20 +25,27 @@ MonoBehaviour:
   - -0.1
   - -2.8
   movingMarkerSpawnTimes:
-  - spawnTime: 5
-    totalSpawningMarker: 1
   - spawnTime: 10
-    totalSpawningMarker: 2
-  - spawnTime: 15
-    totalSpawningMarker: 3
+    totalSpawningMarker: 1
   - spawnTime: 20
+    totalSpawningMarker: 2
+  - spawnTime: 46
+    totalSpawningMarker: 3
+  - spawnTime: 60
     totalSpawningMarker: 4
-  - spawnTime: 25
+  - spawnTime: 70
     totalSpawningMarker: 4
-  - spawnTime: 30
+  - spawnTime: 80
     totalSpawningMarker: 5
   specialItemSpawnTimelines:
+  - 20
+  - 40
+  - 60
+  specialAliveTime: 7
+  bombSpawnTimelines:
   - 5
   - 10
   - 15
-  specialAliveTime: 5
+  - 30
+  - 45
+  bombUsedTime: 3

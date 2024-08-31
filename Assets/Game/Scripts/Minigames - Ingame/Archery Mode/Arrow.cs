@@ -106,12 +106,19 @@ namespace WFSport.Gameplay.ArcheryMode
                 .AppendCallback(() =>
                 {
                     EventManager.OnShooting?.Invoke(this);
+                    if(!IsAttached)
+                    {
+                        arrowHolder.gameObject.SetActive(false);
+                        if(isFlyToSky)
+                        {
+                            lightingFx.Play();
+                        }
+                    }
                 })
-                .AppendInterval(isFlyToSky ? 0 : 0.25f);
+                .AppendInterval(0.25f);
             _tweenShoot.OnComplete(() =>
             {
                 arrowHolder.gameObject.SetActive(false);
-                if (isFlyToSky && !IsAttached) lightingFx.Play();
             });
 
         }

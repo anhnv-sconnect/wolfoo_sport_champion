@@ -22,6 +22,8 @@ namespace WFSport.Gameplay.ArcheryMode
         public MovingMarkerTime[] movingMarkerSpawnTimes;
         public float[] specialItemSpawnTimelines;
         public float specialAliveTime;
+        public float[] bombSpawnTimelines = new float[] { 15, 30, 45, 60, 75 };
+        public float bombUsedTime = 3;
 
         [System.Serializable]
         public struct MovingMarkerTime
