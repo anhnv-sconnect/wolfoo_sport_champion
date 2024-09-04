@@ -2,12 +2,16 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace WFSport.Gameplay.ArcheryMode
 {
     public class IdleMarker : Marker
     {
         [SerializeField] SpriteRenderer specialItem;
+        [SerializeField] Canvas scoreHolder;
+        [SerializeField] TMPro.TMP_Text scoreTxt;
+
         private float myLimit;
         private float delayHideTime;
         private Vector3 initLocalPos;
@@ -18,6 +22,9 @@ namespace WFSport.Gameplay.ArcheryMode
         private Tween _tweenHide;
         private Sequence _tweenShow;
         private Sequence _animCorrect;
+        private Sequence _animScore;
+        private int myScore;
+        private SortingGroup sortingGroup;
 
         private void Start()
         {
@@ -28,6 +35,7 @@ namespace WFSport.Gameplay.ArcheryMode
             _animCorrect?.Kill();
             _tweenShow?.Kill();
             _tweenHide?.Kill();
+            _animScore?.Kill();
         }
 
         internal override void OnHitCorrect(Vector3 position)
@@ -37,6 +45,21 @@ namespace WFSport.Gameplay.ArcheryMode
             canCompare = false;
             markedHole.transform.position = position;
             markedHole.SetActive(true);
+
+            _animScore?.Kill();
+
+            scoreHolder.sortingOrder = sortingGroup.sortingOrder + 1;
+            scoreHolder.transform.localScale = Vector3.one * 0.01f;
+            scoreHolder.gameObject.SetActive(true);
+
+            _animScore = DOTween.Sequence()
+                .Append(scoreHolder.transform.DOMove(myCollider.bounds.center, 0))
+                .Append(scoreHolder.transform.DOMoveY(myCollider.bounds.center.y + 1.5f, 0.5f))
+                .Append(scoreHolder.transform.DOPunchScale(Vector3.one * 0.01f, 0.25f, 2));
+            _animScore.OnComplete(() =>
+            {
+                scoreHolder.gameObject.SetActive(false);
+            });
 
             _animCorrect?.Kill();
             _animCorrect = DOTween.Sequence()
@@ -62,6 +85,9 @@ namespace WFSport.Gameplay.ArcheryMode
             markedHole.SetActive(false);
             gameObject.SetActive(false);
             specialItem.gameObject.SetActive(false);
+            scoreHolder.gameObject.SetActive(false);
+            scoreHolder.worldCamera = Camera.main;
+            sortingGroup = GetComponent<SortingGroup>();
 
             if (IsSpecial) InitSpecial();
 
@@ -108,6 +134,11 @@ namespace WFSport.Gameplay.ArcheryMode
             InitSpecial();
         }
 
+        internal void SetupScore(int score)
+        {
+            myScore = score;
+            scoreTxt.text = "+ " + myScore;
+        }
         internal void Setup(float delayHideTime)
         {
             Init();

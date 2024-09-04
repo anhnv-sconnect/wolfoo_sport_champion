@@ -11,6 +11,9 @@ namespace WFSport.Gameplay.ArcheryMode
         public float reloadTime;
         public float flySpeed;
         public float bowDrawingTime;
+        public int normalScore;
+        public int specialScore;
+        public int movingScore;
 
         [Header("==================== MARKER ====================")]
         public float randomSpawnTime;

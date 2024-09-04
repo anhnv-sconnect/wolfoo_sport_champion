@@ -21,11 +21,15 @@ namespace WFSport.Gameplay.ArcheryMode
         private Arrow currentArrow;
         private bool isSpecialMode;
         private bool isReloading;
+        private int myScore;
 
         private GameplayManager gameManager;
+        protected bool isAutoShooting;
 
         protected override IMinigame.GameState GameplayState { get => gameState; set => gameState = value; }
         public Vector3 BowPos { get => bow.transform.position; }
+        public int Score { get => myScore; }
+        public bool IsSpecialMode { get => isSpecialMode; }
 
         #region UNITY METHODS
 
@@ -35,48 +39,50 @@ namespace WFSport.Gameplay.ArcheryMode
 
         internal void PlayWithSpecialItem()
         {
-            isSpecialMode = true;
             StopCoroutine("CountDownAliveSpecialTime");
             StartCoroutine("CountDownAliveSpecialTime");
         }
         private IEnumerator CountDownAliveSpecialTime()
         {
+            isSpecialMode = true;
             yield return new WaitForSeconds(config.specialAliveTime);
             isSpecialMode = false;
         }
 
+        internal void UpgradeScore(int score)
+        {
+            myScore += score;
+        }
+
+        protected void StopAutoShooting()
+        {
+            StopCoroutine("AutoShooting");
+        }
         protected void PlayAutoShooting()
         {
+            if (!isAutoShooting) return;
+
             StopCoroutine("AutoShooting");
             StartCoroutine("AutoShooting");
         }
 
-        protected IEnumerator AutoShooting()
+        private IEnumerator AutoShooting()
         {
+            GetNextArrow();
+            yield return new WaitForSeconds(config.botReloadShootingTime);
+
             var rd = UnityEngine.Random.Range(0f, 100f);
             if (rd > config.botPercentCorrect)
             {
                 var rdXPos = UnityEngine.Random.Range(gameManager.ScreenWidthRange.x, gameManager.ScreenWidthRange.y);
                 var rdYPos = UnityEngine.Random.Range(gameManager.ScreenHeightRange.x, gameManager.ScreenHeightRange.y);
+                if (rdYPos < bow.transform.position.y) rdYPos = bow.transform.position.y + 1;
                 Shoot(new Vector3(rdXPos, rdYPos, 0));
-
-                yield return new WaitForSeconds(config.botReloadShootingTime);
-                GetNextArrow();
             }
             else
             {
                 var marker = GetNextMarker();
-                Debug.Log("Random Marker " + marker);
-                if (marker != null)
-                {
-                    Shoot(marker.TargetPosition);
-                    yield return new WaitForSeconds(config.botReloadShootingTime);
-                    GetNextArrow();
-                }
-                else
-                {
-                    yield return null;
-                }
+                Shoot(marker.TargetPosition);
             }
 
             StartCoroutine("AutoShooting");
@@ -84,21 +90,19 @@ namespace WFSport.Gameplay.ArcheryMode
 
         private Marker GetNextMarker()
         {
-            foreach (var marker in gameManager.MovingMarkers)
-            {
-                if (marker != null && marker.IsShowing) continue;
+            var rdIdx = UnityEngine.Random.Range(0, gameManager.MovingMarkers.Length);
+            Marker marker = gameManager.MovingMarkers[rdIdx];
 
-                return marker;
-            }
+            if (marker != null && marker.IsShowing) return marker;
 
-            foreach (var marker in gameManager.IdleMarkers)
-            {
-                if (marker != null && marker.IsShowing) continue;
+            rdIdx = UnityEngine.Random.Range(0, gameManager.IdleMarkers.Length);
+            marker = gameManager.IdleMarkers[rdIdx];
 
-                return marker;
-            }
+            if (marker != null && marker.IsShowing) return marker;
 
-            return null;
+            GetNextMarker();
+
+            return marker;
         }
 
         private void Shoot(Vector3 endPos)
@@ -121,7 +125,8 @@ namespace WFSport.Gameplay.ArcheryMode
             else arrow = arrows[count];
 
             if (isSpecialMode) arrow.SetupSpecial(config.specialAliveTime);
-            arrow.Setup(config.flySpeed, config.bowDrawingTime);
+            else arrow.SetupNormal();
+            arrow.Setup(this, config.flySpeed, config.bowDrawingTime);
             currentArrow = arrow;
             arrows[count] = currentArrow;
 

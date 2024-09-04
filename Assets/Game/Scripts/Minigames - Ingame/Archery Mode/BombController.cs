@@ -20,14 +20,17 @@ namespace WFSport.Gameplay.ArcheryMode
         }
         internal void CreateBomb()
         {
-            foreach (var bomb in bombs)
+            var idx = UnityEngine.Random.Range(0, bombs.Length);
+            var bomb = bombs[idx];
+
+            if(bomb != null && !bomb.IsShowing)
             {
-                if (!bomb.IsShowing)
-                {
-                    bomb.Setup(config.delayHideTime);
-                    bomb.Show();
-                    break;
-                }
+                bomb.Setup(config.bombUsedTime);
+                bomb.Show();
+            }
+            else
+            {
+                CreateBomb();
             }
         }
 

@@ -23,11 +23,14 @@ namespace WFSport.Gameplay.ArcheryMode
         private float width;
 
         public bool IsAttached { get; set; }
+        public Player AssignPlayer { get => myPlayer; }
+
+        private Player myPlayer;
 
         private void OnDestroy()
         {
             _tweenShoot?.Kill();
-            CancelInvoke();
+            StopCoroutine("DelaySpawn");
         }
         internal void Init()
         {
@@ -43,7 +46,7 @@ namespace WFSport.Gameplay.ArcheryMode
             arrow2 = arrowHolder.transform.GetChild(1);
             width = arrow1.GetComponent<SpriteRenderer>().sprite.rect.width;
         }
-        internal void Setup(float flyTime, float delaySpawnTime)
+        internal void Setup(Player player, float flyTime, float delaySpawnTime)
         {
             this.flyTime = flyTime;
             this.delaySpawnTime = delaySpawnTime;
@@ -51,6 +54,7 @@ namespace WFSport.Gameplay.ArcheryMode
             transform.localPosition = initPos;
             transform.localRotation = initRotation;
 
+            myPlayer = player;
             IsAttached = false;
 
             if (isSpecial)
@@ -68,13 +72,19 @@ namespace WFSport.Gameplay.ArcheryMode
 
                 arrow1.localPosition = new Vector3(0, arrow1.localPosition.y, 0);
             }
-            arrowHolder.gameObject.SetActive(false);
 
-            Invoke("DelaySpawn", this.delaySpawnTime);
+            StopCoroutine("DelaySpawn");
+            StartCoroutine("DelaySpawn");
         }
-        private void DelaySpawn()
+        private IEnumerator DelaySpawn()
         {
+            arrowHolder.gameObject.SetActive(false);
+            yield return new WaitForSeconds(delaySpawnTime);
             arrowHolder.gameObject.SetActive(true);
+        }
+        internal void SetupNormal()
+        {
+            isSpecial = false;
         }
         internal void SetupSpecial(float activeTime)
         {
@@ -92,7 +102,7 @@ namespace WFSport.Gameplay.ArcheryMode
 
         internal void Release(Vector3 endPos, Transform parent)
         {
-            CancelInvoke("DelaySpawn"); 
+            StopCoroutine("DelaySpawn");
             arrowHolder.gameObject.SetActive(true);
             transform.SetParent(parent);
 

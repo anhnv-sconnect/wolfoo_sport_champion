@@ -13,7 +13,7 @@ namespace WFSport.Gameplay.ArcheryMode
         [SerializeField] private Bot bot;
         [SerializeField] private Player player;
         [SerializeField] private Transform specialArrowIcon;
-        [SerializeField] private Transform sortingLayerHolder;
+        [SerializeField] private Transform sortingBgHolder;
         [SerializeField] private Transform markerHolder;
         [SerializeField] private Transform bombHolder;
         [SerializeField] private IdleMarker[] idleMarkers;
@@ -21,14 +21,14 @@ namespace WFSport.Gameplay.ArcheryMode
         [SerializeField] private BombController bombController;
 
         private IMinigame.Data myData;
-        private MinigameUI ui;
-        private GameplayManager gameManager;
         private IdleMarker[] curRandomMarkers;
         private MovingMarker[] poolingMovingMarkers;
         private int markedCount;
         private float countTime;
         private int movingMarkedCount;
+        private float maxScore;
         private int totalSpecialMarker;
+        private MultiplayerGameUI ui;
         private Sequence _tweenSpecialArrow;
 
         public IMinigame.Data ExternalData { get => myData; set => myData = value; }
@@ -40,7 +40,7 @@ namespace WFSport.Gameplay.ArcheryMode
         [NaughtyAttributes.Button]
         private void SortingLayer()
         {
-            foreach (var item in sortingLayerHolder.GetComponentsInChildren<SpriteRenderer>())
+            foreach (var item in sortingBgHolder.GetComponentsInChildren<SpriteRenderer>())
             {
                 item.sortingOrder = Base.Player.SortingLayer(item.transform.position);
             }
@@ -149,6 +149,7 @@ namespace WFSport.Gameplay.ArcheryMode
                 {
                     movingMarker = poolingMovingMarkers[movingMarkedCount];
                 }
+                movingMarker.SetupScore(config.movingScore);
                 movingMarker.Setup(config.delayHideTime,config.movingMarkerYPos[rdPosIdx], config.movingSpeed);
                 if (i > 0) { movingMarker.SetupNext(lastMarkerPos, config.movingMarkerSpacing); }
                 lastMarkerPos = movingMarker.transform.position;
@@ -161,24 +162,53 @@ namespace WFSport.Gameplay.ArcheryMode
 
         private void OnArrowShooting(Arrow obj)
         {
+            var holderPlayer = obj.AssignPlayer;
+            var isBot = obj.AssignPlayer as Bot;
+
             foreach (var marker in idleMarkers)
             {
                 if (!obj.IsAttached && marker.IsInside(obj.transform.position))
                 {
                     obj.IsAttached = true;
+                    if (holderPlayer.IsSpecialMode || marker.IsSpecial)
+                    {
+                        marker.SetupScore(config.specialScore);
+                    }
+                    else
+                    {
+                        marker.SetupScore(config.normalScore);
+                    }
                     marker.OnHitCorrect(obj.transform.position);
 
                     markedCount++;
                     if(curRandomMarkers != null && markedCount >= curRandomMarkers.Length)
                     {
+                        holderPlayer.UpgradeScore(config.normalScore);
+                        if(isBot)
+                        {
+                            ui.UpdateLoadingBar2(holderPlayer.Score / maxScore);
+                        }
+                        else
+                        {
+                            ui.UpdateLoadingBar(holderPlayer.Score / maxScore);
+                        }
                         SpawnNextMarker();
                     }
 
                     if(marker.IsSpecial)
                     {
-                        PlayAnimPlayerGetSpecialArrow(obj.transform.position, player.BowPos, () =>
+                        holderPlayer.UpgradeScore(config.specialScore);
+                        if (isBot)
                         {
-                            player.PlayWithSpecialItem();
+                            ui.UpdateLoadingBar2(holderPlayer.Score / maxScore);
+                        }
+                        else
+                        {
+                            ui.UpdateLoadingBar(holderPlayer.Score / maxScore);
+                        }
+                        PlayAnimPlayerGetSpecialArrow(obj.transform.position, holderPlayer.BowPos, () =>
+                        {
+                            holderPlayer.PlayWithSpecialItem();
                         });
                     }
 
@@ -194,6 +224,15 @@ namespace WFSport.Gameplay.ArcheryMode
                     {
                         obj.IsAttached = true;
                         poolingMovingMarkers[i].OnHitCorrect(obj.transform.position);
+                        holderPlayer.UpgradeScore(config.movingScore);
+                        if (isBot)
+                        {
+                            ui.UpdateLoadingBar2(holderPlayer.Score / maxScore);
+                        }
+                        else
+                        {
+                            ui.UpdateLoadingBar(holderPlayer.Score / maxScore);
+                        }
                         return;
                     }
                 }
@@ -255,7 +294,9 @@ namespace WFSport.Gameplay.ArcheryMode
                     timelineScore = new float[] { 10, 20, 40 },
                 };
             }
-            ui = FindAnyObjectByType<MinigameUI>();
+            maxScore = myData.timelineScore[myData.timelineScore.Length - 1];
+            ui = FindAnyObjectByType<MultiplayerGameUI>();
+            ui.Setup(myData.playTime, myData.timelineScore);
 
             var maxRight = Camera.main.ScreenToWorldPoint(new Vector3(Camera.main.pixelWidth, 0, Camera.main.transform.position.z));
             var maxUp = Camera.main.ScreenToWorldPoint(new Vector3(0, Camera.main.pixelHeight, Camera.main.transform.position.z));

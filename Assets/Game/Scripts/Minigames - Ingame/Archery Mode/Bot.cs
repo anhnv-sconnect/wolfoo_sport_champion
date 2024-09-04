@@ -10,7 +10,15 @@ namespace WFSport.Gameplay.ArcheryMode
         {
             base.Play();
 
+            isAutoShooting = true;
             PlayAutoShooting();
+        }
+        public override void Pause(bool isSystem)
+        {
+            base.Pause(isSystem);
+
+            isAutoShooting = false;
+            StopAutoShooting();
         }
         public override void OnTouching(Vector3 position)
         {

@@ -14,7 +14,7 @@ namespace WFSport.Gameplay.ArcheryMode
         private bool isInit;
         private bool canCompare;
 
-        private Tween _tweenHide;
+        private Sequence _tweenHide;
         private Sequence _tweenShow;
         private Sequence _animCorrect;
 
@@ -79,10 +79,17 @@ namespace WFSport.Gameplay.ArcheryMode
 
         internal override void Hide()
         {
-            canCompare = false;
 
-            _tweenShow?.Kill();
-            _tweenHide = DOVirtual.DelayedCall(delayHideTime, () =>
+            _tweenHide?.Kill();
+            _tweenHide = DOTween.Sequence()
+                .AppendInterval(delayHideTime)
+                .AppendCallback(() =>
+                {
+                    canCompare = false;
+                    _tweenShow?.Kill();
+                })
+                .Append(transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack));
+            _tweenHide.OnComplete(() =>
             {
                 OnHiding();
             });
@@ -100,12 +107,13 @@ namespace WFSport.Gameplay.ArcheryMode
                 .Append(transform.DOScale(Vector3.zero, 0))
                 .Append(transform.DOScale(Vector3.one, 0.45f).SetEase(Ease.OutBack));
             _tweenShow.OnComplete(() =>
-            {
-                _tweenShow = DOTween.Sequence()
-                .Append(transform.DOScale(Vector3.one * 0.8f, 1).SetEase(Ease.Linear)).SetLoops(-1, LoopType.Yoyo);
+                {
+                    IsShowing = true;
+                    Hide();
 
-                IsShowing = true;
-            });
+                    _tweenShow = DOTween.Sequence()
+                    .Append(transform.DOScale(Vector3.one * 0.8f, 1).SetEase(Ease.Linear)).SetLoops(-1, LoopType.Yoyo);
+                });
         }
         internal void SetupSpecial()
         {

@@ -15,6 +15,9 @@ MonoBehaviour:
   reloadTime: 0.2
   flySpeed: 0.1
   bowDrawingTime: 0.5
+  normalScore: 1
+  specialScore: 2
+  movingScore: 3
   randomSpawnTime: 3
   delayHideTime: 0.5
   randomRange: 5
@@ -49,6 +52,5 @@ MonoBehaviour:
   - 30
   - 45
   bombUsedTime: 3
-  specialAliveTime: 5
-  botPercentCorrect: 30
-  botReloadShootingTime: 4
+  botPercentCorrect: 90
+  botReloadShootingTime: 2

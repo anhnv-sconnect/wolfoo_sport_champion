@@ -14,7 +14,7 @@ namespace WFSport.Gameplay
 {
     public class MinigameUI : MonoBehaviour
     {
-        [SerializeField] private Image fillBar;
+        [SerializeField] protected Image fillBar;
         [SerializeField] private TMP_Text timeTxt;
         [SerializeField] private Button backBtn;
         [SerializeField] private Image[] starImgs;
@@ -30,13 +30,13 @@ namespace WFSport.Gameplay
 
         private float[] timeline;
 
-        private void Start()
+        protected virtual void Start()
         {
             backBtn.onClick.AddListener(OnClickBackBtn);
             EventManager.OnInitGame += InitScreen;
         }
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             _tweenLoadingBar?.Kill();
             _tweenStar?.Kill();
@@ -78,7 +78,7 @@ namespace WFSport.Gameplay
             StopCoroutine("CountTime");
         }
 
-        internal void Setup(int time, float[] timeline)
+        internal virtual void Setup(int time, float[] timeline)
         {
             // Init playtime
             fillBar.fillAmount = 0;
@@ -119,28 +119,34 @@ namespace WFSport.Gameplay
             fillBar.fillAmount = 0;
         }
 
-        internal void UpdateLoadingBar(float value)
+        protected void CheckingStar(float value)
+        {
+            if (totalStarClaimed >= timeline.Length) return;
+            
+            if (value >= timeline[totalStarClaimed])
+            {
+                totalStarClaimed++;
+                if (totalStarClaimed <= starImgs.Length)
+                {
+                    _tweenStar?.Complete();
+                    _tweenStar = starImgs[totalStarClaimed - 1].transform.DOScale(Vector3.one, 0.5f)
+                    .SetEase(Ease.OutBounce)
+                    .OnComplete(() =>
+                    {
+                        Holder.PlaySound?.Invoke();
+                    });
+                }
+            }
+        }
+
+        internal virtual void UpdateLoadingBar(float value)
         {
             if (value > 1) return;
 
             _tweenLoadingBar?.Kill();
             _tweenLoadingBar = fillBar.DOFillAmount(value, 0.5f).OnComplete(() =>
             {
-                if(fillBar.fillAmount >= timeline[totalStarClaimed])
-                {
-                    // Continue Here
-                    totalStarClaimed++;
-                    if(totalStarClaimed <= starImgs.Length)
-                    {
-                        _tweenStar?.Complete();
-                        _tweenStar = starImgs[totalStarClaimed - 1].transform.DOScale(Vector3.one, 0.5f)
-                        .SetEase(Ease.OutBounce)
-                        .OnComplete(() =>
-                        {
-                            Holder.PlaySound?.Invoke();
-                        });
-                    }
-                }
+                CheckingStar(fillBar.fillAmount);
             });
         }
     }

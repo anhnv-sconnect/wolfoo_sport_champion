@@ -11,6 +11,10 @@ namespace WFSport.Gameplay.ArcheryMode
     public class MovingMarker : Marker
     {
         [SerializeField]private bool isAutoMoving;
+        [SerializeField] Canvas scoreHolder;
+        [SerializeField] TMPro.TMP_Text scoreTxt;
+
+        private int myScore;
         private float myLimit;
         private float delayHideTime;
         private float movingTime;
@@ -22,6 +26,8 @@ namespace WFSport.Gameplay.ArcheryMode
         private Sequence _animCorrect;
         private Tween _tweenHide;
         private float mySpeed;
+        private Sequence _animScore;
+        private SortingGroup sortingGroup;
 
         public float MovingTime { get => movingTime; }
         public float Width { get => myCollider.radius * 2; }
@@ -47,6 +53,18 @@ namespace WFSport.Gameplay.ArcheryMode
 
             var curPos = transform.localPosition;
 
+            scoreHolder.sortingOrder = sortingGroup.sortingOrder + 1;
+            scoreHolder.transform.localScale = Vector3.one * 0.01f;
+            scoreHolder.gameObject.SetActive(true);
+            scoreTxt.text = "+ " + myScore;
+
+            _animScore?.Kill();
+            _animScore = DOTween.Sequence()
+                .Append(scoreHolder.transform.DOMove(myCollider.bounds.center, 0))
+                .Append(scoreHolder.transform.DOMoveY(myCollider.bounds.center.y + 1.5f, 0.5f))
+                .Append(scoreHolder.transform.DOShakeScale(0.5f, 1, 2, 90))
+                .AppendCallback(() => scoreHolder.gameObject.SetActive(false));
+
             _tweenShow?.Kill();
             _animCorrect?.Kill();
             _animCorrect = DOTween.Sequence()
@@ -67,6 +85,8 @@ namespace WFSport.Gameplay.ArcheryMode
 
             myLimit = myCollider.radius;
             markedHole.SetActive(false);
+            scoreHolder.gameObject.SetActive(false);
+            scoreHolder.worldCamera = Camera.main;
 
             IsShowing = false;
             canCompare = true;
@@ -112,6 +132,10 @@ namespace WFSport.Gameplay.ArcheryMode
             movingTime = (endPos - beginPos).x / mySpeed;
         }
 
+        internal void SetupScore(int score)
+        {
+            myScore = score;
+        }
         internal void Setup(float delayHideTime, float yPos, float speed)
         {
             Init();
@@ -131,7 +155,7 @@ namespace WFSport.Gameplay.ArcheryMode
             movingTime = (endPos - beginPos).x / speed;
 
             // Sorting Order Layer
-            var sortingGroup = GetComponent<SortingGroup>();
+            sortingGroup = GetComponent<SortingGroup>();
             sortingGroup.sortingOrder = Base.Player.SortingLayer(transform.position);
 
             canCompare = true;
