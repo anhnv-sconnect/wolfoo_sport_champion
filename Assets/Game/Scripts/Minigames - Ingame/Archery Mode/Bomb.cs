@@ -37,6 +37,8 @@ namespace WFSport.Gameplay.ArcheryMode
             markedHole.transform.position = position;
             markedHole.SetActive(true);
 
+            _tweenShow?.Kill();
+
             _animCorrect?.Kill();
             _animCorrect = DOTween.Sequence()
                 .Append(transform.DOLocalMove(initLocalPos, 0))
@@ -78,6 +80,8 @@ namespace WFSport.Gameplay.ArcheryMode
         internal override void Hide()
         {
             canCompare = false;
+
+            _tweenShow?.Kill();
             _tweenHide = DOVirtual.DelayedCall(delayHideTime, () =>
             {
                 OnHiding();
@@ -88,16 +92,20 @@ namespace WFSport.Gameplay.ArcheryMode
         {
             _animCorrect?.Kill();
             _tweenHide?.Kill();
+            _tweenShow?.Kill();
 
             gameObject.SetActive(true);
+
             _tweenShow = DOTween.Sequence()
-                .Append(transform.DORotate(initRotaton.eulerAngles, 0))
-                .Append(transform.DOLocalMoveY(initLocalPos.y + 1, 0))
-                .Append(transform.DOLocalMoveY(initLocalPos.y, 0.2f).SetEase(Ease.Flash))
-                .Append(transform.DORotate(Vector3.forward * -2, 0.1f))
-                .Append(transform.DORotate(Vector3.forward * 2, 0.2f))
-                .Append(transform.DORotate(initRotaton.eulerAngles, 0.1f));
-            IsShowing = true;
+                .Append(transform.DOScale(Vector3.zero, 0))
+                .Append(transform.DOScale(Vector3.one, 0.45f).SetEase(Ease.OutBack));
+            _tweenShow.OnComplete(() =>
+            {
+                _tweenShow = DOTween.Sequence()
+                .Append(transform.DOScale(Vector3.one * 0.8f, 1).SetEase(Ease.Linear)).SetLoops(-1, LoopType.Yoyo);
+
+                IsShowing = true;
+            });
         }
         internal void SetupSpecial()
         {
