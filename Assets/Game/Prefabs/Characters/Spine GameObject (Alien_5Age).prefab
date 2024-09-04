@@ -34,7 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8223500246181278513
 MonoBehaviour:
@@ -66,12 +66,14 @@ MonoBehaviour:
   runFastAnim: Run_ninja
   pushAnim: push_Fast
   throwAnim: Throw_Right
-  skating1Anim: 
-  skating2Anim: 
-  skating3Anim: 
-  skating4Anim: 
-  skating5Anim: 
-  jumpWinAnim: 
+  skating1Anim: Skating1
+  skating2Anim: Skating2
+  skating3Anim: Skating3
+  skating4Anim: Skating4
+  skating5Anim: Skating5
+  jumpWinAnim: Jump_Win
+  throwBackAnim: Back_Throw
+  backIdleAnim: Back_Idle
 --- !u!114 &4840502051631992168
 MonoBehaviour:
   m_ObjectHideFlags: 0

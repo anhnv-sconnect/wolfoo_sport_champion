@@ -97,9 +97,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isSpecial: 0
+  myRenderer: {fileID: 6566695668729403381}
   markedHole: {fileID: 2296694243507995404}
   myCollider: {fileID: 6492278241576037161}
-  myRenderer: {fileID: 6566695668729403381}
   specialItem: {fileID: 7338875485074388079}
 --- !u!1 &2296694243507995404
 GameObject:

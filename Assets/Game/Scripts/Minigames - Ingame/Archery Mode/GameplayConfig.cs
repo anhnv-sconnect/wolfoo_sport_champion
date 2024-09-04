@@ -25,6 +25,10 @@ namespace WFSport.Gameplay.ArcheryMode
         public float[] bombSpawnTimelines = new float[] { 15, 30, 45, 60, 75 };
         public float bombUsedTime = 3;
 
+        [Header("==================== BOT ====================")]
+        public float botPercentCorrect;
+        public float botReloadShootingTime;
+
         [System.Serializable]
         public struct MovingMarkerTime
         {

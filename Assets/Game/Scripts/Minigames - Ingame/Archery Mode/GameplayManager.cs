@@ -10,6 +10,7 @@ namespace WFSport.Gameplay.ArcheryMode
     public class GameplayManager : MonoBehaviour, IMinigame
     {
         [SerializeField] private GameplayConfig config;
+        [SerializeField] private Bot bot;
         [SerializeField] private Player player;
         [SerializeField] private Transform specialArrowIcon;
         [SerializeField] private Transform sortingLayerHolder;
@@ -21,6 +22,7 @@ namespace WFSport.Gameplay.ArcheryMode
 
         private IMinigame.Data myData;
         private MinigameUI ui;
+        private GameplayManager gameManager;
         private IdleMarker[] curRandomMarkers;
         private MovingMarker[] poolingMovingMarkers;
         private int markedCount;
@@ -30,6 +32,10 @@ namespace WFSport.Gameplay.ArcheryMode
         private Sequence _tweenSpecialArrow;
 
         public IMinigame.Data ExternalData { get => myData; set => myData = value; }
+        public MovingMarker[] MovingMarkers { get => poolingMovingMarkers; }
+        public IdleMarker[] IdleMarkers { get => curRandomMarkers; }
+        public Vector2 ScreenWidthRange { get; private set; }
+        public Vector2 ScreenHeightRange { get; private set; }
 
         [NaughtyAttributes.Button]
         private void SortingLayer()
@@ -251,11 +257,17 @@ namespace WFSport.Gameplay.ArcheryMode
             }
             ui = FindAnyObjectByType<MinigameUI>();
 
+            var maxRight = Camera.main.ScreenToWorldPoint(new Vector3(Camera.main.pixelWidth, 0, Camera.main.transform.position.z));
+            var maxUp = Camera.main.ScreenToWorldPoint(new Vector3(0, Camera.main.pixelHeight, Camera.main.transform.position.z));
+            ScreenWidthRange = new Vector2(-maxRight.x, maxRight.x);
+            ScreenHeightRange = new Vector2(-maxUp.y, maxUp.y);
+
             InitMovingMarker();
             bombController.Setup(config);
 
             specialArrowIcon.gameObject.SetActive(false);
             player.Init();
+            bot.Init();
         }
         private void SpawnNextMarker()
         {
@@ -303,33 +315,39 @@ namespace WFSport.Gameplay.ArcheryMode
         public void OnGameLosing()
         {
             player.Pause(false);
+            bot.Pause(false);
         }
 
         public void OnGamePause()
         {
             player.Pause(true);
+            bot.Pause(false);
         }
 
         public void OnGameResume()
         {
             player.Play();
+            bot.Play();
         }
 
         public void OnGameStart()
         {
             SpawnNextMarker();
             player.Play();
+            bot.Play();
             StartCoroutine("CountingTime");
         }
 
         public void OnGameStop()
         {
             player.Pause(false);
+            bot.Pause(false);
         }
 
         public void OnGameWining()
         {
             player.Pause(false);
+            bot.Pause(false);
         }
     }
 }

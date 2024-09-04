@@ -7,10 +7,10 @@ namespace WFSport.Gameplay.ArcheryMode
 {
     public class Player : Base.Player
     {
-        [SerializeField] private GameplayConfig config;
-        [SerializeField] private Bow bow;
-        [SerializeField] private Arrow arrowPb;
-        [SerializeField] private CharacterWorldAnimation wolfoo;
+        [SerializeField] protected GameplayConfig config;
+        [SerializeField] protected Bow bow;
+        [SerializeField] protected Arrow arrowPb;
+        [SerializeField] protected CharacterWorldAnimation wolfoo;
 
         private IMinigame.GameState gameState;
 
@@ -21,6 +21,8 @@ namespace WFSport.Gameplay.ArcheryMode
         private Arrow currentArrow;
         private bool isSpecialMode;
         private bool isReloading;
+
+        private GameplayManager gameManager;
 
         protected override IMinigame.GameState GameplayState { get => gameState; set => gameState = value; }
         public Vector3 BowPos { get => bow.transform.position; }
@@ -41,6 +43,62 @@ namespace WFSport.Gameplay.ArcheryMode
         {
             yield return new WaitForSeconds(config.specialAliveTime);
             isSpecialMode = false;
+        }
+
+        protected void PlayAutoShooting()
+        {
+            StopCoroutine("AutoShooting");
+            StartCoroutine("AutoShooting");
+        }
+
+        protected IEnumerator AutoShooting()
+        {
+            var rd = UnityEngine.Random.Range(0f, 100f);
+            if (rd > config.botPercentCorrect)
+            {
+                var rdXPos = UnityEngine.Random.Range(gameManager.ScreenWidthRange.x, gameManager.ScreenWidthRange.y);
+                var rdYPos = UnityEngine.Random.Range(gameManager.ScreenHeightRange.x, gameManager.ScreenHeightRange.y);
+                Shoot(new Vector3(rdXPos, rdYPos, 0));
+
+                yield return new WaitForSeconds(config.botReloadShootingTime);
+                GetNextArrow();
+            }
+            else
+            {
+                var marker = GetNextMarker();
+                Debug.Log("Random Marker " + marker);
+                if (marker != null)
+                {
+                    Shoot(marker.TargetPosition);
+                    yield return new WaitForSeconds(config.botReloadShootingTime);
+                    GetNextArrow();
+                }
+                else
+                {
+                    yield return null;
+                }
+            }
+
+            StartCoroutine("AutoShooting");
+        }
+
+        private Marker GetNextMarker()
+        {
+            foreach (var marker in gameManager.MovingMarkers)
+            {
+                if (marker != null && marker.IsShowing) continue;
+
+                return marker;
+            }
+
+            foreach (var marker in gameManager.IdleMarkers)
+            {
+                if (marker != null && marker.IsShowing) continue;
+
+                return marker;
+            }
+
+            return null;
         }
 
         private void Shoot(Vector3 endPos)
@@ -101,6 +159,7 @@ namespace WFSport.Gameplay.ArcheryMode
             GetNextArrow();
 
             bow.Setup(config.bowDrawingTime);
+            gameManager = FindAnyObjectByType<GameplayManager>();
         }
 
         public override void Lose()

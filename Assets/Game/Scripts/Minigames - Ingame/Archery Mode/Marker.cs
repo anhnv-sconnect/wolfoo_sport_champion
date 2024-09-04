@@ -21,5 +21,7 @@ namespace WFSport.Gameplay.ArcheryMode
 
         public bool IsShowing { get; protected set; }
         public bool IsSpecial { get => isSpecial; protected set => isSpecial = value; }
+
+        public Vector3 TargetPosition { get => myCollider.bounds.center; }
     }
 }
