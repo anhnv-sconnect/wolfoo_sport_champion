@@ -216,7 +216,7 @@ namespace WFSport.Gameplay.ArcheryMode
                         () =>
                         {
                             SetupMainGameplay();
-                        }, 2);
+                        }, 1.5f);
                     }
                 }
                 return;
