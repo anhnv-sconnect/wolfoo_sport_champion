@@ -1,3 +1,4 @@
+using AnhNV.GameBase;
 using DG.Tweening;
 using System;
 using System.Collections;
@@ -19,6 +20,7 @@ namespace WFSport.Gameplay.ArcheryMode
         [SerializeField] private IdleMarker[] idleMarkers;
         [SerializeField] private MovingMarker[] movingMarkerPbs;
         [SerializeField] private BombController bombController;
+        [SerializeField] private IdleMarker tutorialMarker;
 
         private IMinigame.Data myData;
         private IdleMarker[] curRandomMarkers;
@@ -29,6 +31,8 @@ namespace WFSport.Gameplay.ArcheryMode
         private float maxScore;
         private int totalSpecialMarker;
         private MultiplayerGameUI ui;
+        private Tutorial tutorial;
+
         private Sequence _tweenSpecialArrow;
 
         public IMinigame.Data ExternalData { get => myData; set => myData = value; }
@@ -59,15 +63,41 @@ namespace WFSport.Gameplay.ArcheryMode
         private void Start()
         {
             EventManager.OnShooting += OnArrowShooting;
+            EventManager.OnTimeOut += OnGameLosing;
+
             Init();
-            OnGameStart();
+            InitTutorial();
+            PlayTutorial();
         }
+
         private void OnDestroy()
         {
             EventManager.OnShooting -= OnArrowShooting;
+            EventManager.OnTimeOut -= OnGameLosing;
             StopCoroutine("SetupNextMarker");
             StopCoroutine("CountingTime");
             _tweenSpecialArrow?.Kill();
+        }
+        private void SetupMainGameplay()
+        {
+            tutorialMarker.gameObject.SetActive(false);
+            bot.gameObject.SetActive(true);
+        }
+        private void PlayTutorial()
+        {
+            tutorial.PlayNextStep();
+            player.Play();
+        }
+
+        private void InitTutorial()
+        {
+            tutorialMarker.SetupTutorial();
+            tutorialMarker.gameObject.SetActive(true);
+            bot.gameObject.SetActive(false);
+
+            tutorial = TutorialController.Instance.CreateTutorial("Archery Tutorial");
+            var step = TutorialController.Instance.CreateStep<TutorialClick>(tutorial);
+            step.Setup(tutorialMarker.TargetPosition);
         }
 
         private void PlayAnimPlayerGetSpecialArrow(Vector3 startPos, Vector3 endPos, System.Action OnComplete = null)
@@ -165,6 +195,33 @@ namespace WFSport.Gameplay.ArcheryMode
             var holderPlayer = obj.AssignPlayer;
             var isBot = obj.AssignPlayer as Bot;
 
+            if(!tutorial.IsAllStepCompleted)
+            {
+                tutorial.Stop();
+                if (tutorialMarker.IsInside(obj.transform.position))
+                {
+                    player.Pause(false);
+                    tutorialMarker.OnHitCorrect(obj.transform.position);
+                    tutorial.SetCompletedCurrentStep();
+
+                    if(tutorial.IsAllStepCompleted)
+                    {
+                        ui.OpenLoading(() =>
+                        {
+                            ui.OpenCountingToStart(() =>
+                            {
+                                OnGameStart();
+                            });
+                        },
+                        () =>
+                        {
+                            SetupMainGameplay();
+                        }, 2);
+                    }
+                }
+                return;
+            }
+
             foreach (var marker in idleMarkers)
             {
                 if (!obj.IsAttached && marker.IsInside(obj.transform.position))
@@ -184,28 +241,14 @@ namespace WFSport.Gameplay.ArcheryMode
                     if(curRandomMarkers != null && markedCount >= curRandomMarkers.Length)
                     {
                         holderPlayer.UpgradeScore(config.normalScore);
-                        if(isBot)
-                        {
-                            ui.UpdateLoadingBar2(holderPlayer.Score / maxScore);
-                        }
-                        else
-                        {
-                            ui.UpdateLoadingBar(holderPlayer.Score / maxScore);
-                        }
+                        OnTrackingScore(holderPlayer, isBot);
                         SpawnNextMarker();
                     }
 
                     if(marker.IsSpecial)
                     {
                         holderPlayer.UpgradeScore(config.specialScore);
-                        if (isBot)
-                        {
-                            ui.UpdateLoadingBar2(holderPlayer.Score / maxScore);
-                        }
-                        else
-                        {
-                            ui.UpdateLoadingBar(holderPlayer.Score / maxScore);
-                        }
+                        OnTrackingScore(holderPlayer, isBot);
                         PlayAnimPlayerGetSpecialArrow(obj.transform.position, holderPlayer.BowPos, () =>
                         {
                             holderPlayer.PlayWithSpecialItem();
@@ -225,14 +268,7 @@ namespace WFSport.Gameplay.ArcheryMode
                         obj.IsAttached = true;
                         poolingMovingMarkers[i].OnHitCorrect(obj.transform.position);
                         holderPlayer.UpgradeScore(config.movingScore);
-                        if (isBot)
-                        {
-                            ui.UpdateLoadingBar2(holderPlayer.Score / maxScore);
-                        }
-                        else
-                        {
-                            ui.UpdateLoadingBar(holderPlayer.Score / maxScore);
-                        }
+                        OnTrackingScore(holderPlayer, isBot);
                         return;
                     }
                 }
@@ -243,6 +279,25 @@ namespace WFSport.Gameplay.ArcheryMode
                 // Decrease Score
                 StopCoroutine("OnShootedBomb");
                 StartCoroutine("OnShootedBomb");
+            }
+        }
+        private void OnTrackingScore(Player player, bool isBot)
+        {
+            if (isBot)
+            {
+                ui.UpdateLoadingBar2(player.Score / maxScore);
+                if (bot.Score == maxScore)
+                {
+                    OnGameLosing();
+                }
+            }
+            else
+            {
+                ui.UpdateLoadingBar(player.Score / maxScore);
+                if (player.Score == maxScore)
+                {
+                    OnGameWining();
+                }
             }
         }
         private IEnumerator OnShootedBomb()
@@ -357,18 +412,21 @@ namespace WFSport.Gameplay.ArcheryMode
         {
             player.Pause(false);
             bot.Pause(false);
+            ui.PauseTime();
         }
 
         public void OnGamePause()
         {
             player.Pause(true);
             bot.Pause(false);
+            ui.PauseTime();
         }
 
         public void OnGameResume()
         {
             player.Play();
             bot.Play();
+            ui.PlayTime();
         }
 
         public void OnGameStart()
@@ -377,18 +435,21 @@ namespace WFSport.Gameplay.ArcheryMode
             player.Play();
             bot.Play();
             StartCoroutine("CountingTime");
+            ui.PlayTime();
         }
 
         public void OnGameStop()
         {
             player.Pause(false);
             bot.Pause(false);
+            ui.PauseTime();
         }
 
         public void OnGameWining()
         {
             player.Pause(false);
             bot.Pause(false);
+            ui.PauseTime();
         }
     }
 }

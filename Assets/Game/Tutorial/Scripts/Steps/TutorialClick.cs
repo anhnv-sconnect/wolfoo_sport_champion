@@ -1,28 +1,24 @@
-using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace AnhNV.GameBase
 {
-    public class TutorialWithBG : TutorialStep
+    public class TutorialClick : TutorialStep
     {
         [SerializeField] Transform focusPanel;
         [SerializeField] Transform pointer;
         [SerializeField] Animator animator;
+        [SerializeField] Canvas canvas;
 
-        private string tutorialID;
+        private string id;
 
-        public override string TutorialID { get => tutorialID; set => tutorialID = value; }
-
-        private void Start()
-        {
-        }
+        public override string TutorialID { get => id; set => id = value; }
 
         public override void Play()
         {
             IsPlaying = true;
+            gameObject.SetActive(true);
             animator.Play("Play", 0, 0);
         }
 
@@ -32,14 +28,20 @@ namespace AnhNV.GameBase
                 animator.Play("Stop", 0, 0);
             IsPlaying = false;
         }
-        public void OnAnimComplete()
-        {
-        }
 
-        public void Setup(Transform highlightTarget)
+        public void Setup(Transform target)
         {
+            canvas.worldCamera = Camera.main;
             gameObject.SetActive(false);
-            SetPointer(highlightTarget.transform.position);
+            animator.transform.position = target.position;
+         //   SetPointer(highlightTarget.transform.position);
+        }
+        public void Setup(Vector3 target)
+        {
+            canvas.worldCamera = Camera.main;
+            gameObject.SetActive(false);
+            animator.transform.position = target;
+         //   SetPointer(highlightTarget.transform.position);
         }
         private void SetPointer(Vector3 endPos)
         {

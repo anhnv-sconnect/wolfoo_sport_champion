@@ -161,7 +161,7 @@ namespace WFSport.Gameplay.RelayMode
 
                 player.Current.PlayTutorial();
 
-                currentTutStep = tutorialSwipeUp.GetNextStep<TutorialSwipe>();
+                currentTutStep = tutorialSwipeUp.GetNextStep() as TutorialSwipe;
                 currentTutStep.Setup(player.Current.transform, AnimatorHelper.Direction.Up);
                 currentTutStep.Play();
                 currentTutStep.OnSwipeCorrectDirection += OnCompleteStep;

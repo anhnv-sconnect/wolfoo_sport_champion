@@ -71,7 +71,7 @@ namespace WFSport.Gameplay.ArcheryMode
             GetNextArrow();
             yield return new WaitForSeconds(config.botReloadShootingTime);
 
-            var rd = UnityEngine.Random.Range(0f, 100f);
+            var rd = UnityEngine.Random.Range(0, 100);
             if (rd > config.botPercentCorrect)
             {
                 var rdXPos = UnityEngine.Random.Range(gameManager.ScreenWidthRange.x, gameManager.ScreenWidthRange.y);

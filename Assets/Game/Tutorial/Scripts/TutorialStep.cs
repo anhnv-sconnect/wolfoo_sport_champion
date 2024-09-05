@@ -38,6 +38,16 @@ namespace AnhNV.GameBase
             IsCompleted = true;
         }
 
+        protected void RegisterClickEvent()
+        {
+            if (eventTrigger == null)
+            {
+                Debug.LogError("Event Trigger is NOT Declared !");
+                return;
+            }
+            CreateEntry(EventTriggerType.PointerUp, OnPointerUp);
+        }
+
         protected void RegisterSwipeEvent()
         {
             if(eventTrigger == null)
@@ -71,6 +81,18 @@ namespace AnhNV.GameBase
             }
         }
 
+        private void OnPointerUp(BaseEventData arg0)
+        {
+            touchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            touchPos.z = 0;
+
+            OnClick(touchPos);
+        }
+
+        protected virtual void OnClick(Vector3 touchPos)
+        {
+
+        }
         protected virtual void OnSwiping(Direction direction)
         {
 

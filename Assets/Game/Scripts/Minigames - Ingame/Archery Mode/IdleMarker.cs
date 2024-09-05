@@ -73,6 +73,13 @@ namespace WFSport.Gameplay.ArcheryMode
             });
         }
 
+        internal void SetupTutorial()
+        {
+            Init();
+            IsShowing = true;
+            canCompare = true;
+        }
+
         internal override void Init()
         {
             if (isInit) return;

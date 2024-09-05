@@ -29,6 +29,7 @@ namespace WFSport.Gameplay
         private TweenerCore<Vector3, Vector3, VectorOptions> _tweenStar;
 
         private float[] timeline;
+        private Sequence tweenFadeScreen;
 
         protected virtual void Start()
         {
@@ -40,6 +41,7 @@ namespace WFSport.Gameplay
         {
             _tweenLoadingBar?.Kill();
             _tweenStar?.Kill();
+            tweenFadeScreen?.Kill();
             EventManager.OnInitGame -= InitScreen;
         }
 
@@ -106,12 +108,17 @@ namespace WFSport.Gameplay
             countingPanel.OnHide = OnCompleted;
         }
 
-        internal void OpenLoading(System.Action OnCompleted, System.Action OnShowing )
+        internal void OpenLoading(System.Action OnCompleted, System.Action OnShowing, float delay = 0)
         {
-            if (loadingPanel == null) loadingPanel = Instantiate(loadingPanelPb, transform);
-            loadingPanel.ShowToHide(1);
-            loadingPanel.OnHide = OnCompleted;
-            loadingPanel.OnShow = OnShowing;
+            tweenFadeScreen = DOTween.Sequence()
+                .AppendInterval(delay);
+            tweenFadeScreen.OnComplete(() =>
+            {
+                if (loadingPanel == null) loadingPanel = Instantiate(loadingPanelPb, transform);
+                loadingPanel.ShowToHide(1);
+                loadingPanel.OnHide = OnCompleted;
+                loadingPanel.OnShow = OnShowing;
+            });
         }
 
         private void InitScreen()

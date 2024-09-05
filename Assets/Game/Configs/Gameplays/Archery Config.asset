@@ -46,11 +46,9 @@ MonoBehaviour:
   - 60
   specialAliveTime: 7
   bombSpawnTimelines:
-  - 5
-  - 10
   - 15
   - 30
   - 45
   bombUsedTime: 3
-  botPercentCorrect: 90
+  botPercentCorrect: 30
   botReloadShootingTime: 2

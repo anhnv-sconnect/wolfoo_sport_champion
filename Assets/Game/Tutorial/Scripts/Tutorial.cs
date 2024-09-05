@@ -10,10 +10,18 @@ namespace AnhNV.GameBase
     {
         public string ID { get; private set; }
         public string Name { get; private set; }
-        public bool IsAllStepCompleted { get => mySteps.TrueForAll(a => a.IsCompleted); }
+        public bool IsAllStepCompleted
+        {
+            get
+            {
+                var allStepisDone = mySteps.TrueForAll(a => a.IsCompleted);
+                return allStepisDone;
+            }
+        }
 
         private int countStep;
         private List<TutorialStep> mySteps;
+        private TutorialStep currentNextStep;
 
         public Action<TutorialStep> OnCompleteStep { get; set; }
 
@@ -29,12 +37,8 @@ namespace AnhNV.GameBase
 
             return mySteps[idx] as T;
         }
-        public T GetNextStep<T>() where T : TutorialStep
-        {
-            return GetNextStep() as T;
-        }
 
-        private TutorialStep GetNextStep()
+        public TutorialStep GetNextStep()
         {
             if (countStep >= mySteps.Count)
             {
@@ -57,7 +61,8 @@ namespace AnhNV.GameBase
         {
             if (IsAllStepCompleted) return;
 
-            GetNextStep()?.Play();
+            currentNextStep = GetNextStep();
+            if (currentNextStep != null) currentNextStep.Play();
         }
         public void PlayCurrentStep()
         {
@@ -72,7 +77,8 @@ namespace AnhNV.GameBase
         }
         public void Stop()
         {
-            mySteps[countStep].Stop();
+            if (currentNextStep != null)
+                currentNextStep.Stop();
         }
 
         public void ReleaseAll()
@@ -82,6 +88,12 @@ namespace AnhNV.GameBase
                 mySteps[i].Release();
                 mySteps.RemoveAt(i);
             }
+        }
+
+        public void SetCompletedCurrentStep()
+        {
+            if (currentNextStep != null)
+                currentNextStep.Completed();
         }
 
         public void Register(TutorialStep step)
