@@ -83,20 +83,28 @@ namespace WFSport.Gameplay.BasketballMode
                     })
                     .Append(transform.DOLocalMoveY(transform.position.y - basketHeight, 1));
             }
-            else
+            tweenFlying.OnComplete(() =>
             {
+                Debug.Log("1");
                 if (isTriggerWithObstacle) // => Boucing to Outside
                 {
+                    Debug.Log("2");
                     var xPos = throwDirection.x < 0 ? -screenPosRange.x - radius * 2 : screenPosRange.x + radius * 2;
                     var yPos = -throwDirection.y / 2;
                     var outSidePos = new Vector3(xPos, yPos, 0);
-                    tweenFlying.Append(transform.DOJump(outSidePos, config.flyingPower, 1, 1));
+                    tweenFlying = DOTween.Sequence()
+                        .Append(transform.DOJump(outSidePos, config.flyingPower, 1, 1));
+                    tweenFlying.OnComplete(() =>
+                    {
+                        Hiding();
+                        isFlying = false;
+                    });
                 }
-            }
-            tweenFlying.OnComplete(() =>
-            {
-                Hiding();
-                isFlying = false;
+                else
+                {
+                    Hiding();
+                    isFlying = false;
+                }
             });
         }
     }
