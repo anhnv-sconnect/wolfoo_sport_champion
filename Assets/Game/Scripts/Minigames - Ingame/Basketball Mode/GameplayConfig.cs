@@ -17,5 +17,6 @@ namespace WFSport.Gameplay.BasketballMode
 
         [Header("=============== BASKET ===============")]
         public float height;
+        public float insideDistance = 1;
     }
 }

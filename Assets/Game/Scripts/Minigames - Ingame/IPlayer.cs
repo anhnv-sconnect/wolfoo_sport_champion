@@ -12,7 +12,8 @@ namespace WFSport.Gameplay
         public enum DetectType
         {
             Swiping,
-            Dragging
+            Dragging,
+            Clicking
         }
         public enum Direction
         {

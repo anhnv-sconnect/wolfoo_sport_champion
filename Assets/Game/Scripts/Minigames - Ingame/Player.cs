@@ -145,27 +145,39 @@ namespace WFSport.Gameplay.Base
             {
                 Touch touch = Input.GetTouch(0);
 
-                if (touch.phase == TouchPhase.Moved)
+                if(detectType == DetectType.Dragging || detectType == DetectType.Swiping)
                 {
-                    touchPos = touch.position;
-                    OnDrag();
-                }
-
-                if (Input.touchCount == 2)
-                {
-                    touch = Input.GetTouch(1);
-
-                    if (touch.phase == TouchPhase.Began)
+                    if (touch.phase == TouchPhase.Moved)
                     {
-                        touchBeginPos = touch.position;
-                        touchPos = touchBeginPos;
-                        lastTouchPos = touchPos;
-                        OnBeginDrag();
+                        touchPos = touch.position;
+                        OnDrag();
                     }
 
-                    if (touch.phase == TouchPhase.Ended)
+                    if (Input.touchCount == 2)
                     {
-                        OnEndDrag();
+                        touch = Input.GetTouch(1);
+
+                        if (touch.phase == TouchPhase.Began)
+                        {
+                            touchBeginPos = touch.position;
+                            touchPos = touchBeginPos;
+                            lastTouchPos = touchPos;
+                            OnBeginDrag();
+                        }
+
+                        if (touch.phase == TouchPhase.Ended)
+                        {
+                            OnEndDrag();
+                        }
+                    }
+                }
+                else if (detectType == DetectType.Clicking)
+                {
+                    if(touch.phase == TouchPhase.Stationary)
+                    {
+                        touchPos = touchBeginPos;
+                        touchPos.z = 0;
+                        OnTouching(touchPos);
                     }
                 }
             }

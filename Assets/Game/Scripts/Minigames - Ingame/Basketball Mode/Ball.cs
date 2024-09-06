@@ -8,16 +8,15 @@ namespace WFSport.Gameplay.BasketballMode
 {
     public class Ball : MonoBehaviour
     {
-        [SerializeField] float flyTime;
-        [SerializeField] float rotateSpeed;
-        [SerializeField] float flyingPower = 2;
         private Vector3 targetPos;
         private bool isFlying;
         private Sequence tweenFlying;
-        private bool isTriggerWithObstacle;
+       [SerializeField] private bool isTriggerWithObstacle;
         private Vector2 screenPosRange;
         private float radius;
         private float basketHeight;
+        private GameplayConfig config;
+        private bool isInsideBasket;
 
         private void Start()
         {
@@ -31,7 +30,10 @@ namespace WFSport.Gameplay.BasketballMode
         {
             if(isFlying)
             {
-                transform.Rotate(Vector3.forward * rotateSpeed);
+                if (!isInsideBasket)
+                {
+                    transform.Rotate(Vector3.forward * config.rotateSpeed);
+                }
             }
         }
         private void OnTriggerEnter2D(Collider2D collision)
@@ -49,9 +51,10 @@ namespace WFSport.Gameplay.BasketballMode
             }
         }
 
-        internal void Setup(float basketHeight)
+        internal void Setup(float basketHeight, GameplayConfig config)
         {
             this.basketHeight = basketHeight;
+            this.config = config;
         }
 
         private void Hiding()
@@ -62,18 +65,23 @@ namespace WFSport.Gameplay.BasketballMode
         internal void FlyTo(Vector3 endPos, Transform basket)
         {
             isFlying = true;
+            isInsideBasket = false;
             targetPos = endPos;
             var isBasket = basket != null;
             var throwDirection = targetPos - transform.position;
 
             tweenFlying = DOTween.Sequence()
-                .Append(transform.DOJump(targetPos, flyingPower, 1, flyTime).SetEase(Ease.Flash));
+                .Append(transform.DOJump(targetPos, config.flyingPower, 1, config.flyTime).SetEase(Ease.Flash));
 
             if (isBasket)
             {
                 tweenFlying
-                    .AppendCallback(() => transform.SetParent(basket))
-                    .Append(transform.DOLocalMoveY(targetPos.y - basketHeight, 0.5f));
+                    .AppendCallback(() =>
+                    {
+                        isInsideBasket = true;
+                        transform.SetParent(basket);
+                    })
+                    .Append(transform.DOLocalMoveY(transform.position.y - basketHeight, 1));
             }
             else
             {
@@ -82,7 +90,7 @@ namespace WFSport.Gameplay.BasketballMode
                     var xPos = throwDirection.x < 0 ? -screenPosRange.x - radius * 2 : screenPosRange.x + radius * 2;
                     var yPos = -throwDirection.y / 2;
                     var outSidePos = new Vector3(xPos, yPos, 0);
-                    tweenFlying.Append(transform.DOJump(outSidePos, flyingPower, 1, 1));
+                    tweenFlying.Append(transform.DOJump(outSidePos, config.flyingPower, 1, 1));
                 }
             }
             tweenFlying.OnComplete(() =>

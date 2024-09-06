@@ -28,6 +28,7 @@ namespace WFSport.Gameplay
         public static Action<ArcheryMode.Marker> OnMarkerIsSpawing;
         public static Action<ArcheryMode.Marker> OnMarkerIsHiding;
         public static Action<ArcheryMode.Arrow> OnShooting;
-  //      public static Func<BasketballMode.>
+        public static Action<BasketballMode.Player, BasketballMode.Basket> OnBallTracking;
+        public static Action<BasketballMode.Player, Vector3> OnThrow;
     }
 }
