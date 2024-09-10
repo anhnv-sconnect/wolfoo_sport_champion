@@ -24,16 +24,10 @@ namespace WFSport.Gameplay.BasketballMode
             animHide?.Kill();
             animShow?.Kill();
         }
-        private void OnTriggerEnter2D(Collider2D collision)
-        {
-            if (collision.CompareTag(TAG.PLAYER))
-            {
-                Hide();
-            }
-        }
         internal void Setup(GameplayConfig config)
         {
             aliveTime = config.aliveTime;
+            transform.localScale = Vector3.zero;
         }
         internal void Hide()
         {

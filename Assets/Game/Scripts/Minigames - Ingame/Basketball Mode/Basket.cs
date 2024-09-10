@@ -35,6 +35,7 @@ namespace WFSport.Gameplay.BasketballMode
         private void Start()
         {
             EventManager.OnThrow += OnPlayerThrow;
+            EventManager.OnGetScore += OnPlayerGetScore;
 
             holeRange = transform.position.y - hole.position.y;
             screenPixelSize = ScreenHelper.GetMaxPizelSize();
@@ -43,6 +44,12 @@ namespace WFSport.Gameplay.BasketballMode
         private void OnDestroy()
         {
             EventManager.OnThrow -= OnPlayerThrow;
+            EventManager.OnGetScore -= OnPlayerGetScore;
+        }
+
+        private void OnPlayerGetScore(Base.Player player, Vector3 vector)
+        {
+            bomb.Hide();
         }
 
         private void Update()

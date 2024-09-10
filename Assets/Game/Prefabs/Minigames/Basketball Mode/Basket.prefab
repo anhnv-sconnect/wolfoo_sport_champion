@@ -250,7 +250,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hole: {fileID: 1083368688535836820}
-  animator: {fileID: 0}
+  bombTimeLines:
+  - 5
+  - 10
+  - 15
   xPos: 0
   canMoveAround: 0
 --- !u!210 &1221566807492441952
