@@ -20,8 +20,10 @@ namespace WFSport.Gameplay.BasketballMode
         private int countBall;
         private IMinigame.GameState gameState;
         private Ball currentBall;
+        private int myScore;
 
         protected override IMinigame.GameState GameplayState { get => gameState; set => gameState = value; }
+        public int Score { get => myScore; }
 
         #region UNITY METHODS
         private void Start()
@@ -56,7 +58,7 @@ namespace WFSport.Gameplay.BasketballMode
                 ball = Instantiate(ballPb, ballPb.transform.position, ballPb.transform.rotation, ballPb.transform.parent);
                 poolingBalls[countBall] = ball;
             }
-            ball.Setup(config);
+            ball.Setup(config, this);
 
             countBall++;
             if (countBall >= poolingBalls.Length) countBall = 0;
@@ -69,12 +71,19 @@ namespace WFSport.Gameplay.BasketballMode
             verifiedBasket = null;
             EventManager.OnThrow?.Invoke(this, myTouchPos);
 
+            characterAnim.PlayBackIdleAnim();
             characterAnim.PlayThrowbackAnim(false);
-            yield return new WaitForSeconds(0.5f); // time character Anim Throwing
+            yield return new WaitForSeconds(0.3f); // time character Anim Throwing
 
             if (verifiedBasket != null)
             {
+                myScore++;
                 currentBall.FlyTo(verifiedBasket.HolePos, verifiedBasket.transform);
+                if(verifiedBasket.HasBomb)
+                {
+                    myScore += config.effectBombScore;
+                    EventManager.OnShootingBomb?.Invoke(this);
+                }
             }
             else
             {

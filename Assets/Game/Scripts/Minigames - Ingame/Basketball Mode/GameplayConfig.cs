@@ -22,5 +22,10 @@ namespace WFSport.Gameplay.BasketballMode
         public Vector2 movingYRange;
         public Vector2 movingXRange;
         public Vector2 movingSpeed;
+        public float spawnRange;
+
+        [Header("=============== BOMB ===============")]
+        public float aliveTime;
+        public int effectBombScore;
     }
 }

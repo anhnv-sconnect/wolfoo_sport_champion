@@ -15,10 +15,11 @@ MonoBehaviour:
   flyTime: 0.5
   rotateSpeed: 1
   flyingPower: 2
-  reloadTime: 0.25
+  reloadTime: 0.3
   scaleRange: 0.2
   height: 1.9
   insideDistance: 1
-  movingYRange: {x: 0, y: 1}
-  movingXRange: {x: 0, y: 6}
+  movingYRange: {x: 3.3, y: 4.3}
+  movingXRange: {x: -6.5, y: 7.5}
   movingSpeed: {x: 0.005, y: 0.005}
+  spawnRange: 1

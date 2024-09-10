@@ -8,6 +8,7 @@ namespace WFSport.Gameplay.BasketballMode
     public class Basket : MonoBehaviour
     {
         [SerializeField] Transform hole;
+        [SerializeField] private float[] bombTimeLines = new float[] { };
 
         private float distanceVerified;
         private float scaleRange;
@@ -16,6 +17,7 @@ namespace WFSport.Gameplay.BasketballMode
         private Vector2 movingSpeed;
         private float ballFlyTime;
         private float holeRange;
+        private float beginYPos;
         private Vector2 screenPixelSize;
         [SerializeField]private float xPos;
         private float yPos;
@@ -23,13 +25,16 @@ namespace WFSport.Gameplay.BasketballMode
         private bool isPlaying;
         private float angle;
         private float angle2;
+        private Bomb bomb;
+        private int countTime;
+        private int timelineIdx;
 
         public Vector3 HolePos { get => hole.position; }
+        public bool HasBomb { get; private set; }
 
         private void Start()
         {
             EventManager.OnThrow += OnPlayerThrow;
-            //     EventManager.DelayAll += OnDelayAll;
 
             holeRange = transform.position.y - hole.position.y;
             screenPixelSize = ScreenHelper.GetMaxPizelSize();
@@ -38,7 +43,6 @@ namespace WFSport.Gameplay.BasketballMode
         private void OnDestroy()
         {
             EventManager.OnThrow -= OnPlayerThrow;
-        //    EventManager.DelayAll -= OnDelayAll;
         }
 
         private void Update()
@@ -47,11 +51,59 @@ namespace WFSport.Gameplay.BasketballMode
             {
                 angle += 1 * movingSpeed.x;
                 angle2 += 1 * movingSpeed.y;
-                xPos = Mathf.Sin(angle) * movingXRange;
-                yPos = Mathf.Cos(angle2) * movingYRange;
+                //   xPos = Mathf.Sin(angle) * movingXRange;
+                yPos = Mathf.Cos(angle2) * movingYRange + movingYRange + beginYPos;
                 transform.position = new Vector3(xPos, yPos, 0);
-            }
 
+                Show();
+            }
+        }
+        private IEnumerator CountTime()
+        {
+            yield return new WaitForSeconds(1);
+            countTime++;
+
+            if(countTime >= bombTimeLines[timelineIdx])
+            {
+                ShowBomb();
+                timelineIdx++;
+            }
+        }
+        internal void Setup(GameplayConfig config, Bomb bombPb)
+        {
+            CreateBomb(bombPb, config);
+
+            distanceVerified = config.insideDistance;
+            scaleRange = config.scaleRange;
+            movingYRange = (config.movingYRange.y - config.movingYRange.x)/2;
+            movingXRange = (config.movingXRange.y - config.movingXRange.x)/2;
+            movingSpeed = config.movingSpeed;
+            beginYPos = config.movingYRange.x;
+            ballFlyTime = config.flyTime;
+
+            //     angle = Mathf.Asin(transform.position.x / movingXRange) * Mathf.Rad2Deg;
+            //    angle2 = Mathf.Acos(transform.position.x / movingYRange) * Mathf.Rad2Deg;
+            // Convert Current Pos => Radians
+            //     xPos = Mathf.Sin(angle) * movingXRange;
+            //      yPos = Mathf.Sin(angle2) * movingYRange;
+            xPos = transform.position.x;
+
+            Array.Sort(bombTimeLines);
+        }
+
+        private void CreateBomb(Bomb bombPb, GameplayConfig config)
+        {
+            if (bomb == null)
+            {
+                bomb = Instantiate(bombPb, transform);
+                bomb.Setup(config);
+            }
+        }
+
+        internal void ShowBomb()
+        {
+            HasBomb = true;
+            bomb.Show();
         }
 
         internal void PlayMoveAround()
@@ -72,20 +124,6 @@ namespace WFSport.Gameplay.BasketballMode
             transform.localScale = Vector3.one - Vector3.one * scaleRange * (yRange.y / screenPixelSize.y);
         }
 
-        internal void Setup(GameplayConfig config)
-        {
-            distanceVerified = config.insideDistance;
-            scaleRange = config.scaleRange;
-            movingYRange = config.movingYRange.y - config.movingYRange.x;
-            movingXRange = config.movingXRange.y - config.movingXRange.x;
-            movingSpeed = config.movingSpeed;
-
-            ballFlyTime = config.flyTime;
-
-            angle = Mathf.Asin(transform.position.x / movingXRange) * Mathf.Rad2Deg;
-            // Convert Current Pos => Radians
-            xPos = Mathf.Sin(angle) * movingXRange;
-        }
 
         private void OnDelayAll(Basket basket)
         {

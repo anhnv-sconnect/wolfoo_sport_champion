@@ -25,6 +25,9 @@ namespace WFSport.Gameplay.BasketballMode
         private float flyTime;
         private float scaleRange;
         private float flyingPower;
+        private Player myPLayer;
+
+        public Player PLayer { get => myPLayer; }
 
         private void Start()
         {
@@ -64,7 +67,7 @@ namespace WFSport.Gameplay.BasketballMode
             }
         }
 
-        internal void Setup(GameplayConfig config)
+        internal void Setup(GameplayConfig config, Player player)
         {
             basketHeight = config.height;
             rotateSpeed = config.rotateSpeed;
@@ -84,6 +87,7 @@ namespace WFSport.Gameplay.BasketballMode
                 transform.parent = initParent;
                 transform.position = initPos;
             }
+            myPLayer = player;
         }
 
         internal void Show()
@@ -121,6 +125,7 @@ namespace WFSport.Gameplay.BasketballMode
                     {
                         isInsideBasket = true;
                         transform.SetParent(basket);
+                        EventManager.OnGetScore?.Invoke(myPLayer, targetPos);
                     })
                     .Append(transform.DOLocalMoveY(transform.position.y - basketHeight, 0.5f));
             }
