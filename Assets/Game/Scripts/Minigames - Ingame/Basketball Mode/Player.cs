@@ -9,11 +9,17 @@ namespace WFSport.Gameplay.BasketballMode
     {
         [SerializeField] Ball ballPb;
         [SerializeField] Transform basket;
-        private IMinigame.GameState gameState;
+        [SerializeField] CharacterWorldAnimation characterAnim;
+
         private bool isReloading;
         private Vector3 myTouchPos;
         private Basket verifiedBasket;
         private GameplayConfig config;
+
+        private Ball[] poolingBalls;
+        private int countBall;
+        private IMinigame.GameState gameState;
+        private Ball currentBall;
 
         protected override IMinigame.GameState GameplayState { get => gameState; set => gameState = value; }
 
@@ -42,20 +48,19 @@ namespace WFSport.Gameplay.BasketballMode
                 verifiedBasket = basket;
             }
         }
+        private Ball GetNextBall()
+        {
+            var ball = poolingBalls[countBall];
+            if (ball == null)
+            {
+                ball = Instantiate(ballPb, ballPb.transform.position, ballPb.transform.rotation, ballPb.transform.parent);
+                poolingBalls[countBall] = ball;
+            }
+            ball.Setup(config);
 
-        private void OnThrowing(Vector3 endPos, Transform parent)
-        {
-            var ball = Instantiate(ballPb, ballPb.transform.parent);
-            ball.Setup(config.height, config);
-            ball.FlyTo(endPos, parent);
-        }
-        private void OnThrowing()
-        {
-           var ball = Instantiate(ballPb, ballPb.transform.parent);
-            var rdX = UnityEngine.Random.Range(-7, 7);
-            var rdY = UnityEngine.Random.Range(-1, 4);
-            var rd = UnityEngine.Random.Range(0, 2);
-            ball.FlyTo(rd == 1 ? basket.position : new Vector3(rdX, rdY, 0), transform);
+            countBall++;
+            if (countBall >= poolingBalls.Length) countBall = 0;
+            return ball;
         }
 
         private IEnumerator BeginThrow()
@@ -63,18 +68,23 @@ namespace WFSport.Gameplay.BasketballMode
             isReloading = true;
             verifiedBasket = null;
             EventManager.OnThrow?.Invoke(this, myTouchPos);
-            yield return new WaitForSeconds(0.1f);
+
+            characterAnim.PlayThrowbackAnim(false);
+            yield return new WaitForSeconds(0.5f); // time character Anim Throwing
 
             if (verifiedBasket != null)
             {
-                OnThrowing(verifiedBasket.HolePos, verifiedBasket.transform);
+                currentBall.FlyTo(verifiedBasket.HolePos, verifiedBasket.transform);
             }
             else
             {
-                OnThrowing(myTouchPos, null);
+                currentBall.FlyTo(myTouchPos, null);
             }
 
             yield return new WaitForSeconds(config.reloadTime);
+            currentBall = GetNextBall();
+            currentBall.Show();
+
             isReloading = false;
         }
 
@@ -83,6 +93,13 @@ namespace WFSport.Gameplay.BasketballMode
         #region OVERRIDE METHODS
         public override void Init()
         {
+            int totalBallTime = Mathf.Max(Mathf.CeilToInt(config.flyTime * 3), Mathf.FloorToInt(config.reloadTime)) + 1; // => Time FlyIn and FlyOut
+            poolingBalls = new Ball[totalBallTime];
+            ballPb.Hide();
+            currentBall = GetNextBall();
+            currentBall.Show();
+            countBall = 0;
+            characterAnim.PlayBackIdleAnim();
         }
 
         public override void Lose()

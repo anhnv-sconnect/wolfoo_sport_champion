@@ -161,7 +161,8 @@ public class CharacterWorldAnimation : MonoBehaviour
         if (!isLoop)
         {
             _tween?.Kill();
-            _tween = DOVirtual.DelayedCall(GetTimeAnimation(animState), () => PlayBackIdle(true));
+            _tween = DOVirtual.DelayedCall(GetTimeAnimation(animState) / SkeletonAnim.timeScale,
+                () => PlayBackIdle(true));
         }
     }
     public void PlayBackIdleAnim()

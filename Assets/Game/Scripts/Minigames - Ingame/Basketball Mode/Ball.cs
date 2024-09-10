@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Spine.Unity;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,23 +9,33 @@ namespace WFSport.Gameplay.BasketballMode
 {
     public class Ball : MonoBehaviour
     {
+        [SerializeField] BoneFollower playerHandBone;
         private Vector3 targetPos;
         private bool isFlying;
         private Sequence tweenFlying;
-       [SerializeField] private bool isTriggerWithObstacle;
+        private bool isTriggerWithObstacle;
         private Vector2 screenPosRange;
+        private Vector2 screenPixelSize;
+        private Transform initParent;
+        private Vector3 initPos;
         private float radius;
         private float basketHeight;
-        private GameplayConfig config;
+        private float rotateSpeed;
         private bool isInsideBasket;
+        private float flyTime;
+        private float scaleRange;
+        private float flyingPower;
 
         private void Start()
         {
             radius = GetComponent<CircleCollider2D>().radius;
+            screenPosRange = ScreenHelper.GetMaxPosition();
+            screenPixelSize = ScreenHelper.GetMaxPizelSize();
 
-            var maxXPos = Camera.main.ScreenToWorldPoint(Vector3.right * Camera.main.rect.xMax);
-            var maxYPos = Camera.main.ScreenToWorldPoint(Vector3.right * Camera.main.rect.yMax);
-            screenPosRange = new Vector2(maxXPos.x, maxYPos.y);
+        }
+        private void OnDestroy()
+        {
+            tweenFlying?.Kill();
         }
         private void Update()
         {
@@ -32,7 +43,9 @@ namespace WFSport.Gameplay.BasketballMode
             {
                 if (!isInsideBasket)
                 {
-                    transform.Rotate(Vector3.forward * config.rotateSpeed);
+                    transform.Rotate(Vector3.forward * rotateSpeed);
+                    var yRange = Camera.main.WorldToScreenPoint(transform.position);
+                    transform.localScale = Vector3.one -  Vector3.one * scaleRange * (yRange.y / screenPixelSize.y);
                 }
             }
         }
@@ -51,15 +64,42 @@ namespace WFSport.Gameplay.BasketballMode
             }
         }
 
-        internal void Setup(float basketHeight, GameplayConfig config)
+        internal void Setup(GameplayConfig config)
         {
-            this.basketHeight = basketHeight;
-            this.config = config;
+            basketHeight = config.height;
+            rotateSpeed = config.rotateSpeed;
+            flyingPower = config.flyingPower;
+            flyTime = config.flyTime;
+            scaleRange = config.scaleRange;
+
+            isFlying = false;
+
+            if (initParent == null)
+            {
+                initParent = transform.parent;
+                initPos = transform.position;
+            }
+            else
+            {
+                transform.parent = initParent;
+                transform.position = initPos;
+            }
+        }
+
+        internal void Show()
+        {
+            gameObject.SetActive(true);
+            playerHandBone.enabled = true;
+        }
+        internal void Hide()
+        {
+            Hiding();
         }
 
         private void Hiding()
         {
             gameObject.SetActive(false);
+            playerHandBone.enabled = true;
         }
 
         internal void FlyTo(Vector3 endPos, Transform basket)
@@ -71,7 +111,8 @@ namespace WFSport.Gameplay.BasketballMode
             var throwDirection = targetPos - transform.position;
 
             tweenFlying = DOTween.Sequence()
-                .Append(transform.DOJump(targetPos, config.flyingPower, 1, config.flyTime).SetEase(Ease.Flash));
+                .Append(transform.DOJump(targetPos, flyingPower, 1, flyTime).SetEase(Ease.Flash)
+                .OnStart(() => { playerHandBone.enabled = false; }));
 
             if (isBasket)
             {
@@ -81,19 +122,18 @@ namespace WFSport.Gameplay.BasketballMode
                         isInsideBasket = true;
                         transform.SetParent(basket);
                     })
-                    .Append(transform.DOLocalMoveY(transform.position.y - basketHeight, 1));
+                    .Append(transform.DOLocalMoveY(transform.position.y - basketHeight, 0.5f));
             }
             tweenFlying.OnComplete(() =>
             {
-                Debug.Log("1");
-                if (isTriggerWithObstacle) // => Boucing to Outside
+                if (isTriggerWithObstacle && !isInsideBasket) // => Boucing to Outside
                 {
-                    Debug.Log("2");
-                    var xPos = throwDirection.x < 0 ? -screenPosRange.x - radius * 2 : screenPosRange.x + radius * 2;
-                    var yPos = -throwDirection.y / 2;
+                    // Calculate Angle -> 60 degrees
+                    var xPos = throwDirection.x * 3;
+                    var yPos = -screenPosRange.y - radius * 2;
                     var outSidePos = new Vector3(xPos, yPos, 0);
                     tweenFlying = DOTween.Sequence()
-                        .Append(transform.DOJump(outSidePos, config.flyingPower, 1, 1));
+                        .Append(transform.DOJump(outSidePos, flyingPower, 1, 1));
                     tweenFlying.OnComplete(() =>
                     {
                         Hiding();

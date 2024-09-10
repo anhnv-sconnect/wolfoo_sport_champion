@@ -14,9 +14,13 @@ namespace WFSport.Gameplay.BasketballMode
 
         [Header("=============== PLAYER ===============")]
         public float reloadTime = 0.5f;
+        public float scaleRange = 0.5f;
 
         [Header("=============== BASKET ===============")]
         public float height;
         public float insideDistance = 1;
+        public Vector2 movingYRange;
+        public Vector2 movingXRange;
+        public Vector2 movingSpeed;
     }
 }

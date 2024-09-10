@@ -15,12 +15,27 @@ namespace WFSport.Gameplay.BasketballMode
 
         public IMinigame.Data ExternalData { get => myData; set => myData = value; }
 
+        [NaughtyAttributes.Button]
+        private void PlayBasketMoving()
+        {
+            foreach (var item in baskets)
+            {
+                item.PlayMoveAround();
+            }
+        }
+        [NaughtyAttributes.Button]
+        private void StopBasketMoving()
+        {
+            foreach (var item in baskets)
+            {
+                item.StopMoveAround();
+            }
+        }
         private void Start()
         {
             Init();
             OnGameStart();
         }
-
         private void OnDestroy()
         {
         }
@@ -30,7 +45,7 @@ namespace WFSport.Gameplay.BasketballMode
             player.Setup(config);
             foreach (var basket in baskets)
             {
-                basket.Setup(config.insideDistance);
+                basket.Setup(config);
             }
         }
 
