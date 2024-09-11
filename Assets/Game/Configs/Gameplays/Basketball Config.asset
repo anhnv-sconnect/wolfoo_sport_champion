@@ -21,5 +21,9 @@ MonoBehaviour:
   insideDistance: 1
   movingYRange: {x: 3.3, y: 4.3}
   movingXRange: {x: -6.5, y: 7.5}
-  movingSpeed: {x: 0.005, y: 0.005}
+  movingSpeed: {x: 0.5, y: 0.5}
   spawnRange: 1
+  canMoveX: 0
+  canMoveY: 1
+  aliveTime: 5
+  effectBombScore: -3

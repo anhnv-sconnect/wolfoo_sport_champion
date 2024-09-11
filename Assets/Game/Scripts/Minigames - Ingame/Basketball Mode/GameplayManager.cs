@@ -40,6 +40,7 @@ namespace WFSport.Gameplay.BasketballMode
             ui.UpdateLoadingBar(player.Score / maxScore);
         }
 
+        [NaughtyAttributes.Button]
         private void PlayBasketMoving()
         {
             foreach (var item in myBaskets)
@@ -47,6 +48,7 @@ namespace WFSport.Gameplay.BasketballMode
                 item.PlayMoveAround();
             }
         }
+        [NaughtyAttributes.Button]
         private void StopBasketMoving()
         {
             foreach (var item in myBaskets)

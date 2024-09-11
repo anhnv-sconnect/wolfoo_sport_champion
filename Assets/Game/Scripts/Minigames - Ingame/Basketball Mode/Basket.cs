@@ -1,7 +1,10 @@
+using Spine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D.IK;
+using static UnityEditor.PlayerSettings;
 
 namespace WFSport.Gameplay.BasketballMode
 {
@@ -9,25 +12,32 @@ namespace WFSport.Gameplay.BasketballMode
     {
         [SerializeField] Transform hole;
         [SerializeField] private float[] bombTimeLines = new float[] { };
+        [SerializeField] private bool canMoveAround;
 
         private float distanceVerified;
         private float scaleRange;
+        private bool canMoveY;
         private float movingYRange;
         private float movingXRange;
         private Vector2 movingSpeed;
         private float ballFlyTime;
+        private bool canMoveX;
         private float holeRange;
         private float beginYPos;
+        private float beginXPos;
         private Vector2 screenPixelSize;
-        [SerializeField]private float xPos;
         private float yPos;
-        [SerializeField] private bool canMoveAround;
         private bool isPlaying;
-        private float angle;
-        private float angle2;
         private Bomb bomb;
         private int countTime;
         private int timelineIdx;
+        private GameplayConfig config;
+        private float countX;
+        private float countY;
+        private float sinX;
+        private float cosX;
+        private float sinY;
+        private float cosY;
 
         public Vector3 HolePos { get => hole.position; }
         public bool HasBomb { get; private set; }
@@ -56,14 +66,24 @@ namespace WFSport.Gameplay.BasketballMode
         {
             if (isPlaying)
             {
-                angle += 1 * movingSpeed.x;
-                angle2 += 1 * movingSpeed.y;
-                //   xPos = Mathf.Sin(angle) * movingXRange;
-                yPos = Mathf.Cos(angle2) * movingYRange + movingYRange + beginYPos;
+                Calculate();
+                var xPos = canMoveX ? (1 - cosX) * movingXRange / 2 + beginXPos : transform.position.x;
+                var yPos = canMoveY ? (1 - cosY) * movingYRange / 2 + beginYPos : transform.position.y;
                 transform.position = new Vector3(xPos, yPos, 0);
 
+                countX += 1 * movingSpeed.x * Time.deltaTime;
+                countY += 1 * movingSpeed.y * Time.deltaTime;
+                if (countY > 2) countY = 0;
+                if (countX > 2) countX = 0;
                 Show();
             }
+        }
+        private void Calculate()
+        {
+            sinX = Mathf.Sin(countX * Mathf.PI);
+            cosX = Mathf.Cos(countX * Mathf.PI);
+            sinY = Mathf.Sin(countY * Mathf.PI);
+            cosY = Mathf.Cos(countY * Mathf.PI);
         }
         private IEnumerator CountTime()
         {
@@ -78,22 +98,23 @@ namespace WFSport.Gameplay.BasketballMode
         }
         internal void Setup(GameplayConfig config, Bomb bombPb)
         {
+            this.config = config;
+
             CreateBomb(bombPb, config);
 
             distanceVerified = config.insideDistance;
             scaleRange = config.scaleRange;
-            movingYRange = (config.movingYRange.y - config.movingYRange.x)/2;
-            movingXRange = (config.movingXRange.y - config.movingXRange.x)/2;
             movingSpeed = config.movingSpeed;
-            beginYPos = config.movingYRange.x;
             ballFlyTime = config.flyTime;
+            canMoveX = config.canMoveX;
+            canMoveY = config.canMoveY;
 
-            //     angle = Mathf.Asin(transform.position.x / movingXRange) * Mathf.Rad2Deg;
-            //    angle2 = Mathf.Acos(transform.position.x / movingYRange) * Mathf.Rad2Deg;
-            // Convert Current Pos => Radians
-            //     xPos = Mathf.Sin(angle) * movingXRange;
-            //      yPos = Mathf.Sin(angle2) * movingYRange;
-            xPos = transform.position.x;
+            movingYRange = (config.movingYRange.y - config.movingYRange.x);
+            movingXRange = (config.movingXRange.y - config.movingXRange.x);
+            beginYPos = config.movingYRange.x;
+            beginXPos = config.movingXRange.x;
+            countY = Mathf.Abs((transform.position.y - beginYPos) / movingYRange);
+            countX = Mathf.Abs((transform.position.x - beginXPos) / movingXRange);
 
             Array.Sort(bombTimeLines);
         }
