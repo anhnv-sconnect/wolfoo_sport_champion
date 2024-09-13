@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace WFSport
+namespace WFSport.Helper
 {
     public class ScreenHelper
     {
@@ -19,6 +19,12 @@ namespace WFSport
             var maxYPos = Camera.main.pixelHeight;
 
             return new Vector2(maxXPos, maxYPos);
+        }
+        public static Vector3 GetMousePos()
+        {
+            var pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            pos.z = 0;
+            return pos;
         }
     }
 }

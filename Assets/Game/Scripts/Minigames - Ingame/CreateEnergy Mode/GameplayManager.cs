@@ -12,9 +12,14 @@ namespace WFSport.Gameplay.CreateEnergyMode
         [SerializeField] private VerticalScrollInfinity scrollInfinity;
         [SerializeField] private Blender blender;
         [SerializeField] private Fruit fruitPb;
-        private IMinigame.Data myData;
-        private int totalFruit;
+        [SerializeField] private GameplayConfig config;
+        [SerializeField] private GlassManager glasManager;
 
+        private int totalFruit;
+        private int countFruitInBlender;
+
+        private FruitScrollItem[] scrollItems;
+        private IMinigame.Data myData;
         public IMinigame.Data ExternalData { get => myData; set => myData = value; }
 
         private void Start()
@@ -25,12 +30,55 @@ namespace WFSport.Gameplay.CreateEnergyMode
         private void OnDestroy()
         {
             StopCoroutine("InitDataScroll");
+            if (scrollItems != null)
+            {
+                for (int i = 0; i < scrollItems.Length; i++)
+                {
+                    if (scrollItems[i] != null) scrollItems[i].OnDragInSide -= CreateFruit;
+                }
+            }
+        }
+
+        private void CreateFruit(FruitScrollItem scrollItem)
+        {
+            if (countFruitInBlender >= config.maxFruitInBlender) return;
+            countFruitInBlender++;
+
+            var fruit = Instantiate(fruitPb);
+            fruit.transform.position = transform.position;
+            fruit.Setup(scrollItem.Icon);
+            fruit.JumpTo(blender.FruitArea.position, blender.FruitArea.holder, () =>
+            {
+                if (countFruitInBlender == config.maxFruitInBlender)
+                {
+                    blender.Grind(() =>
+                    {
+                        // Pouring
+                        glasManager.GetNextGlassofWater((glass) =>
+                        {
+                            blender.Pouring(glass.transform.position,
+                            () =>
+                            {
+                                glass.OnPouringWater();
+                            },
+                            () =>
+                            {
+                                countFruitInBlender = 0;
+                                glass.JumpBacktoTray(null);
+                            });
+                        });
+                    });
+                    return;
+                }
+            });
         }
 
         private void Init()
         {
             totalFruit = tempData.Length;
             scrollInfinity.Setup(tempData.Length, this);
+            blender.Setup();
+            glasManager.SetUp(config);
             StartCoroutine("InitDataScroll");
         }
         private IEnumerator InitDataScroll()
@@ -38,9 +86,13 @@ namespace WFSport.Gameplay.CreateEnergyMode
             yield return new WaitForEndOfFrame();
             if(scrollInfinity.ListItem.Count != totalFruit) { StartCoroutine("InitDataScroll"); }
             var count = 0;
-            foreach (var item in scrollInfinity.MaskTrans.GetComponentsInChildren<FruitScrollItem>(true))
+            var items = scrollInfinity.MaskTrans.GetComponentsInChildren<FruitScrollItem>(true);
+            scrollItems = new FruitScrollItem[items.Length];
+            foreach (var item in items)
             {
-                item.Setup(tempData[count], blender.transform, blender.FruitArea, blender.transform.position, fruitPb);
+                item.Setup(tempData[count],blender.transform.position);
+                items[count] = item;
+                item.OnDragInSide += CreateFruit;
                 count++;
             }
         }
@@ -59,6 +111,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
 
         public void OnGameStart()
         {
+            blender.OpenLid(null);
         }
 
         public void OnGameStop()

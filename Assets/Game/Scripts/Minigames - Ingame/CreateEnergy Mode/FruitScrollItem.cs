@@ -13,9 +13,13 @@ namespace WFSport.Gameplay.CreateEnergyMode
     {
         [SerializeField] Image icon;
 
-        private (Fruit pb, Transform parent, Vector3 endPos, Vector3 comparePos) fruitData;
         private bool isDragging;
         private Vector3 lastPos;
+
+        internal Action<FruitScrollItem> OnDragInSide;
+        private Vector3 comparePos;
+
+        public Sprite Icon { get => icon.sprite;}
 
         protected override void Setup(int order)
         {
@@ -24,23 +28,12 @@ namespace WFSport.Gameplay.CreateEnergyMode
 			Master.AddEventTriggerListener(EventTrigger, EventTriggerType.Drag, OnDrag);
         }
 
-        internal void Setup(Sprite sprite, Transform fruitParent, Vector3 flyInPos, Vector3 comparePos, Fruit fruitPb)
+        internal void Setup(Sprite sprite, Vector3 comparePos)
         {
             icon.sprite = sprite;
             icon.SetNativeSize();
-            fruitData.parent = fruitParent;
-            flyInPos.z = 0;
-            fruitData.endPos = flyInPos;
-            fruitData.comparePos = comparePos;
-            fruitData.pb = fruitPb;
+            this.comparePos = comparePos;
             gameObject.SetActive(true);
-        }
-        internal void CreateFruit()
-        {
-            var fruit = Instantiate(fruitData.pb, fruitData.parent);
-            fruit.transform.position = transform.position;
-            fruit.Setup(icon.sprite);
-            fruit.JumpTo(fruitData.endPos);
         }
         protected override void OnStartDragOut()
         {
@@ -57,10 +50,10 @@ namespace WFSport.Gameplay.CreateEnergyMode
         {
             if (isDragging)
             {
-                var distance = Vector2.Distance(lastPos, fruitData.comparePos);
+                var distance = Vector2.Distance(lastPos, comparePos);
                 if(distance < 2)
                 {
-                    CreateFruit();
+                    OnDragInSide?.Invoke(this);
                 }
             }
             isDragging = false;
