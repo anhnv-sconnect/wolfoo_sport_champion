@@ -3,18 +3,27 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.U2D.IK;
 using WFSport.Helper;
-using static UnityEditor.PlayerSettings;
 
 namespace WFSport.Gameplay.BasketballMode
 {
     public class Basket : MonoBehaviour
     {
-        [SerializeField] Transform hole;
-        [SerializeField] private float[] bombTimeLines = new float[] { };
-        [SerializeField] private bool canMoveAround;
+        [System.Serializable]
+        public struct BonusItemData
+        {
+            public float timeline;
+            public int score;
+        }
 
+        [SerializeField] Transform hole;
+        [SerializeField] Vector2[] movingTimelines;
+        [SerializeField] BonusItemData[] bonusItemData;
+        [SerializeField] float[] bombTimelines;
+        [SerializeField] Bomb bombPb;
+        [SerializeField] BonusItem bonusItemPb;
+
+        private bool isPausing;
         private float distanceVerified;
         private float scaleRange;
         private bool canMoveY;
@@ -28,11 +37,8 @@ namespace WFSport.Gameplay.BasketballMode
         private float beginXPos;
         private Vector2 screenPixelSize;
         private float yPos;
-        private bool isPlaying;
-        private Bomb bomb;
+        private bool isMoving;
         private int countTime;
-        private int timelineIdx;
-        private GameplayConfig config;
         private float countX;
         private float countY;
         private float sinX;
@@ -40,8 +46,14 @@ namespace WFSport.Gameplay.BasketballMode
         private float sinY;
         private float cosY;
 
+        private (int moving, int bomb, int bonus) timelineID;
+        private Bomb bomb;
+        private BonusItem bonusItem;
+        private GameplayConfig config;
+
         public Vector3 HolePos { get => hole.position; }
-        public bool HasBomb { get; private set; }
+        public bool HasBomb { get => bomb.IsShowing; }
+        public (bool isPlaying, int score) BonusItem { get => (bonusItem.IsShowing, bonusItemData[timelineID.bonus].score); }
 
         private void Start()
         {
@@ -50,22 +62,22 @@ namespace WFSport.Gameplay.BasketballMode
 
             holeRange = transform.position.y - hole.position.y;
             screenPixelSize = ScreenHelper.GetMaxPizelSize();
-            Show();
+
+            CreateBombAndBonusItem();
         }
         private void OnDestroy()
         {
             EventManager.OnThrow -= OnPlayerThrow;
             EventManager.OnGetScore -= OnPlayerGetScore;
         }
-
-        private void OnPlayerGetScore(Base.Player player, Vector3 vector)
-        {
-            bomb.Hide();
-        }
-
         private void Update()
         {
-            if (isPlaying)
+            if (isPausing) return;
+
+            var yRange = Camera.main.WorldToScreenPoint(transform.position + Vector3.down * holeRange);
+            transform.localScale = Vector3.one - Vector3.one * scaleRange * (yRange.y / screenPixelSize.y);
+
+            if (isMoving)
             {
                 Calculate();
                 var xPos = canMoveX ? (1 - cosX) * movingXRange / 2 + beginXPos : transform.position.x;
@@ -76,8 +88,12 @@ namespace WFSport.Gameplay.BasketballMode
                 countY += 1 * movingSpeed.y * Time.deltaTime;
                 if (countY > 2) countY = 0;
                 if (countX > 2) countX = 0;
-                Show();
             }
+        }
+
+        private void OnPlayerGetScore(Base.Player player, Vector3 vector)
+        {
+            bomb.Hide();
         }
         private void Calculate()
         {
@@ -91,17 +107,29 @@ namespace WFSport.Gameplay.BasketballMode
             yield return new WaitForSeconds(1);
             countTime++;
 
-            if(countTime >= bombTimeLines[timelineIdx])
+            if(countTime >= bombTimelines[timelineID.bomb])
             {
-                ShowBomb();
-                timelineIdx++;
+                bomb.Show();
+                timelineID.bomb++;
+            }
+
+            if(countTime >= movingTimelines[timelineID.moving].x)
+            {
+                isMoving = true;
+            }
+            else if (countTime <= movingTimelines[timelineID.moving].y)
+            {
+                isMoving = false;
+                timelineID.moving++;
+            }
+
+            if(countTime >= bonusItemData[timelineID.bonus].timeline)
+            {
             }
         }
-        internal void Setup(GameplayConfig config, Bomb bombPb)
+        internal void Setup(GameplayConfig config)
         {
             this.config = config;
-
-            CreateBomb(bombPb, config);
 
             distanceVerified = config.insideDistance;
             scaleRange = config.scaleRange;
@@ -116,41 +144,34 @@ namespace WFSport.Gameplay.BasketballMode
             beginXPos = config.movingXRange.x;
             countY = Mathf.Abs((transform.position.y - beginYPos) / movingYRange);
             countX = Mathf.Abs((transform.position.x - beginXPos) / movingXRange);
-
-            Array.Sort(bombTimeLines);
         }
 
-        private void CreateBomb(Bomb bombPb, GameplayConfig config)
+        private void CreateBombAndBonusItem()
         {
             if (bomb == null)
             {
                 bomb = Instantiate(bombPb, transform);
                 bomb.Setup(config);
             }
+            if (bonusItem == null)
+            {
+                bonusItem = Instantiate(bonusItemPb, transform);
+                bonusItem.Setup(config);
+            }
         }
 
-        internal void ShowBomb()
+        internal void Play()
         {
-            HasBomb = true;
-            bomb.Show();
+            isPausing = false;
+            StartCoroutine("CountTime");
+            bomb.Play();
         }
-
-        internal void PlayMoveAround()
+        internal void Pause()
         {
-            canMoveAround = true;
-            isPlaying = true;
-        }
-        internal void StopMoveAround()
-        {
-            canMoveAround = false;
-            isPlaying = false;
+            isPausing = true;
             StopCoroutine("DelayMoving");
-        }
-
-        internal void Show()
-        {
-            var yRange = Camera.main.WorldToScreenPoint(transform.position + Vector3.down * holeRange);
-            transform.localScale = Vector3.one - Vector3.one * scaleRange * (yRange.y / screenPixelSize.y);
+            StopCoroutine("CountTime");
+            bomb.Pause();
         }
 
 
@@ -161,19 +182,15 @@ namespace WFSport.Gameplay.BasketballMode
 
         private IEnumerator DelayMoving()
         {
-            isPlaying = false;
+            isMoving = false;
             yield return new WaitForSeconds(ballFlyTime * 2);
-            isPlaying = true;
+            isMoving = true;
         }
 
         private void OnPlayerThrow(Player player, Vector3 pos)
         {
             if (Vector2.Distance(pos, HolePos) <= distanceVerified)
             {
-                if(canMoveAround)
-                {
-                    EventManager.DelayAll?.Invoke(this);
-                }
                 EventManager.OnBallTracking?.Invoke(player, this);
             }
         }

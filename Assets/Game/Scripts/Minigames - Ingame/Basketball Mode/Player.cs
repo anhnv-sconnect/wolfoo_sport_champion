@@ -29,7 +29,7 @@ namespace WFSport.Gameplay.BasketballMode
         private void Start()
         {
             EventManager.OnBallTracking += OnBallTracking;
-            Init();
+           // Init();
         }
         private void OnDestroy()
         {
@@ -83,6 +83,11 @@ namespace WFSport.Gameplay.BasketballMode
                 {
                     myScore += config.effectBombScore;
                     EventManager.OnShootingBomb?.Invoke(this);
+                }
+
+                if(verifiedBasket.BonusItem.isPlaying)
+                {
+                    myScore += verifiedBasket.BonusItem.score;
                 }
             }
             else

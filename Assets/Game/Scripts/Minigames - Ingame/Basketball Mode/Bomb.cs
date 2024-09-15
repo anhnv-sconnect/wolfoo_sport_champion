@@ -24,6 +24,21 @@ namespace WFSport.Gameplay.BasketballMode
             animHide?.Kill();
             animShow?.Kill();
         }
+        internal void Pause()
+        {
+            animHide?.Pause();
+            animShow?.Pause();
+        }
+        internal void Play()
+        {
+            animHide?.Play();
+            animShow?.Play();
+        }
+        private IEnumerator DelayToHide()
+        {
+            yield return new WaitForSeconds(aliveTime);
+            Hide();
+        }
         internal void Setup(GameplayConfig config)
         {
             aliveTime = config.aliveTime;
@@ -34,6 +49,10 @@ namespace WFSport.Gameplay.BasketballMode
             animShow?.Kill();
             animHide = DOTween.Sequence()
                 .Append(transform.DOScale(Vector3.zero, 0.5f));
+            animHide.OnComplete(() =>
+            {
+                IsShowing = false;
+            });
         }
         internal void Show()
         {
@@ -45,9 +64,13 @@ namespace WFSport.Gameplay.BasketballMode
                 IsShowing = true;
                 animShow = DOTween.Sequence()
                     .Append(transform.DOPunchScale(Vector3.one * 0.1f, 0.5f, 2).SetLoops(-1, LoopType.Restart))
-                    .Append(transform.DOLocalMoveY(startPos.y + 0.5f, 1).SetLoops(-1, LoopType.Yoyo));
+                    .Append(transform.DOLocalMoveY(startPos.y + 0.5f, 1).SetLoops(-1, LoopType.Yoyo))
+                    .AppendInterval(aliveTime)
+                    .AppendCallback(() =>
+                    {
+                        Hide();
+                    });
             });
-
         }
     }
 }

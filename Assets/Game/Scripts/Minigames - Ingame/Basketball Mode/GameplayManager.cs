@@ -10,14 +10,13 @@ namespace WFSport.Gameplay.BasketballMode
     {
         [SerializeField] private GameplayConfig config;
         [SerializeField] private Player player;
-        [SerializeField] private Basket basketPb;
         [SerializeField] private Transform basketHolder;
-        [SerializeField] private int totalBasket;
         [SerializeField] private ScoreManager scoreAnimManager;
-        [SerializeField] private Bomb bombPb;
+        [SerializeField] private int totalBasket;
+        [SerializeField] private Basket basketPb;
 
-        private IMinigame.Data myData;
         private Basket[] myBaskets;
+        private IMinigame.Data myData;
         private float maxScore;
         private MultiplayerGameUI ui;
 
@@ -40,22 +39,6 @@ namespace WFSport.Gameplay.BasketballMode
             ui.UpdateLoadingBar(player.Score / maxScore);
         }
 
-        [NaughtyAttributes.Button]
-        private void PlayBasketMoving()
-        {
-            foreach (var item in myBaskets)
-            {
-                item.PlayMoveAround();
-            }
-        }
-        [NaughtyAttributes.Button]
-        private void StopBasketMoving()
-        {
-            foreach (var item in myBaskets)
-            {
-                item.StopMoveAround();
-            }
-        }
         private void OnPlayerGetScore(Base.Player basePlayer, Vector3 endPos)
         {
             scoreAnimManager.Play(endPos);
@@ -84,7 +67,7 @@ namespace WFSport.Gameplay.BasketballMode
                 var xPos = range * side;
                 var basket = Instantiate(basketPb, new Vector3(xPos, yPos, 0), basketPb.transform.rotation, basketHolder);
                 myBaskets[i] = basket;
-                basket.Setup(config, bombPb);
+                basket.Setup(config);
             }
         }
 
@@ -114,6 +97,12 @@ namespace WFSport.Gameplay.BasketballMode
 
         public void OnGamePause()
         {
+            player.Pause(true);
+            ui.PauseTime();
+            foreach (var basket in myBaskets)
+            {
+                basket.Pause();
+            }
         }
 
         public void OnGameResume()
@@ -124,6 +113,10 @@ namespace WFSport.Gameplay.BasketballMode
         {
             player.Play();
             ui.PlayTime();
+            foreach (var basket in myBaskets)
+            {
+                basket.Play();
+            }
         }
 
         public void OnGameStop()
