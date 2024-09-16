@@ -54,7 +54,7 @@ namespace WFSport.Gameplay.BasketballMode
                 IsShowing = false;
             });
         }
-        internal void Show()
+        internal void Show(System.Action OnComplete)
         {
             animHide?.Kill();
             animShow = DOTween.Sequence()
@@ -68,6 +68,7 @@ namespace WFSport.Gameplay.BasketballMode
                     .AppendInterval(aliveTime)
                     .AppendCallback(() =>
                     {
+                        OnComplete?.Invoke();
                         Hide();
                     });
             });

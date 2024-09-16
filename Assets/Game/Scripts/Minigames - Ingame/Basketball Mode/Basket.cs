@@ -50,10 +50,11 @@ namespace WFSport.Gameplay.BasketballMode
         private Bomb bomb;
         private BonusItem bonusItem;
         private GameplayConfig config;
+        private bool posVerified;
 
         public Vector3 HolePos { get => hole.position; }
-        public bool HasBomb { get => bomb.IsShowing; }
-        public (bool isPlaying, int score) BonusItem { get => (bonusItem.IsShowing, bonusItemData[timelineID.bonus].score); }
+        public bool HasBomb { get => bomb != null && bomb.IsShowing; }
+        public (bool isPlaying, int score) BonusItem  { get; private set; }
 
         private void Start()
         {
@@ -93,7 +94,8 @@ namespace WFSport.Gameplay.BasketballMode
 
         private void OnPlayerGetScore(Base.Player player, Vector3 vector)
         {
-            bomb.Hide();
+            if (bomb != null && posVerified) bomb.Hide();
+            if (bonusItem != null && posVerified) bonusItem.Hide();
         }
         private void Calculate()
         {
@@ -107,25 +109,47 @@ namespace WFSport.Gameplay.BasketballMode
             yield return new WaitForSeconds(1);
             countTime++;
 
-            if(countTime >= bombTimelines[timelineID.bomb])
+            if (bombTimelines.Length > 0 && timelineID.bomb < bombTimelines.Length)
             {
-                bomb.Show();
-                timelineID.bomb++;
+                if (countTime >= bombTimelines[timelineID.bomb])
+                {
+                    bomb.Show(null);
+                    timelineID.bomb++;
+                }
             }
 
-            if(countTime >= movingTimelines[timelineID.moving].x)
+            if (bonusItemData.Length > 0 && timelineID.bonus < bonusItemData.Length)
             {
-                isMoving = true;
-            }
-            else if (countTime <= movingTimelines[timelineID.moving].y)
-            {
-                isMoving = false;
-                timelineID.moving++;
+                if (countTime >= bonusItemData[timelineID.bonus].timeline)
+                {
+                    var score = bonusItemData[timelineID.bonus].score;
+                    bonusItem.Setup(score);
+                    bonusItem.Show(() =>
+                    {
+                        BonusItem = (true, score);
+                    }, 
+                    () =>
+                    {
+                        BonusItem = (false, 0);
+                    });
+                    timelineID.bonus++;
+                }
             }
 
-            if(countTime >= bonusItemData[timelineID.bonus].timeline)
+            if(timelineID.moving < movingTimelines.Length)
             {
+                if (countTime == movingTimelines[timelineID.moving].x)
+                {
+                    isMoving = true;
+                }
+                else if (countTime == movingTimelines[timelineID.moving].y)
+                {
+                    isMoving = false;
+                    timelineID.moving++;
+                }
             }
+
+            StartCoroutine("CountTime");
         }
         internal void Setup(GameplayConfig config)
         {
@@ -164,14 +188,16 @@ namespace WFSport.Gameplay.BasketballMode
         {
             isPausing = false;
             StartCoroutine("CountTime");
-            bomb.Play();
+            if (bomb != null) bomb.Play();
+            if (bonusItem != null) bonusItem.Play();
         }
         internal void Pause()
         {
             isPausing = true;
             StopCoroutine("DelayMoving");
             StopCoroutine("CountTime");
-            bomb.Pause();
+            if (bomb != null) bomb.Pause();
+            if (bonusItem != null) bonusItem.Pause();
         }
 
 
@@ -189,8 +215,10 @@ namespace WFSport.Gameplay.BasketballMode
 
         private void OnPlayerThrow(Player player, Vector3 pos)
         {
+            posVerified = false;
             if (Vector2.Distance(pos, HolePos) <= distanceVerified)
             {
+                posVerified = true;
                 EventManager.OnBallTracking?.Invoke(player, this);
             }
         }

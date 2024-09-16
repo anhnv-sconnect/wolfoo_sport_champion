@@ -23,7 +23,7 @@ namespace WFSport.Gameplay.BasketballMode
         private int myScore;
 
         protected override IMinigame.GameState GameplayState { get => gameState; set => gameState = value; }
-        public int Score { get => myScore; }
+        public (int total, int changed) Score { get; private set; }
 
         #region UNITY METHODS
         private void Start()
@@ -78,16 +78,19 @@ namespace WFSport.Gameplay.BasketballMode
             if (verifiedBasket != null)
             {
                 myScore++;
+                Score = (myScore, 1);
+
                 currentBall.FlyTo(verifiedBasket.HolePos, verifiedBasket.transform);
                 if(verifiedBasket.HasBomb)
                 {
                     myScore += config.effectBombScore;
-                    EventManager.OnShootingBomb?.Invoke(this);
+                    Score = (myScore, config.effectBombScore);
                 }
 
-                if(verifiedBasket.BonusItem.isPlaying)
+                if (verifiedBasket.BonusItem.isPlaying)
                 {
                     myScore += verifiedBasket.BonusItem.score;
+                    Score = (myScore, verifiedBasket.BonusItem.score + 1);
                 }
             }
             else
@@ -114,6 +117,8 @@ namespace WFSport.Gameplay.BasketballMode
             currentBall.Show();
             countBall = 0;
             characterAnim.PlayBackIdleAnim();
+            characterAnim.SetTimeScale(2);
+            characterAnim.SetLayer(5);
         }
 
         public override void Lose()

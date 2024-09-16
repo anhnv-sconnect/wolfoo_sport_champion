@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e81990afff743745877217cc2c957e6, type: 3}
+  m_Name: Basketball_AssetRecord Config
+  m_EditorClassIdentifier: 
+  modeTest:
+    records:
+    - {fileID: 654378370099210508, guid: 7e3c240e1c763f64ba01b54f36e04e1a, type: 3}
+    - {fileID: 8064991588212754303, guid: 5d027b0518337fd43b2c093f7d2c3840, type: 3}
+    - {fileID: 8333932113248282517, guid: cb3a69978a185cf438293d58efc7ac9c, type: 3}
+  mode1:
+    records:
+    - {fileID: 3581526147018196114, guid: 27c0f792f48968a4aa56d2064acca994, type: 3}
+  mode2:
+    records:
+    - {fileID: 1564551750993933224, guid: b39b945fcddc1664ab8738c9f3461361, type: 3}
+    - {fileID: 4831265244825998559, guid: 2d07dd97bb9550b4f88c417521b23300, type: 3}
+  mode3:
+    records:
+    - {fileID: 654378370099210508, guid: 724cd48d96a4436428e97fdc7c80f580, type: 3}
+    - {fileID: 8064991588212754303, guid: c95af862d8284b542999f479a47f9b5e, type: 3}
+    - {fileID: 8333932113248282517, guid: 0140cb4ff923ae44cb856af2a3e96a78, type: 3}

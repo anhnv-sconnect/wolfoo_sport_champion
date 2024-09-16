@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4346873013810235855}
-  - component: {fileID: 8170786209459922501}
   - component: {fileID: 7781598474156903508}
+  - component: {fileID: 8170786209459922501}
   - component: {fileID: 3952054211726273037}
   m_Layer: 0
   m_Name: BonusItem
@@ -34,6 +34,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7781598474156903508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4304504748139360636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4907fb67a468806409f98bfc74b9763d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 8170786209459922501}
+  scoreSprites:
+  - {fileID: 21300000, guid: 6e77a06c6d722bb4eb26c6bfa34c040c, type: 3}
+  - {fileID: 21300000, guid: a216b0dd7c1b1d0488df9f3a98943fef, type: 3}
+  - {fileID: 21300000, guid: 3f36f8a3924d0374ba5e8036335b62b2, type: 3}
 --- !u!212 &8170786209459922501
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -86,18 +103,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &7781598474156903508
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4304504748139360636}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4907fb67a468806409f98bfc74b9763d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!58 &3952054211726273037
 CircleCollider2D:
   m_ObjectHideFlags: 0

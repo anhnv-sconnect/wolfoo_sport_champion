@@ -9,45 +9,41 @@ namespace WFSport.Gameplay.BasketballMode
     public class GameplayManager : MonoBehaviour, IMinigame
     {
         [SerializeField] private GameplayConfig config;
+        [SerializeField] private AssetRecordConfig assetConfig;
         [SerializeField] private Player player;
         [SerializeField] private Transform basketHolder;
         [SerializeField] private ScoreManager scoreAnimManager;
-        [SerializeField] private int totalBasket;
-        [SerializeField] private Basket basketPb;
 
+        private int totalBasket;
         private Basket[] myBaskets;
         private IMinigame.Data myData;
         private float maxScore;
         private MultiplayerGameUI ui;
+        private AssetRecordConfig.BasketMode level;
 
         public IMinigame.Data ExternalData { get => myData; set => myData = value; }
         private void Start()
         {
             EventManager.OnGetScore += OnPlayerGetScore;
-            EventManager.OnShootingBomb += OnShootingBomb;
             Init();
             OnGameStart();
         }
         private void OnDestroy()
         {
             EventManager.OnGetScore -= OnPlayerGetScore;
-            EventManager.OnShootingBomb -= OnShootingBomb;
-        }
-
-        private void OnShootingBomb(Base.Player basePlayer)
-        {
-            ui.UpdateLoadingBar(player.Score / maxScore);
         }
 
         private void OnPlayerGetScore(Base.Player basePlayer, Vector3 endPos)
         {
+            scoreAnimManager.Setup(player.Score.changed);
             scoreAnimManager.Play(endPos);
-            ui.UpdateLoadingBar(player.Score / maxScore);
+            ui.UpdateLoadingBar(player.Score.total / maxScore);
         }
 
         private void CreateBasket()
         {
-        //    totalBasket = UnityEngine.Random.Range(1, 5);
+            //    totalBasket = UnityEngine.Random.Range(1, 5);
+            totalBasket = level.records.Length;
             myBaskets = new Basket[totalBasket];
             var range = (config.movingXRange.y - config.movingXRange.x) / 2 / totalBasket + config.spawnRange;
             for (var i = 0; i < totalBasket; i++)
@@ -65,6 +61,7 @@ namespace WFSport.Gameplay.BasketballMode
                     if (totalBasket % 2 == 0) side = 1 * (i + 2) / 2;
                 }
                 var xPos = range * side;
+                var basketPb = level.records[i];
                 var basket = Instantiate(basketPb, new Vector3(xPos, yPos, 0), basketPb.transform.rotation, basketHolder);
                 myBaskets[i] = basket;
                 basket.Setup(config);
@@ -80,13 +77,20 @@ namespace WFSport.Gameplay.BasketballMode
                     coin = 0,
                     playTime = 90,
                     timelineScore = new float[] { 10, 20, 40 },
+                    level = 0,
                 };
             }
             maxScore = myData.timelineScore[myData.timelineScore.Length - 1];
             ui = FindAnyObjectByType<MultiplayerGameUI>();
             ui.Setup(myData.playTime, myData.timelineScore);
 
+            if (myData.level == 1) level = assetConfig.mode1;
+            else if (myData.level == 2) level = assetConfig.mode2;
+            else if (myData.level == 3) level = assetConfig.mode3;
+            else level = assetConfig.modeTest;
+
             player.Setup(config);
+            player.Init();
             CreateBasket();
             scoreAnimManager.CreateAnim(totalBasket);
         }

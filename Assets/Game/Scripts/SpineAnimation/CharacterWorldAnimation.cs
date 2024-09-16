@@ -70,6 +70,15 @@ public class CharacterWorldAnimation : MonoBehaviour
         _tween?.Kill();
     }
 
+    public void SetTimeScale(int value)
+    {
+        SkeletonAnim.timeScale = value;
+    }
+    public void SetLayer(int value)
+    {
+        GetComponent<MeshRenderer>().sortingOrder = value; // set the order in layer to 2
+    }
+
     public void PlayJumpAnim()
     {
         PlayJump();
