@@ -14,13 +14,28 @@ namespace WFSport.Gameplay.CreateEnergyMode
         private float pouringSpeed;
         private Vector3 beginJumpPos;
         private Sequence anim;
+        private bool canDrag;
 
-        private void Start()
-        {
-        }
+        public Action<Glass> OnEndDrag;
+
         private void OnDestroy()
         {
             anim?.Kill();
+        }
+        private void OnMouseDown()
+        {
+            if (!canDrag) return;
+            transform.position = ScreenHelper.GetMousePos();
+        }
+        private void OnMouseDrag()
+        {
+            if (!canDrag) return;
+            transform.position = ScreenHelper.GetMousePos();
+        }
+        private void OnMouseUp()
+        {
+            if (!canDrag) return;
+            OnEndDrag?.Invoke(this);
         }
 
         internal void Setup(float pouringTime)
@@ -30,6 +45,10 @@ namespace WFSport.Gameplay.CreateEnergyMode
             water.size = size;
 
             pouringSpeed = waterHeight / pouringTime;
+        }
+        internal void SetupDrag(bool value)
+        {
+            canDrag = value;
         }
 
         internal void OnPouringWater()

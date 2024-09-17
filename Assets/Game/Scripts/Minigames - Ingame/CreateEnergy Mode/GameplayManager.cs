@@ -15,11 +15,13 @@ namespace WFSport.Gameplay.CreateEnergyMode
         [SerializeField] private Straw strawPb;
         [SerializeField] private GameplayConfig config;
         [SerializeField] private AssetConfig asset;
-        [SerializeField] private GlassManager glasManager;
+        [SerializeField] private GlassManager glassManager;
+        [SerializeField] private Player player;
 
         private int totalFruit;
         private int totalStraw;
         private int countFruitInBlender;
+        private int totalGlass => glassManager.TotalGlass;
 
         private Sprite[] fruitData;
         private Sprite[] strawData;
@@ -27,6 +29,8 @@ namespace WFSport.Gameplay.CreateEnergyMode
         private StrawScrollItem[] strawScrollItems;
         private IMinigame.Data myData;
         private int grindingCount;
+        private int countStraw;
+        private Glass orderingGlass;
 
         public IMinigame.Data ExternalData { get => myData; set => myData = value; }
 
@@ -69,7 +73,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
                     blender.Grind(() =>
                     {
                         // Pouring
-                        glasManager.GetNextGlassofWater((glass) =>
+                        glassManager.GetNextGlassofWater((glass) =>
                         {
                             blender.Pouring(glass.transform.position,
                             () =>
@@ -82,8 +86,9 @@ namespace WFSport.Gameplay.CreateEnergyMode
                                 glass.JumpBacktoTray(null);
 
                                 grindingCount++;
-                                if (grindingCount == glasManager.TotalGlass)
+                                if (grindingCount == totalGlass)
                                 {
+                                    blender.MoveOut();
                                     StartCoroutine("InitStrawDataScroll");
                                 }
                             });
@@ -93,55 +98,103 @@ namespace WFSport.Gameplay.CreateEnergyMode
                 }
             });
         }
+
         private void CreateStraw(StrawScrollItem scrollItem)
         {
-            if (countFruitInBlender >= config.maxFruitInBlender) return;
-            countFruitInBlender++;
+            if (countStraw > totalGlass) return;
+            if (countStraw == totalGlass)
+            {
+                player.MoveIn(() =>
+                {
+                    glassManager.EnableDrag();
+                });
+                return;
+            }
+            countStraw++;
 
             var straw = Instantiate(strawPb);
             straw.transform.position = scrollItem.transform.position;
             straw.Setup(scrollItem.Icon);
+            straw.JumpTo(orderingGlass.transform.position, orderingGlass.transform, () =>
+            {
+                orderingGlass.JumpBacktoTray(() =>
+                {
+                    glassManager.GetNextGlassofWater((glass) =>
+                    {
+                        orderingGlass = glass;
+                    });
+                });
+            });
         }
 
         private void Init()
         {
+            fruitData = asset.fruitData;
             totalFruit = fruitData.Length;
-            totalStraw = strawData.Length;
             fruitScrollInfinity.Setup(totalFruit, this);
+            fruitScrollInfinity.MoveOut(true);
+
+            strawData = asset.strawData;
+            totalStraw = strawData.Length;
             strawScrollInfinity.Setup(totalStraw, this);
+            strawScrollInfinity.MoveOut(true);
+
             blender.Setup();
-            glasManager.SetUp(config);
-            StartCoroutine("InitFruitDataScroll");
+
+            glassManager.SetUp(config);
+            glassManager.OnEndDrag = OnGlassEndDrag;
         }
+
+        private void OnGlassEndDrag(Glass glass)
+        {
+            player.Drink();
+        }
+
         private IEnumerator InitFruitDataScroll()
         {
+            yield return new WaitUntil(() =>
+            {
+                return fruitScrollInfinity.ListItem.Count == totalFruit;
+            });
             yield return new WaitForEndOfFrame();
-            if(fruitScrollInfinity.ListItem.Count != totalFruit) { StartCoroutine("InitFruitDataScroll"); }
-            var count = 0;
+
             var items = fruitScrollInfinity.MaskTrans.GetComponentsInChildren<FruitScrollItem>(true);
             fruitScrollItems = new FruitScrollItem[items.Length];
+            var count = 0;
             foreach (var item in items)
             {
                 item.Setup(fruitData[count],blender.transform.position);
-                items[count] = item;
+                fruitScrollItems[count] = item;
                 item.OnDragInSide += CreateFruit;
                 count++;
             }
+            fruitScrollInfinity.MoveIn();
         }
         private IEnumerator InitStrawDataScroll()
         {
-            yield return new WaitForEndOfFrame();
-            if(strawScrollInfinity.ListItem.Count != totalFruit) { StartCoroutine("InitStrawDataScroll"); }
-            var count = 0;
-            var items = strawScrollInfinity.MaskTrans.GetComponentsInChildren<StrawScrollItem>(true);
-            fruitScrollItems = new FruitScrollItem[items.Length];
-            foreach (var item in items)
+            yield return new WaitUntil(() =>
             {
-                item.Setup(fruitData[count],blender.transform.position);
-                items[count] = item;
-                item.OnDragInSide += CreateStraw;
-                count++;
-            }
+                return strawScrollInfinity.ListItem.Count == totalStraw;
+            });
+            yield return new WaitForEndOfFrame();
+
+            var items = strawScrollInfinity.MaskTrans.GetComponentsInChildren<StrawScrollItem>(true);
+            strawScrollItems = new StrawScrollItem[items.Length];
+
+            glassManager.GetNextGlassofWater((glass) =>
+            {
+                orderingGlass = glass;
+                // Move StrawScroll in Screen
+                var count = 0;
+                foreach (var item in items)
+                {
+                    item.Setup(strawData[count], glass.transform.position);
+                    strawScrollItems[count] = item;
+                    item.OnDragInSide += CreateStraw;
+                    count++;
+                }
+                strawScrollInfinity.MoveIn();
+            });
         }
 
         public void OnGameLosing()
@@ -158,6 +211,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
 
         public void OnGameStart()
         {
+            StartCoroutine("InitStrawDataScroll");
             blender.OpenLid(null);
         }
 

@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,47 @@ namespace SCN.UIExtend
 {
     public class VerticalScrollInfinity : ScrollInfinityBase
 	{
+        private Sequence moveAnim;
+        private bool isMyInit;
+        private RectTransform rectTrans;
+        private Vector3 initLocalPos;
+
+        private void OnDestroy()
+        {
+			moveAnim?.Kill();
+        }
+        private void Start()
+        {
+			MyInit();
+        }
+        private void MyInit()
+		{
+			if (isMyInit) return;
+			isMyInit = true;
+
+			rectTrans = GetComponent<RectTransform>();
+			initLocalPos = transform.localPosition;
+		}
+
+        internal void MoveOut(bool isImmediately = false)
+		{
+			MyInit();
+			moveAnim?.Kill();
+			if(isImmediately)
+			{
+                rectTrans.anchoredPosition = new Vector3(160, initLocalPos.y, initLocalPos.z);
+				return;
+			}
+            moveAnim = DOTween.Sequence()
+				.Append(transform.DOLocalMoveX(160, 0.5f).SetEase(Ease.InBack));
+		}
+        internal void MoveIn()
+		{
+			MyInit();
+			moveAnim?.Kill();
+			moveAnim = DOTween.Sequence()
+				.Append(transform.DOLocalMoveX(initLocalPos.x, 0.5f).SetEase(Ease.OutBack));
+		}
 		public override void MoveDelta(float delta)
 		{
 			for (int i = 0; i < maskTrans.childCount; i++)
