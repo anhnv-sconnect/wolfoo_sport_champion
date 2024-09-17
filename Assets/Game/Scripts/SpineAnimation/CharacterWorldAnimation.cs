@@ -4,6 +4,8 @@ using Helper;
 using Spine.Unity;
 public class CharacterWorldAnimation : MonoBehaviour
 {
+    [SerializeField] CharacterName _name;
+
     [Header("<======== SKIN =======>")]
     [SerializeField, SpineSkin] string[] skinList;
 
@@ -53,6 +55,19 @@ public class CharacterWorldAnimation : MonoBehaviour
     private AnimState animState;
     private Tween _tween;
 
+    public CharacterName Name { get => _name; }
+
+    public enum CharacterName
+    {
+        Alien,
+        Buffo,
+        Kat,
+        Lucy,
+        MomyKat,
+        Pando,
+        Piggy,
+        Wolfoo,
+    }
     public enum SkinType
     {
         Normal,

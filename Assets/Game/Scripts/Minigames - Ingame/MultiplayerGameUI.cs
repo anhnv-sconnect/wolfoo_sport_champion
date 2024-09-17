@@ -44,6 +44,10 @@ namespace WFSport.Gameplay
             mainCharacterSignal.localPosition = new Vector3(mainCharacterSignal.localPosition.x, wolfooNormalizePos, 0);
             otherCharacterSignal.localPosition = new Vector3(mainCharacterSignal.localPosition.x, alienNormalizePos, 0);
         }
+        internal void SetupSinglePlayer()
+        {
+            otherCharacterSignal.gameObject.SetActive(false);
+        }
 
         internal override void UpdateLoadingBar(float value)
         {
@@ -54,7 +58,7 @@ namespace WFSport.Gameplay
             mainCharacterSignal.SetAsLastSibling();
             fillBar.transform.SetAsLastSibling();
 
-            _tweenLoadingBar?.Kill();
+            _tweenLoadingBar?.Complete();
             _tweenLoadingBar = DOTween.Sequence()
                 .Append(fillBar.DOFillAmount(value, 0.5f))
                 .Join(mainCharacterSignal.DOLocalMoveY(wolfooNormalizePos, 0.5f));

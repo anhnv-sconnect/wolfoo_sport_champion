@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WFSport.Helper;
 
 namespace WFSport.Gameplay.BasketballMode
 {
@@ -9,39 +10,62 @@ namespace WFSport.Gameplay.BasketballMode
     {
         [SerializeField] Ball ballPb;
         [SerializeField] Transform basket;
-        [SerializeField] CharacterWorldAnimation characterAnim;
+        [SerializeField] protected CharacterWorldAnimation characterAnim;
 
         private bool isReloading;
         private Vector3 myTouchPos;
-        private Basket verifiedBasket;
-        private GameplayConfig config;
-
-        private Ball[] poolingBalls;
         private int countBall;
-        private IMinigame.GameState gameState;
-        private Ball currentBall;
         private int myScore;
+        private bool isAutoThrowing;
+        private Vector2 screenSize;
 
+        private Basket verifiedBasket;
+        private Ball currentBall;
+        private Ball[] poolingBalls;
+        protected GameplayConfig config;
+        protected LevelConfig.Mode level;
+        protected GameplayManager gameManager;
+        private IMinigame.GameState gameState;
+        protected float reloadTime;
+
+        public int Score { get => myScore; }
+        public CharacterWorldAnimation CharacterAnim { get => characterAnim; }
         protected override IMinigame.GameState GameplayState { get => gameState; set => gameState = value; }
-        public (int total, int changed) Score { get; private set; }
 
         #region UNITY METHODS
         private void Start()
         {
             EventManager.OnBallTracking += OnBallTracking;
-           // Init();
+            EventManager.OnBallShootingTarget += OnBallShootingTarget;
+            // Init();
         }
         private void OnDestroy()
         {
             EventManager.OnBallTracking -= OnBallTracking;
+            EventManager.OnBallShootingTarget -= OnBallShootingTarget;
         }
 
         #endregion
 
         #region MY METHODS
-        internal void Setup(GameplayConfig config)
+        internal virtual void Setup(GameplayConfig config, LevelConfig.Mode mode, GameplayManager gameManager)
         {
             this.config = config;
+            level = mode;
+            this.gameManager = gameManager;
+
+            reloadTime = config.reloadTime;
+            screenSize = ScreenHelper.GetMaxPosition();
+        }
+        internal virtual void Create(CharacterWorldAnimation pb)
+        {
+            characterAnim = Instantiate(pb, transform);
+
+            characterAnim.transform.localPosition = Vector3.zero;
+            characterAnim.PlayBackIdleAnim();
+            characterAnim.SetTimeScale(2);
+            characterAnim.SetLayer(5);
+            characterAnim.transform.rotation = Quaternion.Euler(Vector3.up * 0);
         }
         private void OnBallTracking(Player player, Basket basket)
         {
@@ -59,10 +83,34 @@ namespace WFSport.Gameplay.BasketballMode
                 poolingBalls[countBall] = ball;
             }
             ball.Setup(config, this);
+            ball.Show();
 
             countBall++;
             if (countBall >= poolingBalls.Length) countBall = 0;
             return ball;
+        }
+        protected void PlayAutoThrowing()
+        {
+            isAutoThrowing = true;
+
+            var isShootingTarget = UnityEngine.Random.Range(0, 100) <= level.botShootingTargetPercent;
+            if(isShootingTarget)
+            {
+                var rdBasket = gameManager.GetRandomBasketInScreen;
+                myTouchPos = rdBasket.HolePos;
+            }
+            else
+            {
+                var xPos = UnityEngine.Random.Range(-screenSize.x, screenSize.x);
+                var yPos = UnityEngine.Random.Range(-screenSize.y, screenSize.y);
+                myTouchPos = new Vector3(xPos, yPos, 0);
+            }
+
+            StartCoroutine("BeginThrow");
+        }
+        protected void StopAutoThrowing()
+        {
+            StopCoroutine("BeginThrow");
         }
 
         private IEnumerator BeginThrow()
@@ -77,48 +125,42 @@ namespace WFSport.Gameplay.BasketballMode
 
             if (verifiedBasket != null)
             {
-                myScore++;
-                Score = (myScore, 1);
-
-                currentBall.FlyTo(verifiedBasket.HolePos, verifiedBasket.transform);
-                if(verifiedBasket.HasBomb)
-                {
-                    myScore += config.effectBombScore;
-                    Score = (myScore, config.effectBombScore);
-                }
-
-                if (verifiedBasket.BonusItem.isPlaying)
-                {
-                    myScore += verifiedBasket.BonusItem.score;
-                    Score = (myScore, verifiedBasket.BonusItem.score + 1);
-                }
+                currentBall.FlyTo(verifiedBasket.HolePos, verifiedBasket);
             }
             else
             {
                 currentBall.FlyTo(myTouchPos, null);
             }
 
-            yield return new WaitForSeconds(config.reloadTime);
+            yield return new WaitForSeconds(reloadTime);
             currentBall = GetNextBall();
-            currentBall.Show();
 
             isReloading = false;
+
+            if(isAutoThrowing)
+            {
+                PlayAutoThrowing();
+            }
         }
 
+        private void OnBallShootingTarget(Ball ball)
+        {
+            if (ball.PLayer != this) return;
+
+            var basket = ball.TargetBasket;
+            myScore += basket.Score;
+
+            EventManager.OnGetScore?.Invoke(this);
+        }
         #endregion
 
         #region OVERRIDE METHODS
         public override void Init()
         {
-            int totalBallTime = Mathf.Max(Mathf.CeilToInt(config.flyTime * 3), Mathf.FloorToInt(config.reloadTime)) + 1; // => Time FlyIn and FlyOut
+            int totalBallTime = Mathf.Max(Mathf.CeilToInt(config.flyTime * 3), Mathf.FloorToInt(reloadTime)) + 1; // => Time FlyIn and FlyOut
             poolingBalls = new Ball[totalBallTime];
             ballPb.Hide();
             currentBall = GetNextBall();
-            currentBall.Show();
-            countBall = 0;
-            characterAnim.PlayBackIdleAnim();
-            characterAnim.SetTimeScale(2);
-            characterAnim.SetLayer(5);
         }
 
         public override void Lose()
@@ -147,6 +189,10 @@ namespace WFSport.Gameplay.BasketballMode
 
         public override void Pause(bool isSystem)
         {
+            if(isSystem)
+            {
+                gameState = IMinigame.GameState.Pausing;
+            }
         }
 
         public override void Play()

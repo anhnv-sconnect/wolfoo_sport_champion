@@ -29,5 +29,7 @@ namespace WFSport.Gameplay.BasketballMode
         [Header("=============== BOMB ===============")]
         public float aliveTime;
         public int effectBombScore;
+
+
     }
 }

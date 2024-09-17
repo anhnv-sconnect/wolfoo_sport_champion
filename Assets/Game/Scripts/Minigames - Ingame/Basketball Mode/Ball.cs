@@ -12,6 +12,9 @@ namespace WFSport.Gameplay.BasketballMode
     {
         [SerializeField] BoneFollower playerHandBone;
         private Vector3 targetPos;
+
+        public Basket TargetBasket { get; private set; }
+
         private bool isFlying;
         private Sequence tweenFlying;
         private bool isTriggerWithObstacle;
@@ -26,16 +29,14 @@ namespace WFSport.Gameplay.BasketballMode
         private float flyTime;
         private float scaleRange;
         private float flyingPower;
-        private Player myPLayer;
+        private bool isAlreadyInit;
 
+        private Player myPLayer;
         public Player PLayer { get => myPLayer; }
 
         private void Start()
         {
-            radius = GetComponent<CircleCollider2D>().radius;
-            screenPosRange = ScreenHelper.GetMaxPosition();
-            screenPixelSize = ScreenHelper.GetMaxPizelSize();
-
+            Init();
         }
         private void OnDestroy()
         {
@@ -68,8 +69,19 @@ namespace WFSport.Gameplay.BasketballMode
             }
         }
 
+        private void Init()
+        {
+            if (isAlreadyInit) return;
+            isAlreadyInit = true;
+            radius = GetComponent<CircleCollider2D>().radius;
+            screenPosRange = ScreenHelper.GetMaxPosition();
+            screenPixelSize = ScreenHelper.GetMaxPizelSize();
+        }
+
         internal void Setup(GameplayConfig config, Player player)
         {
+            Init();
+
             basketHeight = config.height;
             rotateSpeed = config.rotateSpeed;
             flyingPower = config.flyingPower;
@@ -77,6 +89,7 @@ namespace WFSport.Gameplay.BasketballMode
             scaleRange = config.scaleRange;
 
             isFlying = false;
+            playerHandBone.skeletonRenderer = player.CharacterAnim.SkeletonAnim;
 
             if (initParent == null)
             {
@@ -104,20 +117,22 @@ namespace WFSport.Gameplay.BasketballMode
         private void Hiding()
         {
             gameObject.SetActive(false);
-            playerHandBone.enabled = true;
+            //     playerHandBone.enabled = true;
         }
 
-        internal void FlyTo(Vector3 endPos, Transform basket)
+        internal void FlyTo(Vector3 endPos, Basket basket)
         {
             isFlying = true;
             isInsideBasket = false;
             targetPos = endPos;
+            TargetBasket = basket;
+
             var isBasket = basket != null;
             var throwDirection = targetPos - transform.position;
 
             tweenFlying = DOTween.Sequence()
                 .Append(transform.DOJump(targetPos, flyingPower, 1, flyTime).SetEase(Ease.Flash)
-                .OnStart(() => { playerHandBone.enabled = false; }));
+                    .OnStart(() => { playerHandBone.enabled = false; }));
 
             if (isBasket)
             {
@@ -125,8 +140,8 @@ namespace WFSport.Gameplay.BasketballMode
                     .AppendCallback(() =>
                     {
                         isInsideBasket = true;
-                        transform.SetParent(basket);
-                        EventManager.OnGetScore?.Invoke(myPLayer, targetPos);
+                        transform.SetParent(basket.transform);
+                        EventManager.OnBallShootingTarget?.Invoke(this);
                     })
                     .Append(transform.DOLocalMoveY(transform.position.y - basketHeight, 0.5f));
             }

@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Spine;
 using System;
 using System.Collections;
@@ -50,16 +51,30 @@ namespace WFSport.Gameplay.BasketballMode
         private Bomb bomb;
         private BonusItem bonusItem;
         private GameplayConfig config;
-        private bool posVerified;
+        private AssetRecordConfig assetConfig;
+        private Player myPlayer;
 
         public Vector3 HolePos { get => hole.position; }
         public bool HasBomb { get => bomb != null && bomb.IsShowing; }
-        public (bool isPlaying, int score) BonusItem  { get; private set; }
+        public bool HasBonusItem { get => bonusItem != null && bonusItem.IsShowing; }
+        public Player Player { get => myPlayer; }
+
+        public int Score
+        {
+            get
+            {
+                var score = 1;
+                if (HasBomb) { score += config.effectBombScore; }
+                if (HasBonusItem) { score += bonusItem.Score; }
+
+                return score;
+            }
+        }
 
         private void Start()
         {
             EventManager.OnThrow += OnPlayerThrow;
-            EventManager.OnGetScore += OnPlayerGetScore;
+            EventManager.OnBallShootingTarget += OnBallShootingTarget;
 
             holeRange = transform.position.y - hole.position.y;
             screenPixelSize = ScreenHelper.GetMaxPizelSize();
@@ -69,7 +84,7 @@ namespace WFSport.Gameplay.BasketballMode
         private void OnDestroy()
         {
             EventManager.OnThrow -= OnPlayerThrow;
-            EventManager.OnGetScore -= OnPlayerGetScore;
+            EventManager.OnBallShootingTarget -= OnBallShootingTarget;
         }
         private void Update()
         {
@@ -92,10 +107,13 @@ namespace WFSport.Gameplay.BasketballMode
             }
         }
 
-        private void OnPlayerGetScore(Base.Player player, Vector3 vector)
+        private void OnBallShootingTarget(Ball ball)
         {
-            if (bomb != null && posVerified) bomb.Hide();
-            if (bonusItem != null && posVerified) bonusItem.Hide();
+            DOVirtual.DelayedCall(0.1f, () =>
+            {
+                if (bomb != null && this == ball.TargetBasket ) bomb.Hide(true);
+                if (bonusItem != null && this ==  ball.TargetBasket) bonusItem.Hide(true);
+            });
         }
         private void Calculate()
         {
@@ -123,15 +141,8 @@ namespace WFSport.Gameplay.BasketballMode
                 if (countTime >= bonusItemData[timelineID.bonus].timeline)
                 {
                     var score = bonusItemData[timelineID.bonus].score;
-                    bonusItem.Setup(score);
-                    bonusItem.Show(() =>
-                    {
-                        BonusItem = (true, score);
-                    }, 
-                    () =>
-                    {
-                        BonusItem = (false, 0);
-                    });
+                    bonusItem.Setup(score, assetConfig.claimScoreSprites);
+                    bonusItem.Show();
                     timelineID.bonus++;
                 }
             }
@@ -151,9 +162,10 @@ namespace WFSport.Gameplay.BasketballMode
 
             StartCoroutine("CountTime");
         }
-        internal void Setup(GameplayConfig config)
+        internal void Setup(GameplayConfig config, AssetRecordConfig assetConfig)
         {
             this.config = config;
+            this.assetConfig = assetConfig;
 
             distanceVerified = config.insideDistance;
             scaleRange = config.scaleRange;
@@ -194,31 +206,16 @@ namespace WFSport.Gameplay.BasketballMode
         internal void Pause()
         {
             isPausing = true;
-            StopCoroutine("DelayMoving");
             StopCoroutine("CountTime");
             if (bomb != null) bomb.Pause();
             if (bonusItem != null) bonusItem.Pause();
         }
 
-
-        private void OnDelayAll(Basket basket)
-        {
-            StartCoroutine("DelayMoving");
-        }
-
-        private IEnumerator DelayMoving()
-        {
-            isMoving = false;
-            yield return new WaitForSeconds(ballFlyTime * 2);
-            isMoving = true;
-        }
-
         private void OnPlayerThrow(Player player, Vector3 pos)
         {
-            posVerified = false;
             if (Vector2.Distance(pos, HolePos) <= distanceVerified)
             {
-                posVerified = true;
+                myPlayer = player;
                 EventManager.OnBallTracking?.Invoke(player, this);
             }
         }

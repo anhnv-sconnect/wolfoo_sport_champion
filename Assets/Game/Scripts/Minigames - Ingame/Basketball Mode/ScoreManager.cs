@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -17,26 +18,42 @@ namespace WFSport.Gameplay.BasketballMode
         private TMP_Text[] scoreTxts;
         private int count;
 
+        private void Start()
+        {
+            var canvas = GetComponentInChildren<Canvas>();
+            if(canvas != null) canvas.worldCamera = Camera.main;
+
+            EventManager.OnBallShootingTarget += OnBallShootingTarget;
+        }
+        private void OnDestroy()
+        {
+            EventManager.OnBallShootingTarget -= OnBallShootingTarget;
+        }
+
+        private void OnBallShootingTarget(Ball ball)
+        {
+            Play(ball.TargetBasket.Score, ball.TargetBasket.HolePos);
+        }
+
         internal void CreateAnim(int total)
         {
             scoreAnims = new Animator[total];
             scoreTxts = new TMP_Text[total];
-            for (int i = 0; i < total; i++)
+        }
+        internal void Play(int score, Vector3 pos)
+        {
+            var scoreAnim = scoreAnims[count];
+            if(scoreAnim == null)
             {
-                var scoreAnim = Instantiate(scoreAnimPb, transform);
-                scoreAnims[i] = scoreAnim;
-                scoreTxts[i] = scoreAnim.GetComponentInChildren<TMP_Text>();
+                scoreAnim = Instantiate(scoreAnimPb, transform);
+                scoreAnims[count] = scoreAnim;
+                scoreTxts[count] = scoreAnim.GetComponentInChildren<TMP_Text>();
             }
-        }
-        internal void Setup(int score)
-        {
+
             scoreTxts[count].text = score >= 0 ? $"+{score}" : $"{score}";
-        }
-        internal void Play(Vector3 pos)
-        {
-            var score = scoreAnims[count];
-            score.transform.position = pos;
-            score.Play(playName, 0, 0);
+            scoreAnim.transform.position = pos;
+            scoreAnim.Play(playName, 0, 0);
+
             count++;
             if (count >= scoreAnims.Length) count = 0;
         }

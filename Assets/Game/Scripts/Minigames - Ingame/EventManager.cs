@@ -31,7 +31,8 @@ namespace WFSport.Gameplay
         public static Action<BasketballMode.Player, BasketballMode.Basket> OnBallTracking;
         public static Action<BasketballMode.Player, Vector3> OnThrow;
         public static Action<BasketballMode.Basket> DelayAll;
-        public static Action<Base.Player, Vector3> OnGetScore;
+        public static Action<Base.Player> OnGetScore;
+        public static Action<BasketballMode.Ball> OnBallShootingTarget;
 
         public static Action<CreateEnergyMode.Fruit> OnFruitJumpIn;
     }

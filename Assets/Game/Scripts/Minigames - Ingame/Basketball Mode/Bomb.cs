@@ -34,19 +34,21 @@ namespace WFSport.Gameplay.BasketballMode
             animHide?.Play();
             animShow?.Play();
         }
-        private IEnumerator DelayToHide()
-        {
-            yield return new WaitForSeconds(aliveTime);
-            Hide();
-        }
         internal void Setup(GameplayConfig config)
         {
             aliveTime = config.aliveTime;
             transform.localScale = Vector3.zero;
         }
-        internal void Hide()
+        internal void Hide(bool isImmediately = false)
         {
             animShow?.Kill();
+            if(isImmediately)
+            {
+                IsShowing = false;
+                transform.localScale = Vector3.zero;
+                return;
+            }
+
             animHide = DOTween.Sequence()
                 .Append(transform.DOScale(Vector3.zero, 0.5f));
             animHide.OnComplete(() =>
