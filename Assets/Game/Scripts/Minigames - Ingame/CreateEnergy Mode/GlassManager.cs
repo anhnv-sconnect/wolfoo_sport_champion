@@ -9,6 +9,8 @@ namespace WFSport.Gameplay.CreateEnergyMode
         [SerializeField] Glass[] allGlass;
         private int countGlass = -1;
 
+        public int TotalGlass { get; private set; }
+
         internal void SetUp(GameplayConfig config)
         {
             foreach (var glass in allGlass)

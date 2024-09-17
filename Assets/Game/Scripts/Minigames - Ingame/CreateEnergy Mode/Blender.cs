@@ -28,6 +28,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
         private float grindingAnimTime = 2;
         private float pouringAnimTime = 2;
         private Sequence animShaking;
+        private Sequence animMoveOut;
         private Sequence lidAnim;
         private bool canGrinding;
         private List<Fruit> myFruits;
@@ -54,6 +55,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
         {
             EventManager.OnFruitJumpIn -= OnFruitJumpIn;
             animShaking?.Kill();
+            animMoveOut?.Kill();
             lidAnim?.Kill();
         }
 
@@ -71,6 +73,13 @@ namespace WFSport.Gameplay.CreateEnergyMode
             if (!canGrinding) return;
             canGrinding = false;
             OnGrinding();
+        }
+
+        internal void MoveOut()
+        {
+            animMoveOut = DOTween.Sequence()
+                .Append(transform.DOMoveX(outSideX, 0.5f));
+
         }
 
         private void OnFruitJumpIn(Fruit fruit)
@@ -108,10 +117,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
             animator.Play(grindAnimName, 0, 0);
             var loop = grindingAnimTime / 0.5f;
             animShaking?.Kill();
-            foreach (var fruit in myFruits)
-            {
-                fruit.Dancing();
-            }
+            foreach (var fruit in myFruits) { fruit.Dancing(); }
             animShaking = DOTween.Sequence()
                 .Append(transform.DOPunchPosition(Vector3.one * 0.1f, 0.5f, 1).SetLoops((int)loop, LoopType.Restart))
                 .AppendCallback(() => {
@@ -137,17 +143,6 @@ namespace WFSport.Gameplay.CreateEnergyMode
                 OnGrindingComplete = OnComplete;
             });
         }
-        //private void OnDrawGizmos()
-        //{
-        //    Gizmos.color = Color.red;
-
-        //    var direction = transform.position - pourArea.position;
-        //    var range = (Mathf.Cos((55) * Mathf.Deg2Rad) * 2 * direction.magnitude)
-        //        * new Vector3(1 / direction.x, 1 / direction.y, 0);
-        //    range = new Vector3(range.x, range.y, 0);
-        //    Debug.Log(range);
-        //    Gizmos.DrawLine(range, pourArea.position);
-        //}
         internal void Pouring(Vector3 endPos, System.Action OnPouring, System.Action OnComplete)
         {
             endPos = new Vector3(0.4f, 1.384f);

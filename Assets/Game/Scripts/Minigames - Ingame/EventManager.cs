@@ -35,5 +35,6 @@ namespace WFSport.Gameplay
         public static Action<BasketballMode.Ball> OnBallShootingTarget;
 
         public static Action<CreateEnergyMode.Fruit> OnFruitJumpIn;
+        public static Action<CreateEnergyMode.Straw> OnStrawJumpIn;
     }
 }

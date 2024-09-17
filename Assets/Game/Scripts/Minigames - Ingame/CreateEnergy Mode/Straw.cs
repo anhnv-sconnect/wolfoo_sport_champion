@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace WFSport.Gameplay.CreateEnergyMode
 {
-    public class Fruit : MonoBehaviour
+    public class Straw : MonoBehaviour
     {
         [SerializeField] SpriteRenderer spriteRenderer;
         private Sequence jumpAnim;
@@ -27,7 +27,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
                 .Append(transform.DOJump(endPos, 3, 1, 0.5f));
             jumpAnim.OnComplete(() =>
             {
-                EventManager.OnFruitJumpIn?.Invoke(this);
+                EventManager.OnStrawJumpIn?.Invoke(this);
                 OnComplete?.Invoke();
             });
         }
