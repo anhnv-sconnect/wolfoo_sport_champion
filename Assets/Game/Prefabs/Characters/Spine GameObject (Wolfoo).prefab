@@ -75,6 +75,7 @@ MonoBehaviour:
   jumpWinAnim: Jump_Win
   throwBackAnim: Back_Throw
   backIdleAnim: Back_Idle
+  eatAnim: Eat
 --- !u!114 &2115124906092011077
 MonoBehaviour:
   m_ObjectHideFlags: 0

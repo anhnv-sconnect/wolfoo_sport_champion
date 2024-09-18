@@ -22,16 +22,19 @@ namespace WFSport.Gameplay.CreateEnergyMode
         private Vector3 startPos;
         private float outSideX;
         private Vector3 initLidPos;
-        private Canvas canvas;
         private int countPos = -2;
         private int maxCount = 2;
         private float grindingAnimTime = 2;
         private float pouringAnimTime = 2;
+        private bool canGrinding;
+
+        private Canvas canvas;
+        private List<Fruit> myFruits;
+
+        private Sequence powerBtnAnim;
         private Sequence animShaking;
         private Sequence animMoveOut;
         private Sequence lidAnim;
-        private bool canGrinding;
-        private List<Fruit> myFruits;
 
         public Action OnGrindingComplete { get; private set; }
 
@@ -57,6 +60,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
             animShaking?.Kill();
             animMoveOut?.Kill();
             lidAnim?.Kill();
+            powerBtnAnim?.Kill();
         }
 
         internal void Setup()
@@ -72,14 +76,15 @@ namespace WFSport.Gameplay.CreateEnergyMode
         {
             if (!canGrinding) return;
             canGrinding = false;
+            StopGrindTutorial();
             OnGrinding();
         }
 
         internal void MoveOut()
         {
+            lid.localPosition = initLidPos;
             animMoveOut = DOTween.Sequence()
-                .Append(transform.DOMoveX(outSideX, 0.5f));
-
+                .Append(transform.DOMoveX(outSideX + 3, 0.5f));
         }
 
         private void OnFruitJumpIn(Fruit fruit)
@@ -135,10 +140,25 @@ namespace WFSport.Gameplay.CreateEnergyMode
                 });
             });
         }
+        internal void StopGrindTutorial()
+        {
+            powerBtnAnim?.Kill();
+            powerBtn.transform.localScale = Vector3.one;
+        }
+        internal void PlayGrindTutorial()
+        {
+            powerBtnAnim?.Kill();
+            powerBtnAnim = DOTween.Sequence()
+                .Append(powerBtn.transform.DOScale(Vector3.one, 0))
+                .Append(powerBtn.transform.DOPunchScale(Vector3.one * 0.2f, 0.5f))
+                .AppendInterval(1)
+                .SetLoops(-1, LoopType.Restart);
+        }
         internal void Grind(System.Action OnComplete)
         {
             CloseLid(() =>
             {
+                PlayGrindTutorial();
                 canGrinding = true;
                 OnGrindingComplete = OnComplete;
             });
@@ -154,7 +174,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
                 {
                     animator.Play(pouringAnimName, 0, 0);
                 })
-                .AppendInterval(1)
+                .AppendInterval(1.25f)
                 .Append(DOVirtual.Float(0, 1, pouringAnimTime, (value) => { OnPouring?.Invoke(); }))
                 .Append(cup.DOMove(cupBeginPos, 0.5f));
             animShaking.OnComplete(() =>

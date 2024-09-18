@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: CreateEnergy Config
   m_EditorClassIdentifier: 
   maxFruitInBlender: 3
-  pouringTime: 1
+  pouringTime: 0.8

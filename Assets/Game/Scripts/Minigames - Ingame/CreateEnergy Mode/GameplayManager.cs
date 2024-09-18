@@ -30,6 +30,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
         private IMinigame.Data myData;
         private int grindingCount;
         private int countStraw;
+        private int playerDrinkingCount;
         private Glass orderingGlass;
 
         public IMinigame.Data ExternalData { get => myData; set => myData = value; }
@@ -56,6 +57,8 @@ namespace WFSport.Gameplay.CreateEnergyMode
                     if (strawScrollItems[i] != null) strawScrollItems[i].OnDragInSide -= CreateStraw;
                 }
             }
+            glassManager.OnGlassEndDrag -= OnGlassEndDrag;
+            CancelInvoke("OnGameWining");
         }
 
         private void CreateFruit(FruitScrollItem scrollItem)
@@ -68,48 +71,51 @@ namespace WFSport.Gameplay.CreateEnergyMode
             fruit.Setup(scrollItem.Icon);
             fruit.JumpTo(blender.FruitArea.position, blender.FruitArea.holder, () =>
             {
-                if (countFruitInBlender == config.maxFruitInBlender)
-                {
-                    blender.Grind(() =>
-                    {
-                        // Pouring
-                        glassManager.GetNextGlassofWater((glass) =>
-                        {
-                            blender.Pouring(glass.transform.position,
-                            () =>
-                            {
-                                glass.OnPouringWater();
-                            },
-                            () =>
-                            {
-                                countFruitInBlender = 0;
-                                glass.JumpBacktoTray(null);
+                BlenderGrinding();
+            });
+        }
+        private void BlenderGrinding()
+        {
+            if (countFruitInBlender != config.maxFruitInBlender) return;
 
-                                grindingCount++;
-                                if (grindingCount == totalGlass)
-                                {
-                                    blender.MoveOut();
-                                    StartCoroutine("InitStrawDataScroll");
-                                }
-                            });
+            blender.Grind(() =>
+            {
+                fruitScrollInfinity.MoveOut();
+                glassManager.MoveIn(grindingCount > 1, () =>
+                {
+                    // Pouring
+                    glassManager.GetNextGlassofWaterToPouringWater((glass) =>
+                    {
+                        blender.Pouring(glass.transform.position,
+                        () =>
+                        {
+                            glass.OnGettingWater();
+                        },
+                        () =>
+                        {
+                            countFruitInBlender = 0;
+                            glass.JumpBacktoTray(null);
+
+                            grindingCount++;
+                            if (grindingCount == totalGlass)
+                            {
+                                blender.MoveOut();
+                                StartCoroutine("InitStrawDataScroll");
+                            }else
+                            {
+                                fruitScrollInfinity.MoveIn();
+                            }
                         });
                     });
-                    return;
-                }
+                });
             });
         }
 
         private void CreateStraw(StrawScrollItem scrollItem)
         {
-            if (countStraw > totalGlass) return;
-            if (countStraw == totalGlass)
-            {
-                player.MoveIn(() =>
-                {
-                    glassManager.EnableDrag();
-                });
-                return;
-            }
+            if (countStraw >= totalGlass) return;
+            if (orderingGlass == null) return;
+            if (orderingGlass.IsJumping || orderingGlass.HasStraw) return;
             countStraw++;
 
             var straw = Instantiate(strawPb);
@@ -117,13 +123,31 @@ namespace WFSport.Gameplay.CreateEnergyMode
             straw.Setup(scrollItem.Icon);
             straw.JumpTo(orderingGlass.transform.position, orderingGlass.transform, () =>
             {
-                orderingGlass.JumpBacktoTray(() =>
+                orderingGlass.StrawJumpIn();
+                GlassJumpBack();
+            });
+        }
+        private void GlassJumpBack()
+        {
+            orderingGlass.JumpBacktoTray(() =>
+            {
+                if (countStraw == totalGlass)
                 {
-                    glassManager.GetNextGlassofWater((glass) =>
+                    strawScrollInfinity.MoveOut();
+                    glassManager.MoveToRight(null);
+                    player.MoveIn(() =>
+                    {
+                        glassManager.EnableDrag();
+                    });
+                    return;
+                }
+                else
+                {
+                    glassManager.GetNextGlassofWaterToGetStraw((glass) =>
                     {
                         orderingGlass = glass;
                     });
-                });
+                }
             });
         }
 
@@ -131,27 +155,38 @@ namespace WFSport.Gameplay.CreateEnergyMode
         {
             fruitData = asset.fruitData;
             totalFruit = fruitData.Length;
-            fruitScrollInfinity.Setup(totalFruit, this);
             fruitScrollInfinity.MoveOut(true);
 
             strawData = asset.strawData;
             totalStraw = strawData.Length;
-            strawScrollInfinity.Setup(totalStraw, this);
             strawScrollInfinity.MoveOut(true);
 
             blender.Setup();
 
             glassManager.SetUp(config);
-            glassManager.OnEndDrag = OnGlassEndDrag;
+            glassManager.MoveOut(true);
+            glassManager.OnGlassEndDrag += OnGlassEndDrag;
         }
 
         private void OnGlassEndDrag(Glass glass)
         {
-            player.Drink();
+            if (Vector2.Distance(glass.transform.position, player.MouthPos) < 2)
+            {
+                glassManager.DisableDrag(glass);
+                player.Drink();
+                glass.ReleaseWater(player.MouthPos);
+
+                playerDrinkingCount++;
+                if (playerDrinkingCount == totalGlass)
+                {
+                    Invoke("OnGameWining", 1.5f);
+                }
+            }
         }
 
         private IEnumerator InitFruitDataScroll()
         {
+            fruitScrollInfinity.Setup(totalFruit, this);
             yield return new WaitUntil(() =>
             {
                 return fruitScrollInfinity.ListItem.Count == totalFruit;
@@ -168,10 +203,15 @@ namespace WFSport.Gameplay.CreateEnergyMode
                 item.OnDragInSide += CreateFruit;
                 count++;
             }
+
             fruitScrollInfinity.MoveIn();
+            yield return new WaitForSeconds(0.5f);
+
+            blender.OpenLid(null);
         }
         private IEnumerator InitStrawDataScroll()
         {
+            strawScrollInfinity.Setup(totalStraw, this);
             yield return new WaitUntil(() =>
             {
                 return strawScrollInfinity.ListItem.Count == totalStraw;
@@ -181,10 +221,9 @@ namespace WFSport.Gameplay.CreateEnergyMode
             var items = strawScrollInfinity.MaskTrans.GetComponentsInChildren<StrawScrollItem>(true);
             strawScrollItems = new StrawScrollItem[items.Length];
 
-            glassManager.GetNextGlassofWater((glass) =>
+            glassManager.GetNextGlassofWaterToGetStraw((glass) =>
             {
                 orderingGlass = glass;
-                // Move StrawScroll in Screen
                 var count = 0;
                 foreach (var item in items)
                 {
@@ -211,8 +250,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
 
         public void OnGameStart()
         {
-            StartCoroutine("InitStrawDataScroll");
-            blender.OpenLid(null);
+            StartCoroutine("InitFruitDataScroll");
         }
 
         public void OnGameStop()
@@ -221,6 +259,9 @@ namespace WFSport.Gameplay.CreateEnergyMode
 
         public void OnGameWining()
         {
+            Debug.Log("ONGame WIning");
+            player.PlayWining();
+            glassManager.MoveOut(false);
         }
     }
 }

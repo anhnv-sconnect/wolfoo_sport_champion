@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using WFSport.Helper;
 
 namespace SCN.UIExtend
 {
@@ -10,8 +11,8 @@ namespace SCN.UIExtend
 	{
         private Sequence moveAnim;
         private bool isMyInit;
-        private RectTransform rectTrans;
-        private Vector3 initLocalPos;
+        private Vector2 outSide;
+        private Vector3 initPos;
 
         private void OnDestroy()
         {
@@ -26,8 +27,8 @@ namespace SCN.UIExtend
 			if (isMyInit) return;
 			isMyInit = true;
 
-			rectTrans = GetComponent<RectTransform>();
-			initLocalPos = transform.localPosition;
+			outSide = ScreenHelper.GetMaxPosition();
+			initPos = transform.position;
 		}
 
         internal void MoveOut(bool isImmediately = false)
@@ -36,18 +37,18 @@ namespace SCN.UIExtend
 			moveAnim?.Kill();
 			if(isImmediately)
 			{
-                rectTrans.anchoredPosition = new Vector3(160, initLocalPos.y, initLocalPos.z);
+				transform.position = new Vector3(outSide.x + 3.2f, initPos.y, 0);
 				return;
 			}
             moveAnim = DOTween.Sequence()
-				.Append(transform.DOLocalMoveX(160, 0.5f).SetEase(Ease.InBack));
+				.Append(transform.DOMoveX(outSide.x + 3.2f, 0.5f).SetEase(Ease.InBack));
 		}
         internal void MoveIn()
 		{
 			MyInit();
 			moveAnim?.Kill();
 			moveAnim = DOTween.Sequence()
-				.Append(transform.DOLocalMoveX(initLocalPos.x, 0.5f).SetEase(Ease.OutBack));
+				.Append(transform.DOMoveX(initPos.x, 0.5f).SetEase(Ease.OutBack));
 		}
 		public override void MoveDelta(float delta)
 		{

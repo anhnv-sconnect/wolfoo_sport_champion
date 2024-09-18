@@ -51,6 +51,8 @@ public class CharacterWorldAnimation : MonoBehaviour
     [SerializeField, SpineAnimation] private string throwBackAnim;
     [Header("BackIdle")]
     [SerializeField, SpineAnimation] private string backIdleAnim;
+    [Header("Eat")]
+    [SerializeField, SpineAnimation] private string eatAnim;
 
     private AnimState animState;
     private Tween _tween;
@@ -172,6 +174,16 @@ public class CharacterWorldAnimation : MonoBehaviour
     {
         _tween?.Kill();
         PlayJumpWin(isLoop);
+        if (!isLoop)
+        {
+            _tween?.Kill();
+            _tween = DOVirtual.DelayedCall(GetTimeAnimation(animState), () => PlayIdle());
+        }
+    }
+    public void PlayEatAnim(bool isLoop = true)
+    {
+        _tween?.Kill();
+        PlayEat(isLoop);
         if (!isLoop)
         {
             _tween?.Kill();
@@ -413,6 +425,12 @@ public class CharacterWorldAnimation : MonoBehaviour
         animState = AnimState.BackIdle;
         AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, backIdleAnim, isLoop);
     }
+    private void PlayEat(bool isLoop)
+    {
+        if (animState == AnimState.Eat) return;
+        animState = AnimState.Eat;
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, eatAnim, isLoop);
+    }
     public float GetTimeAnimation(AnimState animState)
     {
         Spine.Animation myAnimation = null;
@@ -480,6 +498,9 @@ public class CharacterWorldAnimation : MonoBehaviour
             case AnimState.BackIdle:
                 myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(backIdleAnim);
                 break;
+            case AnimState.Eat:
+                myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(eatAnim);
+                break;
         }
 
         if (myAnimation == null) return 0;
@@ -526,6 +547,7 @@ public class CharacterWorldAnimation : MonoBehaviour
         JumpWin,
         Throwback,
         BackIdle,
+        Eat,
     }
     #endregion
    

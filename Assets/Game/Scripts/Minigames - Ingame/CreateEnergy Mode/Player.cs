@@ -9,11 +9,14 @@ namespace WFSport.Gameplay.CreateEnergyMode
 {
     public class Player : MonoBehaviour
     {
+        [SerializeField] Transform mouth;
         [SerializeField] CharacterWorldAnimation characterAnim;
         private Sequence moveAnim;
         private bool isInit;
         private Vector3 initPos;
         private Vector2 maxPos;
+
+        public Vector3 MouthPos { get => mouth.position; }
 
         private void OnDestroy()
         {
@@ -36,8 +39,12 @@ namespace WFSport.Gameplay.CreateEnergyMode
 
         internal void Drink()
         {
-            Debug.Log("Player Drinking");
-            // Character play Eating
+            characterAnim.PlayIdleAnim();
+            characterAnim.PlayEatAnim(false);
+        }
+        internal void PlayWining()
+        {
+            characterAnim.PlayJumpWinAnim(true);
         }
 
         internal void MoveOut(Action OnComplete = null, bool isImmediately = false)
@@ -45,7 +52,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
             moveAnim?.Kill();
             if (isImmediately)
             {
-                transform.position = new Vector3(-(maxPos.x + 2), initPos.x, initPos.z);
+                transform.position = new Vector3(-(maxPos.x + 2), initPos.y, initPos.z);
                 OnComplete?.Invoke();
                 return;
             }
