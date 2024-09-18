@@ -19,6 +19,7 @@ II. Gameplay
   - Coin
   - Total Score
   - State: back, lose, win
+  - Level
 
  b. Flow
  - Có nút back
