@@ -1,7 +1,9 @@
+using AnhNV.GameBase;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace WFSport.Home
 {
@@ -10,10 +12,17 @@ namespace WFSport.Home
         [SerializeField] private EllipseLayout ellipseLayout;
         [SerializeField] private ModeItem modePb;
         [SerializeField] private Sprite[] modeAsset;
+        [SerializeField] private Button settingBtn;
+
         private ModeItem[] modeItems;
         private void Start()
         {
+            settingBtn.onClick.AddListener(OnClickSetting);
             InitData();
+        }
+
+        private void OnClickSetting()
+        {
         }
 
         private void InitData()
