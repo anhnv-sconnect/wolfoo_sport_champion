@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace WFSport.Base
 {
-    [CreateAssetMenu(fileName = "DataCore Config", menuName = "Core Data", order = 1)]
+    [CreateAssetMenu(fileName = "DataCore Config", menuName = "Core Data / ConfigData Minigames", order = 1)]
     public class ConfigDataManager : ScriptableObject
     {
 
