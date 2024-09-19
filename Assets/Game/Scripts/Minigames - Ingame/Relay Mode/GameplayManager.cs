@@ -1,4 +1,5 @@
 using AnhNV.GameBase;
+using AnhNV.Helper;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
@@ -7,6 +8,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using WFSport.Base;
+using WFSport.Helper;
 
 namespace WFSport.Gameplay.RelayMode
 {
@@ -19,8 +22,6 @@ namespace WFSport.Gameplay.RelayMode
         [SerializeField] private Player.Mode CurrentMode;
         [SerializeField] private Vector3 cameraRange;
         [SerializeField] private float levelScore;
-
-        private IMinigame.Data myData;
 
         private int levelIdx;
         private int playerScore;
@@ -44,7 +45,11 @@ namespace WFSport.Gameplay.RelayMode
         private Tween _tweenDelay;
 
         public Transform GameplayHolder { get => transform; }
-        public IMinigame.Data ExternalData { get => myData; set => myData = value; }
+
+        private IMinigame.ConfigData myData;
+        private IMinigame.ResultData result;
+        public IMinigame.ConfigData InternalData { get => myData; set => myData = value; }
+        IMinigame.ResultData IMinigame.ExternalData { get => result; set => result = value; }
 
         private void Awake()
         {
@@ -61,7 +66,7 @@ namespace WFSport.Gameplay.RelayMode
             EventManager.OnTimeOut += OnGameLosing;
             EventManager.OnBarrierCompareDistanceWithPlayer += OnCompareDistancePlayer;
             EventDispatcher.Instance.RegisterListener<EventKeyBase.OpenDialog>(OnOpenDialog);
-            EventDispatcher.Instance.RegisterListener<EventKeyBase.OnClosingDialog>(OnClosingDialog);
+            EventDispatcher.Instance.RegisterListener<EventKeyBase.CloseDialog>(OnClosingDialog);
 
             EventManager.OnInitGame?.Invoke();
         }
@@ -77,7 +82,7 @@ namespace WFSport.Gameplay.RelayMode
             EventManager.OnTimeOut -= OnGameLosing;
             EventManager.OnBarrierCompareDistanceWithPlayer -= OnCompareDistancePlayer;
             EventDispatcher.Instance.RemoveListener<EventKeyBase.OpenDialog>(OnOpenDialog);
-            EventDispatcher.Instance.RemoveListener<EventKeyBase.OnClosingDialog>(OnClosingDialog);
+            EventDispatcher.Instance.RemoveListener<EventKeyBase.CloseDialog>(OnClosingDialog);
         }
 
         public void OnGameWining()
@@ -87,6 +92,7 @@ namespace WFSport.Gameplay.RelayMode
                 Debug.Log("Completed All Level !!!!!!!!!!!");
                 ui.PauseTime();
                 OnGameStop();
+                OnEndgame(IMinigame.MatchResult.Win);
             }
             else
             {
@@ -96,11 +102,21 @@ namespace WFSport.Gameplay.RelayMode
                 StartCoroutine("PlayNextLevel");
             }
         }
+        private void OnEndgame(IMinigame.MatchResult matchResult)
+        {
+            result = new IMinigame.ResultData()
+            {
+                claimedCoin = 0,
+                gamestate = matchResult,
+            };
+            DataTransporter.GameplayResultData = result;
+        }
 
         public void OnGameLosing()
         {
             player.Current.Lose();
             OnGameStop();
+            OnEndgame(IMinigame.MatchResult.Lose);
         }
 
         public void OnGamePause()
@@ -119,9 +135,8 @@ namespace WFSport.Gameplay.RelayMode
         {
             if (myData == null)
             {
-                myData = new IMinigame.Data()
+                myData = new IMinigame.ConfigData()
                 {
-                    coin = 0,
                     playTime = 180,
                     timelineScore = new float[] { levelScore / 3, levelScore * 2 / 3, levelScore }
                 };
@@ -216,9 +231,11 @@ namespace WFSport.Gameplay.RelayMode
 
         public void OnGameStop()
         {
+            ui.PauseTime();
+            player.Current.Pause(true);
         }
 
-        private void OnClosingDialog(EventKeyBase.OnClosingDialog obj)
+        private void OnClosingDialog(EventKeyBase.CloseDialog obj)
         {
             if (obj.dialog == PopupManager.DialogName.Pause)
             {

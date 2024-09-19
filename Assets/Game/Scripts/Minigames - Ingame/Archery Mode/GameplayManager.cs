@@ -22,7 +22,6 @@ namespace WFSport.Gameplay.ArcheryMode
         [SerializeField] private BombController bombController;
         [SerializeField] private IdleMarker tutorialMarker;
 
-        private IMinigame.Data myData;
         private IdleMarker[] curRandomMarkers;
         private MovingMarker[] poolingMovingMarkers;
         private int markedCount;
@@ -35,11 +34,15 @@ namespace WFSport.Gameplay.ArcheryMode
 
         private Sequence _tweenSpecialArrow;
 
-        public IMinigame.Data ExternalData { get => myData; set => myData = value; }
         public MovingMarker[] MovingMarkers { get => poolingMovingMarkers; }
         public IdleMarker[] IdleMarkers { get => curRandomMarkers; }
         public Vector2 ScreenWidthRange { get; private set; }
         public Vector2 ScreenHeightRange { get; private set; }
+
+        private IMinigame.ConfigData myData;
+        private IMinigame.ResultData result;
+        public IMinigame.ConfigData InternalData { get => myData; set => myData = value; }
+        IMinigame.ResultData IMinigame.ExternalData { get => result; set => result = value; }
 
         [NaughtyAttributes.Button]
         private void SortingLayer()
@@ -342,9 +345,8 @@ namespace WFSport.Gameplay.ArcheryMode
         {
             if(myData == null)
             {
-                ExternalData = new IMinigame.Data()
+                InternalData = new IMinigame.ConfigData()
                 {
-                    coin = 0,
                     playTime = 90,
                     timelineScore = new float[] { 10, 20, 40 },
                 };

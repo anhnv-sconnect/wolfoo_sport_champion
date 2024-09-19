@@ -19,14 +19,17 @@ namespace WFSport.Gameplay.BasketballMode
 
         private int totalBasket;
         private Basket[] myBaskets;
-        private IMinigame.Data myData;
         private float maxScore;
         private MultiplayerGameUI ui;
         private LevelConfig.Mode curLevel;
         private bool HasBot => myData.level > 1;
 
-        public IMinigame.Data ExternalData { get => myData; set => myData = value; }
         public Basket GetRandomBasketInScreen { get => myBaskets[UnityEngine.Random.Range(0, myBaskets.Length)]; }
+
+        private IMinigame.ConfigData myData;
+        private IMinigame.ResultData result;
+        public IMinigame.ConfigData InternalData { get => myData; set => myData = value; }
+        IMinigame.ResultData IMinigame.ExternalData { get => result; set => result = value; }
 
         private void Start()
         {
@@ -95,9 +98,8 @@ namespace WFSport.Gameplay.BasketballMode
         {
             if (myData == null)
             {
-                ExternalData = new IMinigame.Data()
+                myData = new IMinigame.ConfigData()
                 {
-                    coin = 0,
                     playTime = 90,
                     timelineScore = new float[] { 10, 20, 40 },
                     level = 0,

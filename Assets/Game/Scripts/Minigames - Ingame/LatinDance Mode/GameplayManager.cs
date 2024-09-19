@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WFSport.Helper;
 
 namespace WFSport.Gameplay.LatinDanceMode
 {
@@ -18,12 +19,17 @@ namespace WFSport.Gameplay.LatinDanceMode
         [SerializeField] Sprite[] data;
         [SerializeField] Player player;
 
-        private IMinigame.Data myData;
         private float finalScore;
         private MinigameUI ui;
         private float score;
 
-        public IMinigame.Data ExternalData { get => myData; set => myData = value; }
+        private IMinigame.ConfigData myData;
+        private IMinigame.ResultData result;
+        private IMinigame.MatchResult matchResult;
+        private float beginTime;
+
+        public IMinigame.ConfigData InternalData { get => myData; set => myData = value; }
+        IMinigame.ResultData IMinigame.ExternalData { get => result; set => result = value; }
 
         [NaughtyAttributes.Button]
         private void CreateRandomItems()
@@ -147,10 +153,9 @@ namespace WFSport.Gameplay.LatinDanceMode
         {
             if (myData == null)
             {
-                myData = new IMinigame.Data()
+                myData = new IMinigame.ConfigData()
                 {
                     playTime = 180,
-                    coin = 0,
                     timelineScore = new float[] { 20, 50, 80 }
                 };
             }
@@ -174,10 +179,23 @@ namespace WFSport.Gameplay.LatinDanceMode
             }
         }
 
+        private void OnEndgame()
+        {
+            result = new IMinigame.ResultData()
+            {
+                claimedCoin = 0,
+                gamestate = matchResult,
+                playTime = Time.time - beginTime
+            };
+            DataTransporter.GameplayResultData = result;
+        }
+
         public void OnGameLosing()
         {
             ui.PauseTime();
             player.Pause(false);
+            matchResult = IMinigame.MatchResult.Lose;
+            OnEndgame();
         }
 
         public void OnGamePause()
@@ -194,6 +212,7 @@ namespace WFSport.Gameplay.LatinDanceMode
 
         public void OnGameStart()
         {
+            beginTime = Time.time;
             ui.OpenCountingToStart(() =>
             {
                 player.Init();
@@ -212,12 +231,16 @@ namespace WFSport.Gameplay.LatinDanceMode
         {
             ui.PauseTime();
             player.Pause(true);
+            matchResult = IMinigame.MatchResult.Lose;
+            OnEndgame();
         }
 
         public void OnGameWining()
         {
             ui.PauseTime();
             player.PlayWining();
+            matchResult = IMinigame.MatchResult.Win;
+            OnEndgame();
         }
     }
 }

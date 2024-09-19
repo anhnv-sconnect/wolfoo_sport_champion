@@ -99,7 +99,9 @@ namespace WFSport.Gameplay.CreateEnergyMode
             anim?.Kill();
             IsJumping = true;
             var endPos = initParent.TransformPoint(initLocalPos);
-            anim = DOTween.Sequence().Append(transform.DOJump(endPos, 1, 1, 0.5f));
+            anim = DOTween.Sequence()
+                .Append(transform.DOJump(endPos, 1, 1, 0.5f))
+                .Join(transform.DOScale(Vector3.one, 0.5f));
             anim.OnComplete(() =>
             {
                 OnComplete?.Invoke();

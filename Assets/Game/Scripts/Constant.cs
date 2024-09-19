@@ -21,9 +21,12 @@ namespace WFSport
                 public const int UI = 5;
                 public const int CHARACTER = 6;
             }
-
-            public static TAG Tag;
-            public static LAYER Layer;
+            public struct SCENE
+            {
+                public const string GAMEPLAY = "Gameplay Scene";
+                public const string HOME = "Home Scene";
+                public const string LOADING = "Loading Scene";
+            }
         }
     }
 

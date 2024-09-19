@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static AnhNV.GameBase.PopupManager;
 
-namespace AnhNV.GameBase
+namespace WFSport.Base
 {
     public class EventKeyBase : IEventParams
     {
@@ -12,9 +12,15 @@ namespace AnhNV.GameBase
         {
             public DialogName dialog;
         }
-        public struct OnClosingDialog : IEventParams
+        public struct CloseDialog : IEventParams
         {
             public DialogName dialog;
         }
+        public struct ChangeScene: IEventParams
+        {
+            public bool home;
+            public bool loading;
+            public bool gameplay;
+        }   
     }
 }

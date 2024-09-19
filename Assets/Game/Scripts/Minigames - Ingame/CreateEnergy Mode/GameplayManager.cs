@@ -27,13 +27,15 @@ namespace WFSport.Gameplay.CreateEnergyMode
         private Sprite[] strawData;
         private FruitScrollItem[] fruitScrollItems;
         private StrawScrollItem[] strawScrollItems;
-        private IMinigame.Data myData;
         private int grindingCount;
         private int countStraw;
         private int playerDrinkingCount;
         private Glass orderingGlass;
 
-        public IMinigame.Data ExternalData { get => myData; set => myData = value; }
+        private IMinigame.ConfigData myData;
+        private IMinigame.ResultData result;
+        public IMinigame.ConfigData InternalData { get => myData; set => myData = value; }
+        IMinigame.ResultData IMinigame.ExternalData { get => result; set => result = value; }
 
         private void Start()
         {

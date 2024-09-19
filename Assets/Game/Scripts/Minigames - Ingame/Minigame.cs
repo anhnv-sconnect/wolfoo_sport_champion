@@ -11,7 +11,7 @@ namespace WFSport.Gameplay
         [SerializeField] Button backBtn;
 
         protected IMinigame.GameState CurrentState;
-        private IMinigame.Data dataExport;
+        private IMinigame.ConfigData dataExport;
 
         private void OnEnable()
         {

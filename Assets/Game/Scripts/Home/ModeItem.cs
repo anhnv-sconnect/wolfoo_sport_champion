@@ -1,8 +1,10 @@
+using SCN;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using WFSport.Base;
 
 namespace WFSport.Home
 {
@@ -26,7 +28,7 @@ namespace WFSport.Home
 
         private void OnClickMe()
         {
-            Debug.Log("Go to Gameplay....");
+            EventDispatcher.Instance.Dispatch(new EventKeyBase.ChangeScene { gameplay = true });
         }
     }
 }

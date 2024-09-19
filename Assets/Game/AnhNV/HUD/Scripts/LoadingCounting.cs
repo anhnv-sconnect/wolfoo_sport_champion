@@ -1,3 +1,4 @@
+using AnhNV.Helper;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
@@ -5,8 +6,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using WFSport;
 
-namespace WFSport
+namespace AnhNV.Dialog
 {
     public class LoadingCounting : LoadingPanel
     {

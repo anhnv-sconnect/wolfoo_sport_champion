@@ -6,7 +6,8 @@ namespace WFSport.Gameplay
 {
     public interface IMinigame
     {
-        public Data ExternalData { get; set; }
+        public ResultData ExternalData { get; protected set; }
+        public ConfigData InternalData { get; set; }
         public void OnGameResume();
         public void OnGameStart();
         public void OnGameStop();
@@ -39,17 +40,27 @@ namespace WFSport.Gameplay
         /// Store Data Game
         /// </summary>
         [System.Serializable]
-        public class Data
+        public class ConfigData
         {
-            public int coin;
             public int playTime;
             public float[] timelineScore;
             public int level;
+            public int milestoneCoin;
+            public int normalPlusCoin;
+            public int specialPlusCoin;
+        }
+        [System.Serializable]
+        public class ResultData
+        {
+            public int claimedCoin;
+            public float playTime;
+            public MatchResult gamestate;
 
-            public Data()
+            public ResultData()
             {
-                coin = 0;
-                playTime = 180;
+                claimedCoin = 0;
+                playTime = 0;
+                gamestate = MatchResult.Lose;
             }
         }
     }

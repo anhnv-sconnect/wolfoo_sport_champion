@@ -20,7 +20,6 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         [SerializeField] CharacterWorldAnimation[] characters;
         [SerializeField] Player player; 
 
-        private IMinigame.Data myData;
         private MinigameUI ui;
         private ThrowingMachine curCharacter;
         private (int count, int index) obstacleSpawner;
@@ -29,7 +28,11 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         private TutorialSwipe catchToyStep;
         private float finalScore;
 
-        public IMinigame.Data ExternalData { get => myData; set => myData = value; }
+
+        private IMinigame.ConfigData myData;
+        private IMinigame.ResultData result;
+        public IMinigame.ConfigData InternalData { get => myData; set => myData = value; }
+        IMinigame.ResultData IMinigame.ExternalData { get => result; set => result = value; }
 
         private void Awake()
         {
@@ -171,8 +174,11 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         {
             if(myData == null)
             {
-                myData = new IMinigame.Data() { coin = 45, playTime = 60,
-                    timelineScore = new float[] { 15, 30, 45 } };
+                myData = new IMinigame.ConfigData()
+                {
+                    playTime = 60,
+                    timelineScore = new float[] { 15, 30, 45 }
+                };
             }
             finalScore = myData.timelineScore[myData.timelineScore.Length - 1];
             ui.Setup(myData.playTime, myData.timelineScore);

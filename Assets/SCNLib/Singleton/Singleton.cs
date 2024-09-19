@@ -121,6 +121,7 @@ public class SingletonResources<T> : SingletonMono<T> where T : Component {
 
     public static T Instance {
         get {
+            Debug.Log("Instantiate");
             if (instance != null) return instance;
             instance = Instantiate(Resources.Load<GameObject>(PrefabPath)).GetComponent<T>();
             if (instance == null) Debug.LogErrorFormat("[{0}] Wrong resources path: {1}!", typeof(T).Name, PrefabPath);

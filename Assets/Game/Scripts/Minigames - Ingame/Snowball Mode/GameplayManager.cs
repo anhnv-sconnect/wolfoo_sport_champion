@@ -3,6 +3,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WFSport.Helper;
+using static WFSport.Gameplay.IMinigame;
 
 namespace WFSport.Gameplay.SnowballMode
 {
@@ -17,13 +19,15 @@ namespace WFSport.Gameplay.SnowballMode
         [SerializeField] private Transform[] seats;
         [SerializeField] private Transform otherItemInMapHolder;
 
-        private IMinigame.Data myData;
         private MinigameUI ui;
         private float totalSnowballClaimed;
         private float maxScore;
         private Tutorial tutorial;
 
-        public IMinigame.Data ExternalData { get => myData; set => myData = value; }
+        private IMinigame.ConfigData myData;
+        private IMinigame.ResultData result;
+        public IMinigame.ConfigData InternalData { get => myData; set => myData = value; }
+        IMinigame.ResultData IMinigame.ExternalData { get => result; set => result = value; }
 
         // Start is called before the first frame update
         void Start()
@@ -57,9 +61,8 @@ namespace WFSport.Gameplay.SnowballMode
         {
             if(myData == null)
             {
-                myData = new IMinigame.Data()
+                myData = new IMinigame.ConfigData()
                 {
-                    coin = 0,
                     playTime = 60,
                     timelineScore = new float[] { 2, 4, 6 },
                 };
@@ -109,10 +112,21 @@ namespace WFSport.Gameplay.SnowballMode
             }
         }
 
+        private void OnEndgame(MatchResult matchResult)
+        {
+            result = new IMinigame.ResultData()
+            {
+                claimedCoin = 0,
+                gamestate = matchResult,
+            };
+            DataTransporter.GameplayResultData = result;
+        }
+
         public void OnGameLosing()
         {
             ui.PauseTime();
             player.Pause(true);
+            OnEndgame(MatchResult.Lose);
         }
 
         public void OnGamePause()
@@ -137,12 +151,14 @@ namespace WFSport.Gameplay.SnowballMode
         {
             ui.PauseTime();
             player.Pause(true);
+            OnEndgame(MatchResult.Lose);
         }
 
         public void OnGameWining()
         {
             ui.PauseTime();
             player.Pause();
+            OnEndgame(MatchResult.Win);
         }
     }
 }

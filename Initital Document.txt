@@ -9,6 +9,9 @@ Mode Archery: 26/08/2024 -
 
 <!!!> Nên tạo 1 con player tutorial riêng <!!!>
 
+GamePLay
+Mode1: 
+
 MiniGame
 I. Nước tăng lực
  Mini gameplay ở ngoài màn Home

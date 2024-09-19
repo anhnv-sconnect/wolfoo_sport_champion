@@ -9,6 +9,9 @@ using DG.Tweening.Plugins.Options;
 using TMPro;
 using SCN;
 using AnhNV.GameBase;
+using AnhNV.Dialog;
+using AnhNV.Helper;
+using WFSport.Base;
 
 namespace WFSport.Gameplay
 {
@@ -49,7 +52,9 @@ namespace WFSport.Gameplay
         {
             Holder.PlaySound?.Invoke();
             Holder.OpenDialog?.Invoke("PauseDialog");
-            EventDispatcher.Instance.Dispatch(new EventKeyBase.OpenDialog { dialog = PopupManager.DialogName.Pause});
+            Debug.Log("Click Back");
+        //    EventDispatcher.Instance.Dispatch(new EventKeyBase.OpenDialog { dialog = PopupManager.DialogName.Pause});
+            EventDispatcher.Instance.Dispatch(new EventKeyBase.ChangeScene { home = true });
         }
 
         private IEnumerator CountTime()

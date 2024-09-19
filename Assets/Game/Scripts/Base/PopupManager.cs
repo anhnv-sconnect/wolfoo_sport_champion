@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using WFSport.Base;
 
 namespace AnhNV.GameBase
 {
@@ -33,15 +34,15 @@ namespace AnhNV.GameBase
         private void Start()
         {
             EventDispatcher.Instance.RegisterListener<EventKeyBase.OpenDialog>(OpenDialog);   
-            EventDispatcher.Instance.RegisterListener<EventKeyBase.OnClosingDialog>(OnClosing);
+            EventDispatcher.Instance.RegisterListener<EventKeyBase.CloseDialog>(OnClosing);
         }
         private void OnDestroy()
         {
             EventDispatcher.Instance.RemoveListener<EventKeyBase.OpenDialog>(OpenDialog);
-            EventDispatcher.Instance.RemoveListener<EventKeyBase.OnClosingDialog>(OnClosing);
+            EventDispatcher.Instance.RemoveListener<EventKeyBase.CloseDialog>(OnClosing);
         }
 
-        private void OnClosing(EventKeyBase.OnClosingDialog obj)
+        private void OnClosing(EventKeyBase.CloseDialog obj)
         {
             popup.SetActive(false);
         }

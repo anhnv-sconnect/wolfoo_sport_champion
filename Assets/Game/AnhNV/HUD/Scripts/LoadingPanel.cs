@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace WFSport
+namespace AnhNV.Dialog
 {
     public abstract class LoadingPanel : MonoBehaviour
     {
