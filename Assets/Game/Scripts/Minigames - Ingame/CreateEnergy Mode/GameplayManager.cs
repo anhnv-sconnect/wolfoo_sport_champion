@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WFSport.Base;
 
 namespace WFSport.Gameplay.CreateEnergyMode
 {
@@ -34,6 +35,8 @@ namespace WFSport.Gameplay.CreateEnergyMode
 
         private IMinigame.ConfigData myData;
         private IMinigame.ResultData result;
+        private LocalDataCreateEnergy localData;
+
         public IMinigame.ConfigData InternalData { get => myData; set => myData = value; }
         IMinigame.ResultData IMinigame.ExternalData { get => result; set => result = value; }
 
@@ -155,6 +158,8 @@ namespace WFSport.Gameplay.CreateEnergyMode
 
         private void Init()
         {
+            localData = LocalDataManager.Instance.createEnergyData;
+
             fruitData = asset.fruitData;
             totalFruit = fruitData.Length;
             fruitScrollInfinity.MoveOut(true);
@@ -200,7 +205,8 @@ namespace WFSport.Gameplay.CreateEnergyMode
             var count = 0;
             foreach (var item in items)
             {
-                item.Setup(fruitData[count],blender.transform.position);
+                item.Setup(fruitData[count],blender.transform.position, 
+                    count < localData.fruitUnlocked.Length ? localData.fruitUnlocked[count] : true);
                 fruitScrollItems[count] = item;
                 item.OnDragInSide += CreateFruit;
                 count++;
@@ -229,7 +235,8 @@ namespace WFSport.Gameplay.CreateEnergyMode
                 var count = 0;
                 foreach (var item in items)
                 {
-                    item.Setup(strawData[count], glass.transform.position);
+                    item.Setup(strawData[count], glass.transform.position,
+                            count < localData.strawUnlocked.Length ? localData.strawUnlocked[count] : true);
                     strawScrollItems[count] = item;
                     item.OnDragInSide += CreateStraw;
                     count++;

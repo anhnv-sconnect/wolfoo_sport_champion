@@ -19,5 +19,11 @@ namespace WFSport.Gameplay
         {
             public CatchMoreToysMode.GameplayManager catchMoreToys;
         }
+        public struct UnlockLocalData : IEventParams
+        {
+            public int id;
+            public bool isFruit;
+            public bool isStraw;
+        }
     }
 }

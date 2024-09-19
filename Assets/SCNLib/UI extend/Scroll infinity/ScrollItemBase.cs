@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using SCN.Common;
+using UnityEngine.UI;
 
 namespace SCN.UIExtend
 {

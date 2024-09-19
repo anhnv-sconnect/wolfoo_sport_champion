@@ -1,21 +1,33 @@
+using AnhNV.GameBase;
+using SCN;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WFSport.Gameplay.BasketballMode;
 
 namespace WFSport.Base
 {
-    public class LocalDataManager : MonoBehaviour
+    public class LocalDataManager :  SingletonBind<LocalDataManager>
     {
-        // Start is called before the first frame update
-        void Start()
+        public LocalDataCreateEnergy createEnergyData;
+
+        private void Start()
         {
-        
+            EventDispatcher.Instance.RegisterListener<Gameplay.EventKey.UnlockLocalData>(OnUnlockLocalData);
+            createEnergyData.Load();
         }
 
-        // Update is called once per frame
-        void Update()
+        private void OnUnlockLocalData(Gameplay.EventKey.UnlockLocalData data)
         {
-        
+            if(data.isFruit)
+            {
+                createEnergyData.UnlockFruit(data.id);
+            }
+            else if(data.isStraw)
+            {
+                createEnergyData.UnlockStraw(data.id);
+            }
         }
     }
 }
