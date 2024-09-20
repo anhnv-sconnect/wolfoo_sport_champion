@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,8 +20,11 @@ namespace WFSport.Gameplay.FurnitureMode
         [SerializeField] Button btn;
         [SerializeField] Image icon;
         [SerializeField] Image coverImg;
+        [SerializeField] Color activeColor;
+        [SerializeField] Color DeactiveColor;
 
         public Action<Topic> Click;
+        private Sequence anim;
 
         public int Id { get; private set; }
         public Kind Type { get => type; }
@@ -28,11 +32,10 @@ namespace WFSport.Gameplay.FurnitureMode
         void Start()
         {
             btn.onClick.AddListener(OnClick);
-            Click += GetCLick;
         }
         private void OnDestroy()
         {
-            Click -= GetCLick;
+            anim?.Kill();
         }
 
         internal void Setup(int id, bool isClick)
@@ -42,25 +45,19 @@ namespace WFSport.Gameplay.FurnitureMode
             else Deactive();
         }
 
-        private void GetCLick(Topic obj)
-        {
-            if(obj == this)
-            {
-                Active();
-            }
-            else
-            {
-                Deactive();
-            }
-        }
-
         public void Active()
         {
-
+            coverImg.color = activeColor;
+            anim?.Complete();
+            anim = DOTween.Sequence()
+                .Append(transform.DOScale(Vector3.one * 1.5f, 0.15f))
+                .Append(transform.DOScale(Vector3.one * 1.3f, 0.15f));
         }
         public void Deactive()
         {
-
+            anim?.Kill();
+            coverImg.color = DeactiveColor;
+            transform.localScale = Vector3.one;
         }
 
         private void OnClick()

@@ -32,6 +32,7 @@ namespace WFSport.Gameplay.FurnitureMode
         }
         public void Spawn(Vector2 pos)
         {
+            spriteRenderer.sortingOrder = Base.Player.SortingLayer(pos);
             animReplace?.Kill();
             animReplace = DOTween.Sequence()
                 .Append(transform.DOMoveY(pos.y + 0.2f, 0))

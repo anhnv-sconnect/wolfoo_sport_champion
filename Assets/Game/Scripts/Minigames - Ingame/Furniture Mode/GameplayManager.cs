@@ -57,6 +57,12 @@ namespace WFSport.Gameplay.FurnitureMode
 
         private void OnClickTopic(Topic topic)
         {
+            foreach (var item in topics)
+            {
+                if (item == topic) item.Active();
+                else item.Deactive();
+            }
+
             var idx = topic.Id;
             topicId = idx;
             if (!scrollInfinitys[idx].IsAlready)

@@ -29,6 +29,7 @@ namespace WFSport.Gameplay.FurnitureMode
         private Sequence animUnlock;
 
         internal Action<ScrollItem> OnDragInSide;
+        internal Action<ScrollItem> OnBeginDrag;
 
         private void OnDestroy()
         {

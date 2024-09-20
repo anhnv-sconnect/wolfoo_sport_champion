@@ -284,8 +284,8 @@ SortingGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 16132829}
   m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -514261065
+  m_SortingLayer: -1
   m_SortingOrder: 1
   m_SortAtRoot: 0
 --- !u!1 &61432097
@@ -1417,6 +1417,8 @@ MonoBehaviour:
   btn: {fileID: 438898264}
   icon: {fileID: 789626088}
   coverImg: {fileID: 1215420405}
+  activeColor: {r: 0.97647065, g: 0.6509804, b: 0.82745105, a: 1}
+  DeactiveColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &471450209
 GameObject:
   m_ObjectHideFlags: 0
@@ -1557,6 +1559,8 @@ MonoBehaviour:
   btn: {fileID: 471450211}
   icon: {fileID: 298078165}
   coverImg: {fileID: 1862497474}
+  activeColor: {r: 0.97647065, g: 0.6509804, b: 0.82745105, a: 1}
+  DeactiveColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &478912070
 GameObject:
   m_ObjectHideFlags: 0
@@ -4843,6 +4847,8 @@ MonoBehaviour:
   btn: {fileID: 1378295861}
   icon: {fileID: 615514817}
   coverImg: {fileID: 1647769299}
+  activeColor: {r: 0.97647065, g: 0.6509804, b: 0.82745105, a: 1}
+  DeactiveColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1382445375
 GameObject:
   m_ObjectHideFlags: 0
@@ -5936,8 +5942,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -514261065
+  m_SortingLayer: -1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 15acab7e5460832479f0ed0066b4aa58, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -6180,7 +6186,7 @@ Transform:
   m_GameObject: {fileID: 1905051478}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.76, y: 2.68, z: 0}
+  m_LocalPosition: {x: 2.76, y: 0.06, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
