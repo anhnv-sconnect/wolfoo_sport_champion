@@ -12,18 +12,18 @@ using WFSport.Base;
 
 namespace WFSport.Gameplay.FurnitureMode
 {
-    public class ChairScrollItem : ScrollItem
+    public class OtherScrollItem : ScrollItem
     {
-        private Vector3 endPos;
-        public void Setup(Vector3 endPos)
-        {
-            this.endPos = endPos;
-        }
+        private Vector4 myLimit;
 
+        public void Setup(Vector4 limitPos)
+        {
+            myLimit = limitPos;
+        }
         protected override void OnEndDrag()
         {
-            var distance = Vector2.Distance(endPos, transform.position);
-            if(distance < 2)
+            if (transform.position.x > myLimit.x && transform.position.x < myLimit.z
+                && transform.position.y < myLimit.y && transform.position.y > myLimit.w)
             {
                 OnDragInSide?.Invoke(this);
             }

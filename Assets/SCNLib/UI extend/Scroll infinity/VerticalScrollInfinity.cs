@@ -14,6 +14,8 @@ namespace SCN.UIExtend
         private Vector2 outSide;
         private Vector3 initPos;
 
+		public bool IsAlready { get => isInit; }
+
         private void OnDestroy()
         {
 			moveAnim?.Kill();
@@ -30,7 +32,7 @@ namespace SCN.UIExtend
 			outSide = ScreenHelper.GetMaxPosition();
 			initPos = transform.position;
 		}
-
+		
         internal void MoveOut(bool isImmediately = false)
 		{
 			MyInit();

@@ -24,6 +24,9 @@ namespace WFSport.Gameplay
             public int id;
             public bool isFruit;
             public bool isStraw;
+            public bool isChair;
+            public bool isToy;
+            public bool isOther;
         }
     }
 }

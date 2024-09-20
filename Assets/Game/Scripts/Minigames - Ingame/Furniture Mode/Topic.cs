@@ -8,11 +8,22 @@ namespace WFSport.Gameplay.FurnitureMode
 {
     public class Topic : MonoBehaviour
     {
+        public enum Kind
+        {
+            None,
+            Toy,
+            Other,
+            Chair
+        }
+        [SerializeField] Kind type;
         [SerializeField] Button btn;
         [SerializeField] Image icon;
         [SerializeField] Image coverImg;
 
         public Action<Topic> Click;
+
+        public int Id { get; private set; }
+        public Kind Type { get => type; }
 
         void Start()
         {
@@ -22,6 +33,13 @@ namespace WFSport.Gameplay.FurnitureMode
         private void OnDestroy()
         {
             Click -= GetCLick;
+        }
+
+        internal void Setup(int id, bool isClick)
+        {
+            Id = id;
+            if (isClick) Active();
+            else Deactive();
         }
 
         private void GetCLick(Topic obj)
