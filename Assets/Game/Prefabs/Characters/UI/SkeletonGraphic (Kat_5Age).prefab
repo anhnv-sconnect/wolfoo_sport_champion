@@ -937,8 +937,8 @@ MonoBehaviour:
   skeletonAnim: {fileID: 7756361136905090042}
   idleAnim: Idle
   runAnim: Run_c
-  jumpAnim: 
-  happyAnim: 
+  jumpAnim: Jump
+  happyAnim: Laugh
   sadAnim: 
   specialAnim: 
   wavehandAnim: Order_2

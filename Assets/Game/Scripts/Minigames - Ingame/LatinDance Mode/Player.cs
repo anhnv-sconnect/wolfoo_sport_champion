@@ -43,7 +43,7 @@ namespace WFSport.Gameplay.LatinDanceMode
             if (GameplayState != IMinigame.GameState.Playing) return;
             if (collision.CompareTag(TAG.BONUSITEM))
             {
-                EventManager.OnPlayerClaimNewStar?.Invoke(this);
+                EventManager.OnPlayerClaimNewStar?.Invoke(this, false);
             }
         }
         #endregion

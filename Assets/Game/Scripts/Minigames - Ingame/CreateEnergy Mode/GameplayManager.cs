@@ -1,9 +1,11 @@
+using SCN;
 using SCN.UIExtend;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WFSport.Base;
+using WFSport.Helper;
 
 namespace WFSport.Gameplay.CreateEnergyMode
 {
@@ -64,6 +66,11 @@ namespace WFSport.Gameplay.CreateEnergyMode
             }
             glassManager.OnGlassEndDrag -= OnGlassEndDrag;
             CancelInvoke("OnGameWining");
+
+            if(result.gamestate != IMinigame.MatchResult.Win)
+            {
+                OnGameStop();
+            }
         }
 
         private void CreateFruit(FruitScrollItem scrollItem)
@@ -158,7 +165,9 @@ namespace WFSport.Gameplay.CreateEnergyMode
 
         private void Init()
         {
-            localData = LocalDataManager.Instance.createEnergyData;
+            myData = DataTransporter.GameplayConfig;
+            result = new IMinigame.ResultData();
+            localData = DataManager.Instance.localSaveloadData.createEnergyData;
 
             fruitData = asset.fruitData;
             totalFruit = fruitData.Length;
@@ -247,6 +256,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
 
         public void OnGameLosing()
         {
+            OnEndgame(IMinigame.MatchResult.Lose);
         }
 
         public void OnGamePause()
@@ -264,13 +274,19 @@ namespace WFSport.Gameplay.CreateEnergyMode
 
         public void OnGameStop()
         {
+            OnEndgame(IMinigame.MatchResult.Lose);
         }
-
+        private void OnEndgame(IMinigame.MatchResult matchResult)
+        {
+            result.gamestate = matchResult;
+            EventDispatcher.Instance.Dispatch(new EventKey.OnGameStop { data = result });
+        }
         public void OnGameWining()
         {
             Debug.Log("ONGame WIning");
             player.PlayWining();
             glassManager.MoveOut(false);
+            OnEndgame(IMinigame.MatchResult.Win);
         }
     }
 }

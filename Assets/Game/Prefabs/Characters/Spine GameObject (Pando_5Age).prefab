@@ -58,23 +58,24 @@ MonoBehaviour:
   idleAnim: Idle
   runAnim: Run_c
   jumpAnim: Jump
-  happyAnim: Laugn
+  happyAnim: Idle_Laugh
   sadAnim: Sad
-  specialAnim: Waving_hand
+  specialAnim: Special
   wavehandAnim: Waving
   dizzyAnim: Stuned
   slowAnim: Run_Slow
   runFastAnim: Run_ninja
   pushAnim: push_Fast
   throwAnim: Throw_Right
-  skating1Anim: 
-  skating2Anim: 
-  skating3Anim: 
-  skating4Anim: 
-  skating5Anim: 
-  jumpWinAnim: 
-  throwBackAnim: 
-  backIdleAnim: 
+  skating1Anim: Skating1
+  skating2Anim: Skating2
+  skating3Anim: Skating3
+  skating4Anim: Skating4
+  skating5Anim: Skating5
+  jumpWinAnim: Jump_Win
+  throwBackAnim: Back_Throw
+  backIdleAnim: Back_Idle
+  eatAnim: Eat
 --- !u!114 &2333381944212332598
 MonoBehaviour:
   m_ObjectHideFlags: 0

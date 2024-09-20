@@ -13,7 +13,7 @@ namespace WFSport.Gameplay
         }
         public struct OnGameStop : IEventParams
         {
-            public CatchMoreToysMode.GameplayManager catchMoreToys;
+            public IMinigame.ResultData data;
         }
         public struct OnGamePause : IEventParams
         {

@@ -8,9 +8,10 @@ namespace AnhNV.Dialog
 {
     public class LoadingLazy : LoadingPanel
     {
-        [SerializeField] Image bg;
+        [SerializeField] CanvasGroup bg;
         [SerializeField] Image fillImg;
 
+        private float playTime = 2;
         private Sequence anim;
 
         private void Start()
@@ -22,14 +23,18 @@ namespace AnhNV.Dialog
         {
             anim?.Kill();
         }
+        public void Setup(float time)
+        {
+            playTime = time;
+        }
         public override void Hide()
         {
             var fillValue = fillImg.fillAmount;
             anim?.Kill();
             anim = DOTween.Sequence()
-                .Append(fillImg.DOFillAmount(1, fillValue == 1 ? 0 : 0.5f))
-                .Join(bg.DOFade(1, 0))
-                .Append(bg.DOFade(0, 0.5f));
+                .Append(fillImg.DOFillAmount(1, fillValue == 1 ? 0 : 0.25f))
+                .Join(bg.DOFade(1, 0.25f))
+                .Append(bg.DOFade(0, 0.25f));
             anim.OnComplete(() =>
             {
                 gameObject.SetActive(false);
@@ -44,7 +49,7 @@ namespace AnhNV.Dialog
             fillImg.fillAmount = 0;
             anim = DOTween.Sequence()
                 .Append(bg.DOFade(1, 0.5f))
-                .Join(fillImg.DOFillAmount(1, 2));
+                .Join(fillImg.DOFillAmount(1, playTime));
             anim.OnComplete(() =>
             {
                 OnShow?.Invoke();

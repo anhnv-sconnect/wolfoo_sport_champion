@@ -55,9 +55,9 @@ TagManager:
   - name: MinigameUI
     uniqueID: 313164717
     locked: 0
-  - name: UI
-    uniqueID: 1527279537
-    locked: 0
   - name: Tutorial
     uniqueID: 1582323313
+    locked: 0
+  - name: UI
+    uniqueID: 1527279537
     locked: 0

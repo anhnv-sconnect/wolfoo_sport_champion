@@ -7,7 +7,6 @@ namespace WFSport.Helper
 {
     public static class DataTransporter
     {
-        public static IMinigame.ConfigData GameplayConfigData;
-        public static IMinigame.ResultData GameplayResultData;
+        public static IMinigame.ConfigData GameplayConfig;
     }
 }

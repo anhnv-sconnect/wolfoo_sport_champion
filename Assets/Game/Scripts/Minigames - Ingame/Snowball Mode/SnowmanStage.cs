@@ -58,6 +58,7 @@ namespace WFSport
             {
                 snowmanIdleRenders[i].enabled = false;
             }
+            animator.gameObject.SetActive(false);
         }
 
         internal void BuildNextSnowball(System.Action OnCompleted)

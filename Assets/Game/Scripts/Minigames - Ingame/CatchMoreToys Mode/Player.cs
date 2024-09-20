@@ -69,13 +69,14 @@ namespace WFSport.Gameplay.CatchMoreToysMode
                 score += 2;
                 UpdateScore();
                 OnGetItem();
+                EventManager.OnPlayerClaimNewStar?.Invoke(this, true);
             }
             else if (collision.CompareTag(TAG.STAR))
             {
                 score++;
                 UpdateScore();
                 OnGetItem();
-                EventManager.OnPlayerClaimNewStar?.Invoke(this);
+                EventManager.OnPlayerClaimNewStar?.Invoke(this, false);
             }
             else if(collision.CompareTag(TAG.OBSTACLE))
             {

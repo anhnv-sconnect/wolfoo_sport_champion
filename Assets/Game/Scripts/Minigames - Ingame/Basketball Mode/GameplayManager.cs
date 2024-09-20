@@ -1,8 +1,10 @@
 using DG.Tweening;
+using SCN;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WFSport.Helper;
 
 namespace WFSport.Gameplay.BasketballMode
 {
@@ -49,6 +51,13 @@ namespace WFSport.Gameplay.BasketballMode
             if (basePlayer == player)
             {
                 ui.UpdateLoadingBar(player.Score / maxScore);
+
+                result.claimedCoin += myData.normalPlusCoin;
+                if (ui.TotalStarClaimed > 0 && player.Score == myData.timelineScore[ui.TotalStarClaimed - 1])
+                {
+                    result.claimedCoin += myData.milestoneCoin;
+                }
+
                 if (player.Score > maxScore)
                 {
                     ui.UpdateLoadingBar(1);
@@ -96,6 +105,8 @@ namespace WFSport.Gameplay.BasketballMode
 
         private void Init()
         {
+            result = new IMinigame.ResultData();
+            myData = DataTransporter.GameplayConfig;
             if (myData == null)
             {
                 myData = new IMinigame.ConfigData()
@@ -110,8 +121,10 @@ namespace WFSport.Gameplay.BasketballMode
             else if (myData.level == 3) curLevel = levelConfig.mode3;
             else curLevel = levelConfig.modeTest;
 
+            myData.timelineScore = curLevel.timelineScores;
             maxScore = myData.timelineScore[curLevel.timelineScores.Length - 1];
-            ui = FindAnyObjectByType<MultiplayerGameUI>();
+            ui = FindAnyObjectByType<MultiplayerGameUI>(FindObjectsInactive.Include);
+            ui.gameObject.SetActive(true);
             ui.Setup(myData.playTime, curLevel.timelineScores);
             if (!HasBot) ui.SetupSinglePlayer();
 
@@ -144,6 +157,7 @@ namespace WFSport.Gameplay.BasketballMode
             {
                 basket.Pause();
             }
+            OnEndgame(IMinigame.MatchResult.Lose);
         }
 
         public void OnGamePause()
@@ -183,6 +197,7 @@ namespace WFSport.Gameplay.BasketballMode
             {
                 basket.Pause();
             }
+            OnEndgame(IMinigame.MatchResult.Lose);
         }
 
         public void OnGameWining()
@@ -193,6 +208,13 @@ namespace WFSport.Gameplay.BasketballMode
             {
                 basket.Pause();
             }
+            OnEndgame(IMinigame.MatchResult.Win);
+        }
+
+        private void OnEndgame(IMinigame.MatchResult matchResult)
+        {
+            result.gamestate = matchResult;
+            EventDispatcher.Instance.Dispatch(new EventKey.OnGameStop { data = result });
         }
     }
 }

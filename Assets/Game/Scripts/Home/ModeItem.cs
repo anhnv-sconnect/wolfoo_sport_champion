@@ -10,8 +10,8 @@ namespace WFSport.Home
 {
     public class ModeItem : MonoBehaviour
     {
-        [SerializeField] private Image icon;
         [SerializeField] private Button btn;
+        private ConfigDataManager.GameplayConfigData gameplayConfigData;
 
         public int Id { get; private set; }
 
@@ -19,16 +19,18 @@ namespace WFSport.Home
         {
             btn.onClick.AddListener(OnClickMe);
         }
-        internal void Setup(int id, Sprite sprite)
+        internal void Setup(int id, GameObject obj, ConfigDataManager.GameplayConfigData data)
         {
             Id = id;
-            icon.sprite = sprite;
-            icon.SetNativeSize();
+            var item = Instantiate(obj, transform);
+            item.transform.localPosition = Vector3.zero;
+            gameplayConfigData = data;
         }
 
         private void OnClickMe()
         {
-            EventDispatcher.Instance.Dispatch(new EventKeyBase.ChangeScene { gameplay = true });
+            Debug.Log("click Mode Item");
+            EventDispatcher.Instance.Dispatch(new EventKeyBase.ChangeScene { gameplay = true, gameplayConfig = gameplayConfigData });
         }
     }
 }

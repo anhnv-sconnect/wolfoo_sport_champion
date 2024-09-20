@@ -21,10 +21,6 @@ namespace WFSport.Gameplay
         private Sequence _tweenLoadingBar;
         private Sequence _tweenLoadingBar2;
 
-        protected override void Start()
-        {
-            base.Start();
-        }
         protected override void OnDestroy()
         {
             base.OnDestroy();

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
+  m_Name: Wolfoo_Atlas
+  m_EditorClassIdentifier: 
+  atlasFile: {fileID: 4900000, guid: d387b6e55c0471d42b764733e605f7cf, type: 3}
+  materials:
+  - {fileID: 2100000, guid: d3b3f7aa1f2bf794aac7f5192a4e56fc, type: 2}
+  - {fileID: 2100000, guid: c2aeb950fad59db45b2bac27baaf403f, type: 2}
+  - {fileID: 2100000, guid: fa2dac29e4805164b8a8393cc536ba0d, type: 2}

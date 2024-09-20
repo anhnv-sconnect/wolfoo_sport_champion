@@ -48,6 +48,7 @@ namespace WFSport.Gameplay
             public int milestoneCoin;
             public int normalPlusCoin;
             public int specialPlusCoin;
+            public int special2PlusCoin;
         }
         [System.Serializable]
         public class ResultData

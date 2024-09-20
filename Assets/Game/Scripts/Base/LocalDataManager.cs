@@ -8,7 +8,7 @@ using WFSport.Gameplay.BasketballMode;
 
 namespace WFSport.Base
 {
-    public class LocalDataManager :  SingletonBind<LocalDataManager>
+    public class LocalDataManager: MonoBehaviour
     {
         public LocalDataCreateEnergy createEnergyData;
 

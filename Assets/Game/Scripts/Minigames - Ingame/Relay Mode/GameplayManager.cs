@@ -53,7 +53,9 @@ namespace WFSport.Gameplay.RelayMode
 
         private void Awake()
         {
-            ui = FindAnyObjectByType<MinigameUI>();
+            ui = FindAnyObjectByType<SoloMinigameUI>(FindObjectsInactive.Include);
+            ui.gameObject.SetActive(true);
+            myData = DataTransporter.GameplayConfig;
         }
         private void Start()
         {
@@ -104,12 +106,8 @@ namespace WFSport.Gameplay.RelayMode
         }
         private void OnEndgame(IMinigame.MatchResult matchResult)
         {
-            result = new IMinigame.ResultData()
-            {
-                claimedCoin = 0,
-                gamestate = matchResult,
-            };
-            DataTransporter.GameplayResultData = result;
+            result.gamestate = matchResult;
+            EventDispatcher.Instance.Dispatch(new EventKey.OnGameStop { data = result });
         }
 
         public void OnGameLosing()
@@ -133,6 +131,7 @@ namespace WFSport.Gameplay.RelayMode
 
         public void OnGameStart()
         {
+            result = new IMinigame.ResultData();
             if (myData == null)
             {
                 myData = new IMinigame.ConfigData()
@@ -141,6 +140,8 @@ namespace WFSport.Gameplay.RelayMode
                     timelineScore = new float[] { levelScore / 3, levelScore * 2 / 3, levelScore }
                 };
             }
+
+            myData.timelineScore = new float[] { levelScore / 3, levelScore * 2 / 3, levelScore };
             levelScore = myData.timelineScore[myData.timelineScore.Length - 1];
 
             levelIdx = (int)CurrentMode;
@@ -178,6 +179,7 @@ namespace WFSport.Gameplay.RelayMode
 
                 currentTutStep = tutorialSwipeUp.GetNextStep() as TutorialSwipe;
                 currentTutStep.Setup(player.Current.transform, AnimatorHelper.Direction.Up);
+
                 currentTutStep.Play();
                 currentTutStep.OnSwipeCorrectDirection += OnCompleteStep;
             }
@@ -187,10 +189,12 @@ namespace WFSport.Gameplay.RelayMode
             currentTutStep.OnSwipeCorrectDirection -= OnCompleteStep;
 
             Debug.Log("ON COmpleted Step");
+            currentTutStep.Completed();
             currentTutStep.Stop();
 
             if (tutorialSwipeUp.IsAllStepCompleted)
             {
+                tutorialSwipeUp.ReleaseAll();
                 _tweenDelay = DOVirtual.DelayedCall(1, () =>
                 {
                     ui.OpenLoading(() =>
@@ -233,6 +237,7 @@ namespace WFSport.Gameplay.RelayMode
         {
             ui.PauseTime();
             player.Current.Pause(true);
+            OnEndgame(IMinigame.MatchResult.Lose);
         }
 
         private void OnClosingDialog(EventKeyBase.CloseDialog obj)
@@ -419,10 +424,16 @@ namespace WFSport.Gameplay.RelayMode
             });
         }
 
-        private void OnClaimExperience(Base.Player player)
+        private void OnClaimExperience(Base.Player player, bool isSpecialItem)
         {
             playerScore++;
             ui.UpdateLoadingBar((float)playerScore / levelScore);
+
+            result.claimedCoin += myData.normalPlusCoin;
+            if (ui.TotalStarClaimed > 0 && playerScore == myData.timelineScore[ui.TotalStarClaimed - 1])
+            {
+                result.claimedCoin += myData.milestoneCoin;
+            }
         }
     }
 }

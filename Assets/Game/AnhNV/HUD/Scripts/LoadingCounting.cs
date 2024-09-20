@@ -65,7 +65,7 @@ namespace AnhNV.Dialog
                 .Append(countingObjs[0].transform.DOScale(1, 1).OnStart(() =>
                 {
                     kat.PlayIdleAnim();
-                    kat.PlayWaveHandAnim();
+                    kat.PlayPointingAnim();
                     countingObjs[count].SetActive(true);
                     Holder.PlaySound?.Invoke();
                 }))
@@ -73,7 +73,7 @@ namespace AnhNV.Dialog
                 .Append(countingObjs[1].transform.DOScale(1, 1).OnStart(() =>
                 {
                     kat.PlayIdleAnim();
-                    kat.PlayWaveHandAnim();
+                    kat.PlayPointingAnim();
                     countingObjs[count].SetActive(true);
                     countingObjs[count - 1].SetActive(false);
                     Holder.PlaySound?.Invoke();
@@ -82,7 +82,7 @@ namespace AnhNV.Dialog
                 .Append(countingObjs[2].transform.DOScale(1, 1).OnStart(() =>
                 {
                     kat.PlayIdleAnim();
-                    kat.PlayWaveHandAnim();
+                    kat.PlayPointingAnim();
                     countingObjs[count].SetActive(true);
                     countingObjs[count - 1].SetActive(false);
                     Holder.PlaySound?.Invoke();
@@ -91,7 +91,7 @@ namespace AnhNV.Dialog
                 .Append(countingObjs[3].transform.DOScale(1, 1).OnStart(() =>
                 {
                     kat.PlayIdleAnim();
-                    kat.PlayWaveHandAnim();
+                    kat.PlayPointingAnim();
                     countingObjs[count].SetActive(true);
                     countingObjs[count - 1].SetActive(false);
                     Holder.PlaySound?.Invoke();

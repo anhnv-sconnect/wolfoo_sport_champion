@@ -58,9 +58,9 @@ MonoBehaviour:
   idleAnim: Idle
   runAnim: Run_c
   jumpAnim: Jump
-  happyAnim: Laugn
+  happyAnim: Idle_Laugh
   sadAnim: Sad
-  specialAnim: Waving_hand
+  specialAnim: Special
   wavehandAnim: Waving
   dizzyAnim: Stuned
   slowAnim: Run_Slow
@@ -73,8 +73,9 @@ MonoBehaviour:
   skating4Anim: Skating4
   skating5Anim: Skating5
   jumpWinAnim: Jump_Win
-  throwBackAnim: 
-  backIdleAnim: 
+  throwBackAnim: Back_Throw
+  backIdleAnim: Back_Idle
+  eatAnim: Eat
 --- !u!114 &6756177289975760372
 MonoBehaviour:
   m_ObjectHideFlags: 0

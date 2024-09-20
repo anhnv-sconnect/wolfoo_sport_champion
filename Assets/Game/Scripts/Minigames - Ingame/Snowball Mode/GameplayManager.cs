@@ -1,8 +1,10 @@
 using AnhNV.GameBase;
+using SCN;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WFSport.Base;
 using WFSport.Helper;
 using static WFSport.Gameplay.IMinigame;
 
@@ -59,16 +61,19 @@ namespace WFSport.Gameplay.SnowballMode
 
         private void Init()
         {
+            myData = DataTransporter.GameplayConfig;
+            result = new ResultData();
             if(myData == null)
             {
-                myData = new IMinigame.ConfigData()
+                myData = new ConfigData()
                 {
                     playTime = 60,
                     timelineScore = new float[] { 2, 4, 6 },
                 };
             }
 
-            ui = FindAnyObjectByType<MinigameUI>();
+            ui = FindAnyObjectByType<SoloMinigameUI>(FindObjectsInactive.Include);
+            ui.gameObject.SetActive(true);
             ui.Setup(myData.playTime, myData.timelineScore);
 
             var length = myData.timelineScore.Length;
@@ -101,8 +106,12 @@ namespace WFSport.Gameplay.SnowballMode
             // Update UI score
             totalSnowballClaimed++;
             ui.UpdateLoadingBar(totalSnowballClaimed / maxScore);
+            if (ui.TotalStarClaimed > 0 && totalSnowballClaimed == myData.timelineScore[ui.TotalStarClaimed - 1])
+            {
+                result.claimedCoin += myData.milestoneCoin;
+            }
 
-            if(totalSnowballClaimed == maxScore)
+            if (totalSnowballClaimed == maxScore)
             {
                 OnGameWining();
             }
@@ -114,12 +123,8 @@ namespace WFSport.Gameplay.SnowballMode
 
         private void OnEndgame(MatchResult matchResult)
         {
-            result = new IMinigame.ResultData()
-            {
-                claimedCoin = 0,
-                gamestate = matchResult,
-            };
-            DataTransporter.GameplayResultData = result;
+            result.gamestate = matchResult;
+            EventDispatcher.Instance.Dispatch(new Gameplay.EventKey.OnGameStop { data = result });
         }
 
         public void OnGameLosing()

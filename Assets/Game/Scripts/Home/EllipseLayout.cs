@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,23 +21,29 @@ namespace WFSport.Home
         private Vector3 lastPos;
         private Vector3 curPos;
 
-        private Transform[] items;
+        private List<Transform> items;
         private EventTrigger trigger;
+        private Tween animRepresent;
+
         private Vector3 center => transform.position;
         internal Transform ItemHolder { get => transform; }
-        
+
         private void Start()
         {
             RegisterDragEvent();
+
+            if (items == null) return;
+            Representation();
         }
         private void OnDestroy()
         {
             RemoveDragEvent();
+            animRepresent?.Kill();
         }
         private void Update()
         {
             if (!run) return;
-            for (int i = 0; i < items.Length; i++)
+            for (int i = 0; i < items.Count; i++)
             {
                 Count(ref itemCounts[i]);
                 items[i].position = CalculatePos(itemCounts[i] + range * i);
@@ -44,11 +51,25 @@ namespace WFSport.Home
         }
         internal void Setup(Transform[] items)
         {
-            this.items = items;
+            this.items = new List<Transform>();
+            for (int i = 0; i < items.Length; i++)
+            {
+                if (items[i] != null)
+                    this.items.Add(items[i]);
+            }
             InitItem();
         }
+        private void Representation()
+        {
+            run = true;
+            animRepresent = DOVirtual.DelayedCall(1, () =>
+            {
+                run = false;
+            });
+        }
 
-        private void RegisterDragEvent()
+
+    private void RegisterDragEvent()
         {
             if (trigger == null) trigger = GetComponent<EventTrigger>();
 
@@ -74,9 +95,9 @@ namespace WFSport.Home
 
         void InitItem()
         {
-            range = (limit.y - limit.x) / (items.Length - 1);
-            itemCounts = new float[items.Length];
-            for (int i = 0; i < items.Length; i++)
+            range = (limit.y - limit.x) / (items.Count);
+            itemCounts = new float[items.Count];
+            for (int i = 0; i < items.Count; i++)
             {
                 var normalizeValue = range * (i);
                 itemCounts[i] = normalizeValue;
@@ -103,6 +124,8 @@ namespace WFSport.Home
         {
             curPos = ScreenHelper.GetMousePos();
             lastPos = curPos;
+            run = false;
+            animRepresent?.Kill();
             run = true;
         }
 

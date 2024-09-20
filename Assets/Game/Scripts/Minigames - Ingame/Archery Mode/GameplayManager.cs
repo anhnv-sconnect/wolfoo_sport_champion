@@ -1,10 +1,12 @@
 using AnhNV.GameBase;
 using DG.Tweening;
+using SCN;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using WFSport.Helper;
 
 namespace WFSport.Gameplay.ArcheryMode
 {
@@ -244,14 +246,14 @@ namespace WFSport.Gameplay.ArcheryMode
                     if(curRandomMarkers != null && markedCount >= curRandomMarkers.Length)
                     {
                         holderPlayer.UpgradeScore(config.normalScore);
-                        OnTrackingScore(holderPlayer, isBot);
+                        OnTrackingScore(holderPlayer, isBot, myData.normalPlusCoin);
                         SpawnNextMarker();
                     }
 
                     if(marker.IsSpecial)
                     {
                         holderPlayer.UpgradeScore(config.specialScore);
-                        OnTrackingScore(holderPlayer, isBot);
+                        OnTrackingScore(holderPlayer, isBot, myData.specialPlusCoin);
                         PlayAnimPlayerGetSpecialArrow(obj.transform.position, holderPlayer.BowPos, () =>
                         {
                             holderPlayer.PlayWithSpecialItem();
@@ -271,7 +273,7 @@ namespace WFSport.Gameplay.ArcheryMode
                         obj.IsAttached = true;
                         poolingMovingMarkers[i].OnHitCorrect(obj.transform.position);
                         holderPlayer.UpgradeScore(config.movingScore);
-                        OnTrackingScore(holderPlayer, isBot);
+                        OnTrackingScore(holderPlayer, isBot, myData.special2PlusCoin);
                         return;
                     }
                 }
@@ -284,7 +286,7 @@ namespace WFSport.Gameplay.ArcheryMode
                 StartCoroutine("OnShootedBomb");
             }
         }
-        private void OnTrackingScore(Player player, bool isBot)
+        private void OnTrackingScore(Player player, bool isBot, int plusScore)
         {
             if (isBot)
             {
@@ -297,7 +299,14 @@ namespace WFSport.Gameplay.ArcheryMode
             else
             {
                 ui.UpdateLoadingBar(player.Score / maxScore);
-                if (player.Score == maxScore)
+
+                result.claimedCoin += plusScore;
+                if (ui.TotalStarClaimed > 0 && player.Score == myData.timelineScore[ui.TotalStarClaimed - 1])
+                {
+                    result.claimedCoin += myData.milestoneCoin;
+                }
+
+                if (player.Score >= maxScore)
                 {
                     OnGameWining();
                 }
@@ -343,7 +352,10 @@ namespace WFSport.Gameplay.ArcheryMode
 
         private void Init()
         {
-            if(myData == null)
+            myData = DataTransporter.GameplayConfig;
+            result = new IMinigame.ResultData();
+
+            if (myData == null)
             {
                 InternalData = new IMinigame.ConfigData()
                 {
@@ -352,7 +364,8 @@ namespace WFSport.Gameplay.ArcheryMode
                 };
             }
             maxScore = myData.timelineScore[myData.timelineScore.Length - 1];
-            ui = FindAnyObjectByType<MultiplayerGameUI>();
+            ui = FindAnyObjectByType<MultiplayerGameUI>(FindObjectsInactive.Include);
+            ui.gameObject.SetActive(true);
             ui.Setup(myData.playTime, myData.timelineScore);
 
             var maxRight = Camera.main.ScreenToWorldPoint(new Vector3(Camera.main.pixelWidth, 0, Camera.main.transform.position.z));
@@ -415,6 +428,7 @@ namespace WFSport.Gameplay.ArcheryMode
             player.Pause(false);
             bot.Pause(false);
             ui.PauseTime();
+            OnEndgame(IMinigame.MatchResult.Lose);
         }
 
         public void OnGamePause()
@@ -445,6 +459,7 @@ namespace WFSport.Gameplay.ArcheryMode
             player.Pause(false);
             bot.Pause(false);
             ui.PauseTime();
+            OnEndgame(IMinigame.MatchResult.Lose);
         }
 
         public void OnGameWining()
@@ -452,6 +467,13 @@ namespace WFSport.Gameplay.ArcheryMode
             player.Pause(false);
             bot.Pause(false);
             ui.PauseTime();
+
+            OnEndgame(IMinigame.MatchResult.Win);
+        }
+        private void OnEndgame(IMinigame.MatchResult matchResult)
+        {
+            result.gamestate = matchResult;
+            EventDispatcher.Instance.Dispatch(new EventKey.OnGameStop { data = result });
         }
     }
 }

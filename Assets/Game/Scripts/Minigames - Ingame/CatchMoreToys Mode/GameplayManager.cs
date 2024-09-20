@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using WFSport.Helper;
 
 namespace WFSport.Gameplay.CatchMoreToysMode
 {
@@ -36,7 +37,8 @@ namespace WFSport.Gameplay.CatchMoreToysMode
 
         private void Awake()
         {
-            ui = FindAnyObjectByType<MinigameUI>();
+            ui = FindAnyObjectByType<SoloMinigameUI>(FindObjectsInactive.Include);
+            ui.gameObject.SetActive(true);
             bgCanvas.worldCamera = Camera.main;
 
             /// Setup Object to Fit screen
@@ -67,18 +69,25 @@ namespace WFSport.Gameplay.CatchMoreToysMode
             EventManager.OnFinishStage -= OnGameWining;
             EventManager.OnTimeOut -= OnGameLosing;
         }
+        private void OnEndgame(IMinigame.MatchResult matchResult)
+        {
+            result.gamestate = matchResult;
+            EventDispatcher.Instance.Dispatch(new EventKey.OnGameStop { data = result });
+        }
 
         public void OnGameWining()
         {
             ui.PauseTime();
             OnGamePause();
             // On Endgame
+            OnEndgame(IMinigame.MatchResult.Win);
         }
 
         public void OnGameLosing()
         {
             ui.PauseTime();
             OnGamePause();
+            OnEndgame(IMinigame.MatchResult.Lose);
         }
 
         private void PlayTutorial()
@@ -172,6 +181,8 @@ namespace WFSport.Gameplay.CatchMoreToysMode
 
         void Init()
         {
+            result = new IMinigame.ResultData();
+            myData = DataTransporter.GameplayConfig;
             if(myData == null)
             {
                 myData = new IMinigame.ConfigData()
@@ -192,7 +203,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
             }
         }
 
-        private void OnPlayerCollectStar(Base.Player obj)
+        private void OnPlayerCollectStar(Base.Player obj, bool isSpecial)
         {
             if(!tutorial.IsAllStepCompleted)
             {
@@ -200,7 +211,13 @@ namespace WFSport.Gameplay.CatchMoreToysMode
                 return;
             }
 
-            ui.UpdateLoadingBar((float)player.Score / finalScore);
+            ui.UpdateLoadingBar(player.Score / finalScore);
+
+            result.claimedCoin += isSpecial ? myData.specialPlusCoin : myData.normalPlusCoin;
+            if (ui.TotalStarClaimed > 0 && player.Score == myData.timelineScore[ui.TotalStarClaimed - 1])
+            {
+                result.claimedCoin += myData.milestoneCoin;
+            }
         }
 
         private IEnumerator CountSpawnTime()
@@ -309,9 +326,10 @@ namespace WFSport.Gameplay.CatchMoreToysMode
             StartCoroutine("CountSpawnTime");
         }
 
+
         public void OnGameStop()
         {
-            EventDispatcher.Instance.Dispatch(new Gameplay.EventKey.OnGameStop { catchMoreToys = this });
+            OnEndgame(IMinigame.MatchResult.Lose);
         }
     }
 }

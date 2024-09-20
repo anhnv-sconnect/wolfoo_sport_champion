@@ -119,7 +119,7 @@ namespace WFSport.Gameplay.RelayMode
                 {
                     Debug.Log("Claim Star");
                     Holder.PlaySound?.Invoke();
-                    EventManager.OnPlayerClaimNewStar?.Invoke(this);
+                    EventManager.OnPlayerClaimNewStar?.Invoke(this, false);
                 }
                 else if (collision.GetComponent<ShieldItem>())
                 {

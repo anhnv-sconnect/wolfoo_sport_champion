@@ -15,5 +15,5 @@ MonoBehaviour:
   rotateVelocity: 2
   maxSize: 10
   growthSpeed: 0.1
-  velocity: 0.01
+  velocity: 0.02
   limitPosition: {x: -40, y: 29, z: 40, w: -20}

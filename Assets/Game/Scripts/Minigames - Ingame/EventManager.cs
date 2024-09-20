@@ -12,7 +12,7 @@ namespace WFSport.Gameplay
         public static Action<RelayMode.TrafficCone> OnTriggleWithCone;
         public static Action<RelayMode.TrafficCone> OnTracking;
         public static Action<Base.Player, IPlayer.Direction> OnPlayerSwiping;
-        public static Action<Base.Player> OnPlayerClaimNewStar;
+        public static Action<Base.Player, bool> OnPlayerClaimNewStar;
         public static Action<Base.Player> OnPlayerIsMoving;
         public static Action<Base.Player> OnPlayerIsPassedHalfStage;
         public static Action OnTimeOut;

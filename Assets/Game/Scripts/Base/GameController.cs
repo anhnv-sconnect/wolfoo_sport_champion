@@ -4,12 +4,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WFSport.Gameplay;
+using WFSport.Helper;
+using static WFSport.Base.ConfigDataManager;
 
 namespace WFSport.Base
 {
     public class GameController : SingletonResourcesAlive<GameController>
     {
+        public enum Minigame
+        {
+            Archery,
+            BasketBall,
+            CatchMoreToys,
+            CreateEnergy,
+            Latin,
+            Relay,
+            Snowball
+        }
+
         private LoadSceneManager loadSceneManager;
+        private GameObject curMinigame;
 
         private void Start()
         {
@@ -29,6 +43,7 @@ namespace WFSport.Base
 
         private void OnGameplayComplete(Gameplay.EventKey.OnGameStop obj)
         {
+            loadSceneManager.LoadScene(Constant.SCENE.HOME);
         }
 
         private void OnChangeScene(EventKeyBase.ChangeScene obj)
@@ -44,6 +59,22 @@ namespace WFSport.Base
             else if (obj.gameplay)
             {
                 loadSceneManager.LoadScene(Constant.SCENE.GAMEPLAY);
+                loadSceneManager.OnLoadSuccess = () =>
+                {
+                    Debug.Log("ONLoad Complete");
+                    OnGotoGameplay(obj.gameplayConfig);
+                    loadSceneManager.OnLoadSuccess = null;
+                };
+            }
+        }
+
+        private void OnGotoGameplay(GameplayConfigData gameplayConfig)
+        {
+            DataTransporter.GameplayConfig = gameplayConfig.data;
+            var data = DataManager.instance.OrderMinigame(gameplayConfig.Mode);
+            if (data != null)
+            {
+                curMinigame = Instantiate(data);
             }
         }
 

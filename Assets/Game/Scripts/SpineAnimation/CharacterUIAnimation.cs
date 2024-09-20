@@ -20,6 +20,8 @@ public class CharacterUIAnimation : MonoBehaviour
     [SerializeField, SpineAnimation] private string specialAnim;
     [Header("WaveHand")]
     [SerializeField, SpineAnimation] private string wavehandAnim;
+    [Header("Pointing")]
+    [SerializeField, SpineAnimation] private string pointingAnim;
     private AnimState animState;
     private Tween _tween;
 
@@ -48,6 +50,12 @@ public class CharacterUIAnimation : MonoBehaviour
     public void PlaySadAnim()
     {
         PlaySad();
+        if (_tween.IsActive()) return;
+        _tween = DOVirtual.DelayedCall(GetTimeAnimation(animState), () => PlayIdle());
+    }
+    public void PlayPointingAnim()
+    {
+        PlayPoiting();
         if (_tween.IsActive()) return;
         _tween = DOVirtual.DelayedCall(GetTimeAnimation(animState), () => PlayIdle());
     }
@@ -120,6 +128,12 @@ public class CharacterUIAnimation : MonoBehaviour
         animState = AnimState.WaveHand;
         AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, wavehandAnim, false);
     }
+    private void PlayPoiting()
+    {
+        if (animState == AnimState.Pointing) return;
+        animState = AnimState.Pointing;
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, pointingAnim, false);
+    }
     public float GetTimeAnimation(AnimState animState)
     {
         var myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(happyAnim);
@@ -148,6 +162,9 @@ public class CharacterUIAnimation : MonoBehaviour
             case AnimState.WaveHand:
                 myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(wavehandAnim);
                 break;
+            case AnimState.Pointing:
+                myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(pointingAnim);
+                break;
         }
 
         float animLength = myAnimation.Duration;
@@ -164,6 +181,7 @@ public class CharacterUIAnimation : MonoBehaviour
         Sad,
         Special,
         WaveHand,
+        Pointing
     }
     #endregion
    

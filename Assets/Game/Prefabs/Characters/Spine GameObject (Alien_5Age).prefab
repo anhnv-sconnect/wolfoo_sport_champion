@@ -34,7 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8223500246181278513
 MonoBehaviour:
@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1e72194cc6b8a043bd2bdfbc6b5e58c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _name: 0
   skinList:
   - Nomal
   - Prom
@@ -60,7 +61,7 @@ MonoBehaviour:
   happyAnim: Idle_Laugh
   sadAnim: Sad
   specialAnim: Special
-  wavehandAnim: Waving
+  wavehandAnim: Special
   dizzyAnim: Stuned
   slowAnim: Run_c
   runFastAnim: Run_ninja
@@ -74,6 +75,7 @@ MonoBehaviour:
   jumpWinAnim: Jump_Win
   throwBackAnim: Back_Throw
   backIdleAnim: Back_Idle
+  eatAnim: Eat
 --- !u!114 &4840502051631992168
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static AnhNV.GameBase.PopupManager;
+using static WFSport.Base.ConfigDataManager;
 
 namespace WFSport.Base
 {
@@ -21,6 +22,8 @@ namespace WFSport.Base
             public bool home;
             public bool loading;
             public bool gameplay;
+
+            public GameplayConfigData gameplayConfig;
         }   
     }
 }
