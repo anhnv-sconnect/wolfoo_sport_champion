@@ -17,6 +17,19 @@ namespace WFSport.Base
         {
             public DialogName dialog;
         }
+        public struct Purchase : IEventParams
+        {
+            public int id;
+            public Gameplay.CreateEnergyMode.FruitScrollItem fruit;
+            public Gameplay.CreateEnergyMode.StrawScrollItem straw;
+            public Gameplay.FurnitureMode.ToyScrollItem toy;
+            public Gameplay.FurnitureMode.OtherScrollItem other;
+            public Gameplay.FurnitureMode.ChairScrollItem chair;
+        }
+        public struct OnWatchAds : IEventParams
+        {
+            public int id;
+        }
         public struct ChangeScene: IEventParams
         {
             public bool home;

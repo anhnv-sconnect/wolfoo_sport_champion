@@ -13,14 +13,14 @@ namespace WFSport.Base
         [SerializeField] public LocalDataManager localSaveloadData;
         [SerializeField] private string minigamesPath;
 
-        internal GameObject OrderMinigame(GameController.Minigame mode)
+        internal GameObject OrderMinigame(Minigame mode)
         {
             var modes = Resources.LoadAll<GameObject>(minigamesPath);
 
             GameObject data = null;
             switch (mode)
             {
-                case GameController.Minigame.Archery:
+                case Minigame.Archery:
                     foreach (var item in modes)
                     {
                         var temp = item.GetComponent<Gameplay.ArcheryMode.GameplayManager>();
@@ -31,7 +31,7 @@ namespace WFSport.Base
                         }
                     }
                     break;
-                case GameController.Minigame.BasketBall:
+                case Minigame.BasketBall:
                     foreach (var item in modes)
                     {
                         var temp = item.GetComponent<Gameplay.BasketballMode.GameplayManager>();
@@ -42,7 +42,7 @@ namespace WFSport.Base
                         }
                     }
                     break;
-                case GameController.Minigame.CatchMoreToys:
+                case Minigame.CatchMoreToys:
                     foreach (var item in modes)
                     {
                         var temp = item.GetComponent<Gameplay.CatchMoreToysMode.GameplayManager>();
@@ -53,7 +53,7 @@ namespace WFSport.Base
                         }
                     }
                     break;
-                case GameController.Minigame.CreateEnergy:
+                case Minigame.CreateEnergy:
                     foreach (var item in modes)
                     {
                         var temp = item.GetComponent<Gameplay.CreateEnergyMode.GameplayManager>();
@@ -64,7 +64,7 @@ namespace WFSport.Base
                         }
                     }
                     break;
-                case GameController.Minigame.Latin:
+                case Minigame.Latin:
                     foreach (var item in modes)
                     {
                         var temp = item.GetComponent<Gameplay.LatinDanceMode.GameplayManager>();
@@ -75,7 +75,7 @@ namespace WFSport.Base
                         }
                     }
                     break;
-                case GameController.Minigame.Relay:
+                case Minigame.Relay:
                     foreach (var item in modes)
                     {
                         var temp = item.GetComponent<Gameplay.RelayMode.GameplayManager>();
@@ -86,7 +86,7 @@ namespace WFSport.Base
                         }
                     }
                     break;
-                case GameController.Minigame.Snowball:
+                case Minigame.Snowball:
                     foreach (var item in modes)
                     {
                         var temp = item.GetComponent<Gameplay.SnowballMode.GameplayManager>();

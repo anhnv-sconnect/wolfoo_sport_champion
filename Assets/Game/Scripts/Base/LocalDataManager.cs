@@ -10,24 +10,24 @@ namespace WFSport.Base
 {
     public class LocalDataManager: MonoBehaviour
     {
+        public PlayerMe playerMe;
         public LocalDataCreateEnergy createEnergyData;
+        public LocalDataFurniture furnitureData;
 
-        private void Start()
+        public void Load()
         {
-            EventDispatcher.Instance.RegisterListener<Gameplay.EventKey.UnlockLocalData>(OnUnlockLocalData);
+            playerMe.Load();
+            if (playerMe == null)
+            {
+                playerMe.Init();
+                playerMe.Save();
+            }
+
             createEnergyData.Load();
-        }
+            if (createEnergyData == null) createEnergyData.Save();
 
-        private void OnUnlockLocalData(Gameplay.EventKey.UnlockLocalData data)
-        {
-            if(data.isFruit)
-            {
-                createEnergyData.UnlockFruit(data.id);
-            }
-            else if(data.isStraw)
-            {
-                createEnergyData.UnlockStraw(data.id);
-            }
+            furnitureData.Load();
+            if (furnitureData == null) furnitureData.Save();
         }
     }
 }

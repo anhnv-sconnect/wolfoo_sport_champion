@@ -12,8 +12,8 @@ namespace WFSport.Base
         public static readonly string KEY = "LocalData_CreateEnergy";
         private bool HasKey { get => PlayerPrefs.HasKey(KEY); }
 
-        public bool[] fruitUnlocked;
-        public bool[] strawUnlocked;
+        public LocalDataRecord[] fruitUnlocked;
+        public LocalDataRecord[] strawUnlocked;
 
         public LocalDataCreateEnergy Load()
         {
@@ -41,27 +41,27 @@ namespace WFSport.Base
 
         internal void UnlockFruit(int idx)
         {
-            fruitUnlocked[idx] = true;
+            fruitUnlocked[idx].IsUnlock = true;
             Save();
         }
         internal void UnlockAllFruit()
         {
             for (int i = 0; i < fruitUnlocked.Length; i++)
             {
-                fruitUnlocked[i] = true;
+                fruitUnlocked[i].IsUnlock = true;
             }
             Save();
         }
         internal void UnlockStraw(int idx)
         {
-            strawUnlocked[idx] = true;
+            strawUnlocked[idx].IsUnlock = true;
             Save();
         }
         internal void UnlockAllStraw()
         {
             for (int i = 0; i < strawUnlocked.Length; i++)
             {
-                strawUnlocked[i] = true;
+                strawUnlocked[i].IsUnlock = true;
             }
             Save();
         }

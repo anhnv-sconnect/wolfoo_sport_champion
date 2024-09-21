@@ -2,6 +2,7 @@ using SCN;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WFSport.Base;
 
 namespace WFSport.Gameplay
 {
@@ -27,6 +28,9 @@ namespace WFSport.Gameplay
             public bool isChair;
             public bool isToy;
             public bool isOther;
+            public GameObject obj;
+            public PurchaseType purchaseType;
+            public int amount;
         }
     }
 }

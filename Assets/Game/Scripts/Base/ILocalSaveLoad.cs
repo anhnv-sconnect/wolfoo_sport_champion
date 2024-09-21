@@ -9,7 +9,6 @@ namespace AnhNV.GameBase
         public void Save();
         public T Load();
         public void Init(); 
-        public void Reset();
         public void Read();
     }
 }

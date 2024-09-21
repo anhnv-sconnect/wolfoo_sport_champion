@@ -9,11 +9,101 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c004512249ff6143a2dfc132258e1c8, type: 3}
-  m_Name: LocalSaveLoad CreateEnergy
+  m_Script: {fileID: 11500000, guid: 8a8ef2a44a42bf440ab9522c6ed34d45, type: 3}
+  m_Name: LocalSaveLoad Furniture
   m_EditorClassIdentifier: 
-  fruitUnlocked:
+  toyUnlocked:
+  - IsUnlock: 1
+    Data:
+      PurchaseType: 0
+      Amount: 0
+  - IsUnlock: 1
+    Data:
+      PurchaseType: 0
+      Amount: 0
+  - IsUnlock: 1
+    Data:
+      PurchaseType: 0
+      Amount: 0
+  - IsUnlock: 1
+    Data:
+      PurchaseType: 0
+      Amount: 0
+  - IsUnlock: 1
+    Data:
+      PurchaseType: 0
+      Amount: 0
+  - IsUnlock: 1
+    Data:
+      PurchaseType: 0
+      Amount: 0
+  - IsUnlock: 1
+    Data:
+      PurchaseType: 0
+      Amount: 0
   - IsUnlock: 0
+    Data:
+      PurchaseType: 1
+      Amount: 5
+  - IsUnlock: 1
+    Data:
+      PurchaseType: 1
+      Amount: 5
+  - IsUnlock: 1
+    Data:
+      PurchaseType: 1
+      Amount: 5
+  - IsUnlock: 1
+    Data:
+      PurchaseType: 1
+      Amount: 5
+  - IsUnlock: 1
+    Data:
+      PurchaseType: 1
+      Amount: 5
+  - IsUnlock: 0
+    Data:
+      PurchaseType: 1
+      Amount: 5
+  - IsUnlock: 0
+    Data:
+      PurchaseType: 1
+      Amount: 5
+  otherUnlocked:
+  - IsUnlock: 1
+    Data:
+      PurchaseType: 0
+      Amount: 0
+  - IsUnlock: 1
+    Data:
+      PurchaseType: 0
+      Amount: 0
+  - IsUnlock: 1
+    Data:
+      PurchaseType: 0
+      Amount: 0
+  - IsUnlock: 1
+    Data:
+      PurchaseType: 0
+      Amount: 0
+  - IsUnlock: 1
+    Data:
+      PurchaseType: 0
+      Amount: 0
+  - IsUnlock: 1
+    Data:
+      PurchaseType: 0
+      Amount: 0
+  - IsUnlock: 1
+    Data:
+      PurchaseType: 0
+      Amount: 0
+  chairUnlocked:
+  - IsUnlock: 1
+    Data:
+      PurchaseType: 0
+      Amount: 0
+  - IsUnlock: 1
     Data:
       PurchaseType: 0
       Amount: 0
@@ -23,118 +113,9 @@ MonoBehaviour:
       Amount: 0
   - IsUnlock: 0
     Data:
-      PurchaseType: 0
-      Amount: 0
+      PurchaseType: 1
+      Amount: 5
   - IsUnlock: 0
     Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  strawUnlocked:
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
-  - IsUnlock: 0
-    Data:
-      PurchaseType: 0
-      Amount: 0
+      PurchaseType: 1
+      Amount: 5

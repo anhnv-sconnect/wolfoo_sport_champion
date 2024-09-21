@@ -5,6 +5,7 @@ using SCN.UIExtend;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -14,9 +15,12 @@ namespace WFSport.Gameplay.FurnitureMode
     public abstract class ScrollItem : ScrollItemBase
     {
         protected abstract void OnEndDrag();
+        protected abstract void OnClickAdsBtn();
+        protected abstract void OnClickCoinBtn(LocalDataRecord localDataRecord);
 
         [SerializeField] Image icon;
-        [SerializeField] Button lockBtn;
+        [SerializeField] Button coinLockBtn;
+        [SerializeField] Button adLockBtn;
 
         private bool isLocking;
 
@@ -24,7 +28,6 @@ namespace WFSport.Gameplay.FurnitureMode
         public Sprite Icon { get => icon.sprite; }
 
         private bool isDragging;
-        private Vector3 lastPos;
 
         private Sequence animUnlock;
 
@@ -40,60 +43,85 @@ namespace WFSport.Gameplay.FurnitureMode
         {
             ReturnAfterUnselect = true;
             Master.AddEventTriggerListener(EventTrigger, EventTriggerType.PointerUp, OnPointerUp);
-            Master.AddEventTriggerListener(EventTrigger, EventTriggerType.Drag, OnDrag);
         }
 
-        internal void Setup(Sprite sprite, bool isLock, Topic.Kind topicKind)
+        internal void Setup(Sprite sprite, LocalDataRecord localRecord, Topic.Kind topicKind)
         {
-            lockBtn.onClick.AddListener(OnClickLockBtn);
+            coinLockBtn.onClick.AddListener(() => OnClickCoinBtn(localRecord));
+            adLockBtn.onClick.AddListener(OnClickAdsBtn);
 
             icon.sprite = sprite;
-          //  icon.SetNativeSize();
+            //  icon.SetNativeSize();
             gameObject.SetActive(true);
-            isLocking = isLock;
             TopicKind = topicKind;
 
-            if (!isLocking) UnLock(true);
-            else Lock();
-
+            if (localRecord == null)
+            {
+                isLocking = false;
+                UnLock(true);
+            }
+            else
+            {
+                isLocking = !localRecord.IsUnlock;
+                if(isLocking)
+                {
+                    if (localRecord.Data.PurchaseType == WFSport.Base.PurchaseType.Coin)
+                    {
+                        var priceTxt = coinLockBtn.GetComponentInChildren<TMP_Text>();
+                        priceTxt.text = localRecord.Data.Amount.ToString();
+                        CoinLock();
+                    }
+                    else
+                    {
+                        AdsLock();
+                    }
+                }
+                else
+                {
+                    UnLock(true);
+                }
+            }
+        }
+        private void CoinLock()
+        {
+            coinLockBtn.gameObject.SetActive(true);
+            adLockBtn.gameObject.SetActive(false);
+            Lock();
+        }
+        private void AdsLock()
+        {
+            adLockBtn.gameObject.SetActive(true);
+            coinLockBtn.gameObject.SetActive(false);
+            Lock();
         }
         private void Lock()
         {
-            lockBtn.gameObject.SetActive(true);
             icon.color = Color.black;
             icon.DOFade(0.7f, 0);
         }
-        private void UnLock(bool isImmediately = false)
+        public void UnLock(bool isImmediately = false)
         {
             if (isImmediately)
             {
-                lockBtn.gameObject.SetActive(false);
+                adLockBtn.gameObject.SetActive(false);
+                coinLockBtn.gameObject.SetActive(false);
                 icon.color = Color.white;
                 icon.DOFade(1, 0);
             }
             else
             {
                 animUnlock = DOTween.Sequence()
-                    .Append(lockBtn.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
+                    .Append(adLockBtn.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
+                    .Join(coinLockBtn.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
                     .Join(icon.DOColor(Color.white, 0.5f).SetEase(Ease.Linear))
                     .Join(icon.DOFade(1, 0.5f).SetEase(Ease.Linear));
             }
         }
 
-        private void OnClickLockBtn()
-        {
-            EventDispatcher.Instance.Dispatch(new  EventKey.UnlockLocalData { id = order, isFruit = true });
-            UnLock();
-        }
         protected override void OnStartDragOut()
         {
             base.OnStartDragOut();
             isDragging = true;
-        }
-
-        private void OnDrag(BaseEventData arg0)
-        {
-            lastPos = transform.position;
         }
 
         private void OnPointerUp(BaseEventData arg0)

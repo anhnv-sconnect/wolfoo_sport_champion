@@ -1,9 +1,12 @@
+using AnhNV.Helper;
 using DG.Tweening;
+using SCN;
 using SCN.UIExtend;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WFSport.Base;
 using WFSport.Gameplay.CatchMoreToysMode;
 
 namespace WFSport.Gameplay.FurnitureMode
@@ -36,23 +39,81 @@ namespace WFSport.Gameplay.FurnitureMode
                 limitToyArea.GetChild(2).position.x,
                 limitToyArea.GetChild(3).position.y);
         }
-        private List<DecorItem> toysCreateds;
+        private List<DecorItem> toysCreated;
         private Sequence camAnim;
+        private LocalDataFurniture localData;
+        private SpriteRenderer[] limitSpriteRender;
+        private Sequence animLimit;
+        private ToyScrollItem[] toyScrollItems;
+        private OtherScrollItem[] otherScrollItems;
+        private ChairScrollItem[] chairScrollItems;
 
         public IMinigame.ConfigData InternalData { get =>  myData; set => myData = value; }
         IMinigame.ResultData IMinigame.ExternalData { get => result; set => result = value; }
 
         private void Start()
         {
+            EventDispatcher.Instance.RegisterListener<EventKeyBase.Purchase>(OnPurchase);
             Init();
         }
+
         private void OnDestroy()
         {
-            foreach (var topic in topics)
-            {
-                topic.Click -= OnClickTopic;
-            }
+
             camAnim?.Kill();
+            animLimit?.Kill();
+            EventDispatcher.Instance.RemoveListener<EventKeyBase.Purchase>(OnPurchase);
+        }
+
+        private void OnPurchase(EventKeyBase.Purchase data)
+        {
+            if(data.chair != null)
+            {
+                data.chair.UnLock();
+            }
+            else if(data.other != null)
+            {
+                data.other.UnLock();
+            }
+            else if(data.toy != null)
+            {
+                data.toy.UnLock();
+            }
+        }
+
+        private void PlayAnimToyLimit()
+        {
+            var time = 1;
+            StopAnimToyLimit();
+            animLimit = DOTween.Sequence()
+                .Append(limitSpriteRender[0].DOFade(1, time))
+                .Join(limitSpriteRender[1].DOFade(1, time))
+                .Join(limitSpriteRender[2].DOFade(1, time))
+                .Join(limitSpriteRender[3].DOFade(1, time));
+            animLimit.SetLoops(-1, LoopType.Yoyo);
+            if (toysCreated != null)
+            {
+                foreach (var item in toysCreated)
+                {
+                    item.Show();
+                }
+            }
+        }
+        private void StopAnimToyLimit()
+        {
+            animLimit?.Kill();
+            animLimit = DOTween.Sequence()
+                .Append(limitSpriteRender[0].DOFade(0, 0))
+                .Join(limitSpriteRender[1].DOFade(0, 0))
+                .Join(limitSpriteRender[2].DOFade(0, 0))
+                .Join(limitSpriteRender[3].DOFade(0, 0));
+            if(toysCreated != null)
+            {
+                foreach (var item in toysCreated)
+                {
+                    item.Hide();
+                }
+            }
         }
 
         private void OnClickTopic(Topic topic)
@@ -79,6 +140,8 @@ namespace WFSport.Gameplay.FurnitureMode
                 camAnim?.Kill();
                 camAnim = DOTween.Sequence()
                     .Append(cam.transform.DOMoveX(chair.transform.position.x, 0.5f).SetEase(Ease.Linear));
+                chair.PlayAnimTwinlink();
+                StopAnimToyLimit();
             }
             else
             {
@@ -86,24 +149,32 @@ namespace WFSport.Gameplay.FurnitureMode
                 camAnim?.Kill();
                 camAnim = DOTween.Sequence()
                     .Append(cam.transform.DOMoveX(limitToyArea.transform.position.x, 0.5f).SetEase(Ease.Linear));
+                chair.StopAnimTwinlink();
+                PlayAnimToyLimit();
             }
         }
         private void OnScrollItemDragInside(ScrollItem item)
         {
             if (item.TopicKind != Topic.Kind.Chair)
             {
-                if (toysCreateds == null) toysCreateds = new List<DecorItem>();
-                foreach (var toy in toysCreateds)
+                if (toysCreated == null) toysCreated = new List<DecorItem>();
+                var count = 0;
+                foreach (var toy in toysCreated)
                 {
                     var distance = Vector2.Distance(toy.transform.position, item.transform.position);
                     if (distance <= toyReplaceRange)
                     {
                         toy.Replace(item.Icon);
+                        localData.ToysCreated[count] = (toy.transform.position, item.Order, toy.TopicKind);
                         return;
                     }
+                    count++;
                 }
-                var toy2 = CreateToy(item.Icon, item.transform.position);
-                toysCreateds.Add(toy2);
+                var toy2 = CreateToy(item.Icon, item.transform.position, item.TopicKind);
+                toysCreated.Add(toy2);
+                localData.ToysCreated.Add((toy2.transform.position, item.Order, toy2.TopicKind));
+
+                localData.Save();
             }
             else
             {
@@ -111,10 +182,10 @@ namespace WFSport.Gameplay.FurnitureMode
             }
         }
 
-        DecorItem CreateToy(Sprite icon, Vector3 position)
+        DecorItem CreateToy(Sprite icon, Vector3 position, Topic.Kind kind)
         {
             var decorItem = Instantiate(toyPb, position, toyPb.transform.rotation, toyArea);
-            decorItem.Setup(icon);
+            decorItem.Setup(icon, kind);
             decorItem.Spawn(position);
 
             return decorItem;
@@ -128,9 +199,10 @@ namespace WFSport.Gameplay.FurnitureMode
             yield return new WaitUntil(() => scrollview.MaskTrans.childCount == toyData.Length);
 
             var records = scrollview.MaskTrans.GetComponentsInChildren<ToyScrollItem>();
+            toyScrollItems = records;
             for (int i = 0; i < records.Length; i++) 
             {
-                records[i].Setup(toyData[i], false, Topic.Kind.Toy);
+                records[i].Setup(toyData[i], i < localData.toyUnlocked.Length ? localData.toyUnlocked[i] : null, Topic.Kind.Toy);
                 records[i].Setup(limitToyPos);
                 records[i].OnDragInSide = OnScrollItemDragInside;
             }
@@ -144,9 +216,10 @@ namespace WFSport.Gameplay.FurnitureMode
             yield return new WaitUntil(() => scrollview.MaskTrans.childCount == chairData.Length);
 
             var records = scrollview.MaskTrans.GetComponentsInChildren<ChairScrollItem>();
+            chairScrollItems = records;
             for (int i = 0; i < records.Length; i++) 
             {
-                records[i].Setup(chairData[i], false, Topic.Kind.Chair);
+                records[i].Setup(chairData[i], i < localData.chairUnlocked.Length ? localData.chairUnlocked[i] : null, Topic.Kind.Chair);
                 records[i].Setup(chair.transform.position);
                 records[i].OnDragInSide = OnScrollItemDragInside;
             }
@@ -159,25 +232,54 @@ namespace WFSport.Gameplay.FurnitureMode
             yield return new WaitUntil(() => scrollview.MaskTrans.childCount == otherData.Length);
 
             var records = scrollview.MaskTrans.GetComponentsInChildren<OtherScrollItem>();
+            otherScrollItems = records;
             for (int i = 0; i < records.Length; i++) 
             {
-                records[i].Setup(otherData[i], false, Topic.Kind.Other);
+                records[i].Setup(otherData[i], i < localData.otherUnlocked.Length ? localData.otherUnlocked[i] : null, Topic.Kind.Other);
                 records[i].Setup(limitToyPos);
                 records[i].OnDragInSide = OnScrollItemDragInside;
             }
+        }
+        private IEnumerator InitToysCreated()
+        {
+            yield return new WaitForSeconds(1);
+
+            yield return StartCoroutine("InitOtherScrollData");
+            yield return StartCoroutine("InitToyScrollData");
+
+            toysCreated = new List<DecorItem>(localData.ToysCreated.Count);
+            Debug.Log("Total Toys Data: " + toysCreated.Count);
+            foreach (var toyCreated in localData.ToysCreated)
+            {
+                if (toyCreated.TopicKind == Topic.Kind.Toy)
+                {
+                    var toy2 = CreateToy(toyScrollItems[toyCreated.id].Icon, toyCreated.position, toyCreated.TopicKind);
+                    toysCreated.Add(toy2);
+                }
+                else if (toyCreated.TopicKind == Topic.Kind.Other)
+                {
+                    var toy2 = CreateToy(otherScrollItems[toyCreated.id].Icon, toyCreated.position, toyCreated.TopicKind);
+                    toysCreated.Add(toy2);
+                }
+            }
+
+            yield return new WaitForEndOfFrame();
+            OnGameStart();
         }
 
         private void Init()
         {
             cam = Camera.main;
 
-            var first = 0;
             for (int i = 0; i < topics.Length; i++)
             {
-                topics[i].Setup(i, i == first);
-                topics[i].Click += OnClickTopic;
+                topics[i].Setup(i, i == 0);
+                topics[i].Click = OnClickTopic;
             }
-            OnClickTopic(topics[first]);
+            localData = DataManager.Instance.localSaveloadData.furnitureData;
+            limitSpriteRender = limitToyArea.GetComponentsInChildren<SpriteRenderer>();
+
+            StartCoroutine("InitToysCreated");
         }
 
         public void OnGameLosing()
@@ -194,6 +296,7 @@ namespace WFSport.Gameplay.FurnitureMode
 
         public void OnGameStart()
         {
+            OnClickTopic(topics[0]);
         }
 
         public void OnGameStop()

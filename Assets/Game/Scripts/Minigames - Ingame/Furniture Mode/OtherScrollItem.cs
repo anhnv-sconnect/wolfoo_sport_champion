@@ -1,14 +1,7 @@
-using DG.Tweening;
 using SCN;
-using SCN.Common;
-using SCN.UIExtend;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
-using WFSport.Base;
 
 namespace WFSport.Gameplay.FurnitureMode
 {
@@ -20,6 +13,30 @@ namespace WFSport.Gameplay.FurnitureMode
         {
             myLimit = limitPos;
         }
+
+        protected override void OnClickAdsBtn()
+        {
+            EventDispatcher.Instance.Dispatch(new EventKey.UnlockLocalData
+            {
+                id = order,
+                isOther = true,
+                obj = gameObject,
+                purchaseType = WFSport.Base.PurchaseType.Ads
+            });
+        }
+
+        protected override void OnClickCoinBtn(LocalDataRecord localDataRecord)
+        {
+            EventDispatcher.Instance.Dispatch(new EventKey.UnlockLocalData
+            {
+                id = order,
+                isToy = true,
+                purchaseType = WFSport.Base.PurchaseType.Coin,
+                amount = localDataRecord.Data.Amount,
+                obj = gameObject
+            });
+        }
+
         protected override void OnEndDrag()
         {
             if (transform.position.x > myLimit.x && transform.position.x < myLimit.z

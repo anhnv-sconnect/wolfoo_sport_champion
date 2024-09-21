@@ -33,12 +33,12 @@ namespace WFSport.Home
             var createEnergyMode = gameplayData[0];
             foreach (var item in gameplayData)
             {
-                if(item.Mode == GameController.Minigame.CreateEnergy)
+                if(item.Mode == Minigame.CreateEnergy)
                 {
                     createEnergyMode = item;
                 }
             }
-            if (createEnergyMode.Mode != GameController.Minigame.CreateEnergy) return;
+            if (createEnergyMode.Mode != Minigame.CreateEnergy) return;
             EventDispatcher.Instance.Dispatch(new EventKeyBase.ChangeScene { gameplay = true, gameplayConfig = createEnergyMode });
         }
 

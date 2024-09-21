@@ -6,16 +6,21 @@ using UnityEngine;
 
 namespace WFSport.Base
 {
-    [System.Serializable]
-    public class PlayerMe : ILocalSaveLoad<PlayerMe>
+    [CreateAssetMenu(fileName = "PlayerMe", menuName = "Core Data/PlayerMe", order = 1)]
+    public class PlayerMe : ScriptableObject, ILocalSaveLoad<PlayerMe>
     {
-        public static readonly string KEY = "PLAYER_NEW_KEY";
+        public static readonly string KEY = "PLAYER_KEY";
         private bool HasKey { get => PlayerPrefs.HasKey(KEY); }
         public bool IsMuteMusic;
         public bool IsMuteSound;
-        public string MyVersion;
-        public int TotalAdsSuccess;
-        public string lastTimeString;
+        public int totalCoin;
+        public int totalEnergy;
+
+        private string myVersion;
+        private int totalAdsSuccess;
+        private string lastTimeString;
+
+        private bool isInit;
 
         public DateTime LastOpenTime
         {
@@ -37,18 +42,14 @@ namespace WFSport.Base
         {
             IsMuteMusic = isMuteMusic;
             IsMuteSound = isMuteSound;
-            MyVersion = Application.version;
+            myVersion = Application.version;
             LastOpenTime = DateTime.Now;
-        }
-        public PlayerMe()
-        {
         }
 
         public void Init()
         {
-            IsMuteMusic = false;
-            IsMuteSound = false;
-            MyVersion = Application.version;
+            isInit = true;
+            myVersion = Application.version;
             LastOpenTime = DateTime.Now;
         }
 
@@ -58,12 +59,10 @@ namespace WFSport.Base
             {
                 var jsonData = PlayerPrefs.GetString(KEY);
                 Debug.Log($"PlayerMe Local Load: {jsonData} \n =====> Loading Completed <=====");
-                var data = JsonUtility.FromJson<PlayerMe>(jsonData);
+                JsonUtility.FromJsonOverwrite(jsonData, this);
+                if (isInit) Init();
 
-                IsMuteMusic = data.IsMuteMusic;
-                IsMuteSound = data.IsMuteSound;
-                TotalAdsSuccess = data.TotalAdsSuccess;
-                return data;
+                return this;
             }
             else
             {
@@ -71,6 +70,7 @@ namespace WFSport.Base
             }
         }
 
+        [NaughtyAttributes.Button]
         public void Save()
         {
             var jsonData = JsonUtility.ToJson(this);
@@ -78,13 +78,15 @@ namespace WFSport.Base
             PlayerPrefs.SetString(KEY, jsonData);
         }
 
-        public void Reset()
-        {
-        }
-
         public void Read()
         {
 
+        }
+        [NaughtyAttributes.Button]
+        public void Remove()
+        {
+            PlayerPrefs.DeleteKey(KEY);
+            Debug.Log($"Deleting PlayerMe local.... \n =====> DELETE Completed <=====");
         }
     }
 }

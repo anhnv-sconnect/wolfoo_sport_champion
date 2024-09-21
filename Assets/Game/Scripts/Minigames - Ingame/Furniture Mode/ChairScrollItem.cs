@@ -1,14 +1,8 @@
-using DG.Tweening;
 using SCN;
-using SCN.Common;
-using SCN.UIExtend;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
-using WFSport.Base;
 
 namespace WFSport.Gameplay.FurnitureMode
 {
@@ -18,6 +12,31 @@ namespace WFSport.Gameplay.FurnitureMode
         public void Setup(Vector3 endPos)
         {
             this.endPos = endPos;
+        }
+
+        protected override void OnClickAdsBtn()
+        {
+            EventDispatcher.Instance.Dispatch(
+                new EventKey.UnlockLocalData
+                {
+                    id = order,
+                    isChair = true,
+                    purchaseType = WFSport.Base.PurchaseType.Ads,
+                    obj = gameObject
+                });
+        }
+
+        protected override void OnClickCoinBtn(LocalDataRecord localDataRecord)
+        {
+            EventDispatcher.Instance.Dispatch(
+                new EventKey.UnlockLocalData
+                {
+                    id = order,
+                    isChair = true,
+                    purchaseType = WFSport.Base.PurchaseType.Coin,
+                    amount = localDataRecord.Data.Amount,
+                    obj = gameObject
+                });
         }
 
         protected override void OnEndDrag()

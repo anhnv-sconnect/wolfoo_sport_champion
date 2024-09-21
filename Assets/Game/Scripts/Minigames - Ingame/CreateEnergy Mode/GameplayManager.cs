@@ -44,32 +44,30 @@ namespace WFSport.Gameplay.CreateEnergyMode
 
         private void Start()
         {
+            EventDispatcher.Instance.RegisterListener<EventKeyBase.Purchase>(OnPurchase);
             Init();
             OnGameStart();
         }
         private void OnDestroy()
         {
+            EventDispatcher.Instance.RemoveListener<EventKeyBase.Purchase>(OnPurchase);
             StopCoroutine("InitFruitDataScroll");
-            if (fruitScrollItems != null)
-            {
-                for (int i = 0; i < fruitScrollItems.Length; i++)
-                {
-                    if (fruitScrollItems[i] != null) fruitScrollItems[i].OnDragInSide -= CreateFruit;
-                }
-            }
-            if (strawScrollItems != null)
-            {
-                for (int i = 0; i < strawScrollItems.Length; i++)
-                {
-                    if (strawScrollItems[i] != null) strawScrollItems[i].OnDragInSide -= CreateStraw;
-                }
-            }
-            glassManager.OnGlassEndDrag -= OnGlassEndDrag;
             CancelInvoke("OnGameWining");
 
             if(result.gamestate != IMinigame.MatchResult.Win)
             {
                 OnGameStop();
+            }
+        }
+        private void OnPurchase(EventKeyBase.Purchase data)
+        {
+            if (data.fruit != null)
+            {
+                data.fruit.UnLock();
+            }
+            else if(data.straw != null)
+            {
+                data.straw.UnLock();
             }
         }
 
@@ -181,7 +179,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
 
             glassManager.SetUp(config);
             glassManager.MoveOut(true);
-            glassManager.OnGlassEndDrag += OnGlassEndDrag;
+            glassManager.OnGlassEndDrag = OnGlassEndDrag;
         }
 
         private void OnGlassEndDrag(Glass glass)
@@ -215,9 +213,9 @@ namespace WFSport.Gameplay.CreateEnergyMode
             foreach (var item in items)
             {
                 item.Setup(fruitData[count],blender.transform.position, 
-                    count < localData.fruitUnlocked.Length ? localData.fruitUnlocked[count] : true);
+                    count < localData.fruitUnlocked.Length ? localData.fruitUnlocked[count] : null);
                 fruitScrollItems[count] = item;
-                item.OnDragInSide += CreateFruit;
+                item.OnDragInSide = CreateFruit;
                 count++;
             }
 
@@ -245,9 +243,9 @@ namespace WFSport.Gameplay.CreateEnergyMode
                 foreach (var item in items)
                 {
                     item.Setup(strawData[count], glass.transform.position,
-                            count < localData.strawUnlocked.Length ? localData.strawUnlocked[count] : true);
+                            count < localData.strawUnlocked.Length ? localData.strawUnlocked[count] : null);
                     strawScrollItems[count] = item;
-                    item.OnDragInSide += CreateStraw;
+                    item.OnDragInSide = CreateStraw;
                     count++;
                 }
                 strawScrollInfinity.MoveIn();
