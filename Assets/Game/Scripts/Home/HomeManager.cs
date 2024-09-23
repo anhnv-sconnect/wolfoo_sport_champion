@@ -3,6 +3,7 @@ using SCN;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using WFSport.Base;
@@ -15,13 +16,28 @@ namespace WFSport.Home
         [SerializeField] private ModeItem modePb;
         [SerializeField] private Button settingBtn;
         [SerializeField] private Button counterBtn;
+        [SerializeField] private Button createdToyBtn;
+        [SerializeField] private Transform toyArea;
+        [SerializeField] private SpriteRenderer toypb;
         private ConfigDataManager.GameplayConfigData[] gameplayData;
+        private LocalDataFurniture furnitureData;
+        private Gameplay.FurnitureMode.Asset furnitureAsset;
 
         private void Start()
         {
             settingBtn.onClick.AddListener(OnClickSetting);
             counterBtn.onClick.AddListener(OnClickCounter);
+            createdToyBtn.onClick.AddListener(OnClickCreatedToy);
             InitData();
+        }
+
+        private void OnClickCreatedToy()
+        {
+            EventDispatcher.Instance.Dispatch(new EventKeyBase.ChangeScene
+            {
+                minigame = Minigame.Furniture,
+                gameplay = true,
+            });
         }
 
         private void OnClickSetting()
@@ -29,33 +45,69 @@ namespace WFSport.Home
         }
         private void OnClickCounter()
         {
-            // Create Energy Mode
-            var createEnergyMode = gameplayData[0];
-            foreach (var item in gameplayData)
+            EventDispatcher.Instance.Dispatch(new EventKeyBase.ChangeScene
             {
-                if(item.Mode == Minigame.CreateEnergy)
-                {
-                    createEnergyMode = item;
-                }
-            }
-            if (createEnergyMode.Mode != Minigame.CreateEnergy) return;
-            EventDispatcher.Instance.Dispatch(new EventKeyBase.ChangeScene { gameplay = true, gameplayConfig = createEnergyMode });
+                minigame = Minigame.CreateEnergy,
+                gameplay = true,
+            });
         }
 
         private void InitData()
         {
-            gameplayData = DataManager.Instance.configDataManager.GameplayConfig;
-            var records = new Transform[gameplayData.Length];
-            for (int i = 0; i < gameplayData.Length; i++)
+            var gameplayData = GameController.Instance.OrderAllMainGameplay();
+            furnitureData = DataManager.Instance.localSaveloadData.furnitureData;
+
+            var array = new Transform[gameplayData.Count()];
+            var count = 0;
+            foreach (var item in gameplayData)
             {
-                if (gameplayData[i].icon != null)
-                {
-                    var mode = Instantiate(modePb, ellipseLayout.ItemHolder);
-                    mode.Setup(i, gameplayData[i].icon, gameplayData[i]);
-                    records[i] = mode.transform;
-                }
+                var mode = Instantiate(modePb, ellipseLayout.ItemHolder);
+                mode.Setup(item.icon, item.Mode);
+                array[count] = mode.transform;
+                count++;
             }
-            ellipseLayout.Setup(records);
+
+            ellipseLayout.Setup(array);
+
+            StartCoroutine(SpawnCreatedToy());
+        }
+        private IEnumerator SpawnCreatedToy()
+        {
+            if (!DataManager.Instance.localSaveloadData.IsLoadCompleted)
+            {
+                yield return new WaitForSeconds(0.5f);
+            }
+
+            furnitureAsset = DataManager.Instance.OrderAsset<Gameplay.FurnitureMode.Asset>(Minigame.Furniture);
+
+            if (furnitureAsset.Equals(default(Gameplay.FurnitureMode.Asset)))
+            {
+                Debug.Log("Furniture " + "Fail");
+                Debug.LogError("<!> Your Asset is Empty <!>");
+            }
+            else
+            {
+                Debug.Log("Furniture " + "SCuccess");
+                foreach (var toyCreated in furnitureData.ToysCreated)
+                {
+                    if (toyCreated.TopicKind == Gameplay.FurnitureMode.Topic.Kind.Toy)
+                    {
+                        CreateToy(furnitureAsset.toyData[toyCreated.Id], toyCreated.Position);
+                    }
+                    else if (toyCreated.TopicKind == Gameplay.FurnitureMode.Topic.Kind.Other)
+                    {
+                        CreateToy(furnitureAsset.otherData[toyCreated.Id], toyCreated.Position);
+                    }
+                }
+                createdToyBtn.image.sprite = furnitureAsset.chairData[furnitureData.createdChairId];
+            }
+        }
+        private void CreateToy(Sprite icon, Vector3 localPos)
+        {
+            var toy = Instantiate(toypb, toyArea);
+            toy.transform.localPosition = localPos;
+            toy.sprite = icon;
+            toy.transform.localScale = Vector3.one;
         }
     }
 }

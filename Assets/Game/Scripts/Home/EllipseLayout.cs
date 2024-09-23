@@ -21,7 +21,7 @@ namespace WFSport.Home
         private Vector3 lastPos;
         private Vector3 curPos;
 
-        private List<Transform> items;
+        private Transform[] items;
         private EventTrigger trigger;
         private Tween animRepresent;
 
@@ -43,7 +43,7 @@ namespace WFSport.Home
         private void Update()
         {
             if (!run) return;
-            for (int i = 0; i < items.Count; i++)
+            for (int i = 0; i < items.Length; i++)
             {
                 Count(ref itemCounts[i]);
                 items[i].position = CalculatePos(itemCounts[i] + range * i);
@@ -51,12 +51,7 @@ namespace WFSport.Home
         }
         internal void Setup(Transform[] items)
         {
-            this.items = new List<Transform>();
-            for (int i = 0; i < items.Length; i++)
-            {
-                if (items[i] != null)
-                    this.items.Add(items[i]);
-            }
+            this.items = items;
             InitItem();
         }
         private void Representation()
@@ -95,9 +90,9 @@ namespace WFSport.Home
 
         void InitItem()
         {
-            range = (limit.y - limit.x) / (items.Count);
-            itemCounts = new float[items.Count];
-            for (int i = 0; i < items.Count; i++)
+            range = (limit.y - limit.x) / (items.Length);
+            itemCounts = new float[items.Length];
+            for (int i = 0; i < items.Length; i++)
             {
                 var normalizeValue = range * (i);
                 itemCounts[i] = normalizeValue;

@@ -15,6 +15,7 @@ namespace WFSport.Base
         public struct GameplayConfigData
         {
             public string Name;
+            public bool IsMainMode;
             public Minigame Mode;
             public GameObject icon;
             public ConfigData data;

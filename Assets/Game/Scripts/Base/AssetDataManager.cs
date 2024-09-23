@@ -4,18 +4,9 @@ using UnityEngine;
 
 namespace WFSport.Base
 {
-    public class AssetDataManager : MonoBehaviour
+    [CreateAssetMenu(fileName = "Asset Manager", menuName = "Core Data /Asset Manager", order = 1)]
+    public class AssetDataManager : ScriptableObject
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+        public Gameplay.FurnitureMode.Asset FurnitureAsset;
     }
 }

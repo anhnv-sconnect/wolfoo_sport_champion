@@ -14,6 +14,8 @@ namespace WFSport.Base
         public LocalDataCreateEnergy createEnergyData;
         public LocalDataFurniture furnitureData;
 
+        public bool IsLoadCompleted { get; private set; }
+
         public void Load()
         {
             playerMe.Load();
@@ -28,6 +30,8 @@ namespace WFSport.Base
 
             furnitureData.Load();
             if (furnitureData == null) furnitureData.Save();
+
+            IsLoadCompleted = true;
         }
     }
 }

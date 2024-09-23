@@ -275,7 +275,7 @@ Transform:
   - {fileID: 674947222761810170}
   - {fileID: 6284065335066920576}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1806692658449058749
 MonoBehaviour:
@@ -393,7 +393,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
-  m_AdditionalShaderChannelsFlag: 25
+  m_AdditionalShaderChannelsFlag: 1
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 1
@@ -496,7 +496,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   configDataManager: {fileID: 11400000, guid: 49ef272237626c748a329f36f78cb375, type: 2}
-  assetDataManager: {fileID: 0}
+  assetDataManager: {fileID: 11400000, guid: c5d85975dfcfae847b2c143302910e6c, type: 2}
   localSaveloadData: {fileID: 6144732801527604636}
   minigamesPath: Minigames
 --- !u!1 &5024829243975465248

@@ -15,12 +15,11 @@ namespace WFSport.Base
         public LocalDataRecord[] toyUnlocked;
         public LocalDataRecord[] otherUnlocked;
         public LocalDataRecord[] chairUnlocked;
-        private List<(Vector3 position, int id, Topic.Kind TopicKind)> toysCreated = new List<(Vector3 position, int id, Topic.Kind)>();
+        public List<CreatedToyData> ToysCreated = new List<CreatedToyData>();
+        public int createdChairId;
 
-        public List<(Vector3 position, int id, Topic.Kind TopicKind)> ToysCreated { get => toysCreated; set => toysCreated = value; }
         public LocalDataFurniture Load()
         {
-            Debug.Log("LocalDataFurniture");
             if (HasKey)
             {
                 var jsonData = PlayerPrefs.GetString(KEY);

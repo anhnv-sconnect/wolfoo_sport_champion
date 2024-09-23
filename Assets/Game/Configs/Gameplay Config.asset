@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8a2c4eb174083d9439dedec83fcdafc8, type: 3}
-  m_Name: DataCore Config
+  m_Name: Gameplay Config
   m_EditorClassIdentifier: 
   GameplayConfig:
   - Name: Archery Mode
+    IsMainMode: 1
     Mode: 0
     icon: {fileID: 3966855148055591746, guid: f79336e88fcc92f429722254e4d944fc, type: 3}
     data:
@@ -28,6 +29,7 @@ MonoBehaviour:
       specialPlusCoin: 2
       special2PlusCoin: 3
   - Name: Basketball Mode
+    IsMainMode: 1
     Mode: 1
     icon: {fileID: 6758664801951875572, guid: f51fa491d9dff9b4384dd950979998b2, type: 3}
     data:
@@ -39,6 +41,7 @@ MonoBehaviour:
       specialPlusCoin: 0
       special2PlusCoin: 0
   - Name: CatchMoreToys Mode
+    IsMainMode: 1
     Mode: 2
     icon: {fileID: 3922572433710972723, guid: 43f9464d9ffcf9e48ad2d8f3df695ee5, type: 3}
     data:
@@ -53,6 +56,7 @@ MonoBehaviour:
       specialPlusCoin: 2
       special2PlusCoin: 0
   - Name: CreateEnergy Mode
+    IsMainMode: 0
     Mode: 3
     icon: {fileID: 0}
     data:
@@ -64,6 +68,7 @@ MonoBehaviour:
       specialPlusCoin: 0
       special2PlusCoin: 0
   - Name: LatinDance Mode
+    IsMainMode: 1
     Mode: 4
     icon: {fileID: 8944381439018354552, guid: 5bc3d30a62b6e93409e0375fba2232af, type: 3}
     data:
@@ -78,6 +83,7 @@ MonoBehaviour:
       specialPlusCoin: 0
       special2PlusCoin: 0
   - Name: Relay Mode
+    IsMainMode: 1
     Mode: 5
     icon: {fileID: 259022149842096771, guid: 52dde0c08e3162c49938490699f3943e, type: 3}
     data:
@@ -89,6 +95,7 @@ MonoBehaviour:
       specialPlusCoin: 0
       special2PlusCoin: 0
   - Name: Snowball Mode
+    IsMainMode: 1
     Mode: 6
     icon: {fileID: 2159401138817528535, guid: 0459209be1f393d4fa905ed1724f73f1, type: 3}
     data:
@@ -99,6 +106,18 @@ MonoBehaviour:
       - 6
       level: 0
       milestoneCoin: 10
+      normalPlusCoin: 0
+      specialPlusCoin: 0
+      special2PlusCoin: 0
+  - Name: Furniture Mode
+    IsMainMode: 0
+    Mode: 7
+    icon: {fileID: 0}
+    data:
+      playTime: 0
+      timelineScore: []
+      level: 0
+      milestoneCoin: 0
       normalPlusCoin: 0
       specialPlusCoin: 0
       special2PlusCoin: 0

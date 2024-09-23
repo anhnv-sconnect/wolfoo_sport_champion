@@ -66,6 +66,8 @@ namespace WFSport.Base
 
             Holder.PlaySound?.Invoke();
             ClickBackBtn?.Invoke();
+
+            EventDispatcher.Instance.Dispatch(new EventKeyBase.ChangeScene { home = true });
         }
     }
 }

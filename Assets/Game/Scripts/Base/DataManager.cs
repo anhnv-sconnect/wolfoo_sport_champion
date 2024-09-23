@@ -2,16 +2,42 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WFSport.Gameplay;
-using static WFSport.Base.ConfigDataManager;
 
 namespace WFSport.Base
 {
     public class DataManager : SingletonBind<DataManager>
     {
         [SerializeField] public ConfigDataManager configDataManager;
-        [SerializeField] public AssetDataManager assetDataManager;
+        [SerializeField] private AssetDataManager assetDataManager;
         [SerializeField] public LocalDataManager localSaveloadData;
         [SerializeField] private string minigamesPath;
+
+        internal T OrderAsset<T>(Minigame game) where T: IAsset
+        {
+            var rs = default(T);
+            switch (game)
+            {
+                case Minigame.Archery:
+                    break;
+                case Minigame.BasketBall:
+                    break;
+                case Minigame.CatchMoreToys:
+                    break;
+                case Minigame.CreateEnergy:
+                    break;
+                case Minigame.Latin:
+                    break;
+                case Minigame.Relay:
+                    break;
+                case Minigame.Snowball:
+                    break;
+                case Minigame.Furniture:
+                    rs = (T) (object) assetDataManager.FurnitureAsset;
+                    return rs;
+            }
+
+            return rs;
+        }
 
         internal GameObject OrderMinigame(Minigame mode)
         {
@@ -90,6 +116,17 @@ namespace WFSport.Base
                     foreach (var item in modes)
                     {
                         var temp = item.GetComponent<Gameplay.SnowballMode.GameplayManager>();
+                        if (temp != null)
+                        {
+                            data = temp.gameObject;
+                            break;
+                        }
+                    }
+                    break;
+                case Minigame.Furniture:
+                    foreach (var item in modes)
+                    {
+                        var temp = item.GetComponent<Gameplay.FurnitureMode.GameplayManager>();
                         if (temp != null)
                         {
                             data = temp.gameObject;

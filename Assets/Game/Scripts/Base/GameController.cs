@@ -17,7 +17,8 @@ namespace WFSport.Base
         CreateEnergy,
         Latin,
         Relay,
-        Snowball
+        Snowball,
+        Furniture
     }
     public enum PurchaseType
     {
@@ -31,6 +32,7 @@ namespace WFSport.Base
         private GameObject curMinigame;
         private PlayerMe playerMe;
         private MinigameSystemUI systemUI;
+        private GameplayConfigData[] gameplayData;
         private LocalDataManager localData;
 
         public Stack<Action> purchaseActions;
@@ -47,6 +49,8 @@ namespace WFSport.Base
             playerMe = DataManager.instance.localSaveloadData.playerMe;
             systemUI = GetComponentInChildren<MinigameSystemUI>();
             systemUI.ClickBackBtn = OnClickBackBtn;
+
+            gameplayData = DataManager.Instance.configDataManager.GameplayConfig;
 
             localData = DataManager.instance.localSaveloadData;
             localData.Load();
@@ -170,14 +174,39 @@ namespace WFSport.Base
                 loadSceneManager.OnLoadSuccess = () =>
                 {
                     Debug.Log("ONLoad Complete");
-                    OnGotoGameplay(obj.gameplayConfig);
+                    OnGotoGameplay(obj.minigame);
                     loadSceneManager.OnLoadSuccess = null;
                 };
             }
         }
 
-        private void OnGotoGameplay(GameplayConfigData gameplayConfig)
+        public void OrderLocalData()
         {
+
+        }
+
+        public IEnumerable<GameplayConfigData> OrderAllMainGameplay()
+        {
+            foreach (var item in gameplayData)
+            {
+                if(item.IsMainMode)
+                {
+                    yield return item;
+                }
+            }
+        }
+
+        private void OnGotoGameplay(Minigame minigame)
+        {
+            // Create Energy Mode
+            GameplayConfigData gameplayConfig = default(GameplayConfigData);
+            foreach (var item in gameplayData)
+            {
+                if (item.Mode == minigame)
+                {
+                    gameplayConfig = item;
+                }
+            }
             DataTransporter.GameplayConfig = gameplayConfig.data;
             var data = DataManager.instance.OrderMinigame(gameplayConfig.Mode);
             if (data != null)
