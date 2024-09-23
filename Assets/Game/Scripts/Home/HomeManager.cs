@@ -42,6 +42,7 @@ namespace WFSport.Home
 
         private void OnClickSetting()
         {
+            EventDispatcher.Instance.Dispatch(new EventKeyBase.OpenDialog { dialog = PopupManager.DialogName.Setting });
         }
         private void OnClickCounter()
         {

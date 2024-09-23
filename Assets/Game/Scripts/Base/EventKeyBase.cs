@@ -1,4 +1,5 @@
 using SCN;
+using SCN.HUD;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

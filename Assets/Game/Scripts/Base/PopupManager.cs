@@ -12,7 +12,8 @@ namespace AnhNV.GameBase
     {
         public enum DialogName
         {
-            Pause
+            Pause,
+            Setting,
         }
         [SerializeField] string path;
         [SerializeField] GameObject popup;

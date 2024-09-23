@@ -1,5 +1,6 @@
 using AnhNV.Helper;
 using SCN;
+using SCN.HUD;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -61,6 +62,7 @@ namespace WFSport.Base
             EventDispatcher.Instance.RegisterListener<Gameplay.EventKey.OnGameStop>(OnGameplayComplete);
             EventDispatcher.Instance.RegisterListener<Gameplay.EventKey.UnlockLocalData>(OnUnlockItem);
             EventDispatcher.Instance.RegisterListener<EventKeyBase.OnWatchAds>(OnWatchAds);
+            EventDispatcher.Instance.RegisterListener<EventKeyBase.OpenDialog>(OnOpenDialog);
         }
 
         private IEnumerator Play()
@@ -78,6 +80,20 @@ namespace WFSport.Base
             EventDispatcher.Instance.RemoveListener<Gameplay.EventKey.OnGameStop>(OnGameplayComplete);
             EventDispatcher.Instance.RemoveListener<Gameplay.EventKey.UnlockLocalData>(OnUnlockItem);
             EventDispatcher.Instance.RemoveListener<EventKeyBase.OnWatchAds>(OnWatchAds);
+            EventDispatcher.Instance.RemoveListener<EventKeyBase.OpenDialog>(OnOpenDialog);
+        }
+
+        private void OnOpenDialog(EventKeyBase.OpenDialog obj)
+        {
+            switch (obj.dialog)
+            {
+                case AnhNV.GameBase.PopupManager.DialogName.Pause:
+                    HUDSystem.Instance.Show<DialogPause>(null, UIPanels<HUDSystem>.ShowType.KeepCurrent);
+                    break;
+                case AnhNV.GameBase.PopupManager.DialogName.Setting:
+                    HUDSystem.Instance.Show<DialogSetting>(null, UIPanels<HUDSystem>.ShowType.KeepCurrent);
+                    break;
+            }
         }
 
         private void OnWatchAds(EventKeyBase.OnWatchAds data)
