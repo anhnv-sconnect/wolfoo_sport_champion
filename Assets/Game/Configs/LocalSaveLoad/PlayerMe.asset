@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 460fabacf54313f4995a931e7e68b461, type: 3}
   m_Name: PlayerMe
   m_EditorClassIdentifier: 
-  IsMuteMusic: 0
-  IsMuteSound: 0
-  totalCoin: 10
-  totalEnergy: 4
+  musicVolume: 1
+  soundVolume: 1
+  totalCoin: 40
+  totalEnergy: 1
+  maxEnergy: 4

@@ -1,3 +1,4 @@
+using AnhNV.GameBase;
 using AnhNV.Helper;
 using DG.Tweening;
 using SCN;
@@ -12,29 +13,126 @@ namespace WFSport.Base
     public class MinigameSystemUI : MonoBehaviour
     {
         [SerializeField] private Button backBtn;
+        [SerializeField] private Button settingBtn;
+        [SerializeField] private Button energyBtn;
         [SerializeField] private TMPro.TMP_Text coinTxt;
         [SerializeField] private Image[] energyImgs;
         [SerializeField] private GameObject energyHolder;
         [SerializeField] private GameObject coinHolder;
+        [SerializeField] private MagnetCoinControl coinControl;
+        [SerializeField] private Energy[] energies;
 
         private bool canClick = true;
         public Action ClickBackBtn;
-        private PlayerMe playerMe;
+        private int totalCoin { get => DataManager.Instance.localSaveloadData.playerMe.totalCoin; }
+        private int totalEnergy { get => DataManager.Instance.localSaveloadData.playerMe.totalEnergy; }
         private Sequence animCoin;
+        private Sequence animEnergy;
+        private Image holderEnergyImg;
 
         // Start is called before the first frame update
         void Start()
         {
+            settingBtn.onClick.AddListener(OnClickSetting);
             backBtn.onClick.AddListener(OnClickBackBtn);
-            playerMe = DataManager.Instance.localSaveloadData.playerMe;
+            energyBtn.onClick.AddListener(OnClickEnergyBtn);
+            GetComponent<Canvas>().worldCamera = Camera.main;
         }
+
         private void OnDestroy()
         {
             animCoin?.Kill();
+            animEnergy?.Kill();
+        }
+
+        private void OnClickEnergyBtn()
+        {
+            StopAnimOutofEnergy();
+            EventDispatcher.Instance.Dispatch(new EventKeyBase.ChangeScene { gameplay = true, minigame = Minigame.CreateEnergy });
+        }
+
+        internal void Setup()
+        {
+            for (int i = 0; i < energies.Length; i++)
+            {
+                if (i < totalEnergy)
+                {
+                    energies[i].Show(null, true);
+                }
+                else
+                {
+                    energies[i].Hide(null, true);
+                }
+            }
+            UpdateCoin();
+        }
+        private void OnClickSetting()
+        {
+            EventDispatcher.Instance.Dispatch(new EventKeyBase.OpenDialog { dialog = PopupManager.DialogName.Setting });
+        }
+        public void PlayAnimOutOfEnergy()
+        {
+            if (holderEnergyImg == null) holderEnergyImg = energyHolder.GetComponent<Image>();
+            StopAnimOutofEnergy();
+            animEnergy = DOTween.Sequence()
+                .Append(holderEnergyImg.DOColor(Color.red, 0.25f).SetLoops(1, LoopType.Yoyo).SetEase(Ease.Flash))
+                .Join(energyHolder.transform.DOPunchScale(Vector3.one * 0.3f, 0.5f, 3))
+                .Append(holderEnergyImg.DOColor(Color.white, 0.25f).SetEase(Ease.Flash))
+                .AppendInterval(1)
+                .SetLoops(-1, LoopType.Restart);
+        }
+        public void StopAnimOutofEnergy()
+        {
+            animEnergy?.Kill();
+            if (holderEnergyImg == null) holderEnergyImg = energyHolder.GetComponent<Image>();
+            holderEnergyImg.color = Color.white;
+            energyHolder.transform.localScale = Vector3.one;
+        }
+        public void PlayAnimPurchasingCoin(Transform target, System.Action OnComplete)
+        {
+            var isACtive = coinHolder.activeSelf;
+            coinHolder.SetActive(true);
+            coinControl.MagnetTrans = target;
+            coinControl.Play(coinHolder.transform, null, null, () =>
+            {
+                coinHolder.SetActive(isACtive);
+                OnComplete?.Invoke();
+            });
+        }
+        public void PlayAnimInCreaseEnergy(System.Action OnComplete)
+        {
+            var isActive = energyHolder.activeSelf;
+            var total = totalEnergy;
+            if (total <= energies.Length)
+            {
+                energyHolder.SetActive(true);
+                energies[total - 1].Show(() =>
+                {
+                    energyHolder.SetActive(isActive);
+                    OnComplete.Invoke();
+                });
+            }
+        }
+        public void PlayAnimDecreaseEnergy(System.Action OnComplete)
+        {
+            var isActive = energyHolder.activeSelf;
+            var total = totalEnergy;
+            if (total > 0)
+            {
+                energyHolder.SetActive(true);
+                energies[total - 1].Hide(() =>
+                {
+                    energyHolder.SetActive(isActive);
+                    OnComplete.Invoke();
+                });
+            }
         }
         public void UpdateCoin()
         {
-            var total = playerMe.totalCoin;
+            var isACtive = coinHolder.activeSelf;
+
+            coinHolder.SetActive(true);
+            var total = totalCoin;
             string coinStr = total.ToString();
 
             if (total > 1000) coinStr = (total / 1000) + "." + (total % 1000) + "K";
@@ -42,9 +140,15 @@ namespace WFSport.Base
 
             animCoin?.Complete();
             animCoin = DOTween.Sequence()
-                .Append(coinTxt.transform.DOPunchScale(Vector3.one * 0.5f, 0.5f, 2));
-
-            coinTxt.text = coinStr;
+                .Append(coinTxt.transform.DOPunchScale(Vector3.one * 0.5f, 0.5f, 2))
+                .Join(DOVirtual.DelayedCall(0.25f, () =>
+                {
+                    coinTxt.text = coinStr;
+                }));
+            animCoin.OnComplete(() =>
+            {
+                coinHolder.SetActive(isACtive);
+            });
         }
         public void Setup(bool showCoin, bool showEnergy)
         {
@@ -66,8 +170,6 @@ namespace WFSport.Base
 
             Holder.PlaySound?.Invoke();
             ClickBackBtn?.Invoke();
-
-            EventDispatcher.Instance.Dispatch(new EventKeyBase.ChangeScene { home = true });
         }
     }
 }

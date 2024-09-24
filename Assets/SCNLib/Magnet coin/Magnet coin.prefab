@@ -1,0 +1,136 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6179509975794746795
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6179509975794746794}
+  - component: {fileID: 6179509975794746789}
+  m_Layer: 5
+  m_Name: Magnet coin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6179509975794746794
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6179509975794746795}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &6179509975794746789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6179509975794746795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f7e647d36e947f4cbc477492978b63a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  explodeSession:
+    time: 0.15
+    speed: 15
+    valueGraph:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -0.87992525
+        outSlope: -0.87992525
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.32999966
+      - serializedVersion: 3
+        time: 0.3486872
+        value: 0.778999
+        inSlope: -1.8544703
+        outSlope: -1.8544703
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.086026095
+      - serializedVersion: 3
+        time: 0.5230842
+        value: 0.20317546
+        inSlope: -0.8630642
+        outSlope: -0.8630642
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1.0023584
+        value: 0.1
+        inSlope: -0.31277192
+        outSlope: -0.31277192
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.16147837
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  magnetSession:
+    time: 0.5
+    speed: 20
+    valueGraph:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0.36209676
+        outSlope: 0.36209676
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.11246444
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 1.5709336
+        outSlope: 1.5709336
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.11947632
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  totalEmission: 8
+  emissionsPerSecond: 100
+  prefabs: {fileID: 26582998947652671, guid: ed8de01343bfcc44e880926ef8f8dd87, type: 3}
+  magnetTrans: {fileID: 0}
+  minDistance: 1
+  isRotate: 1
+  rangeX:
+  - -1
+  - 1
+  rangeY:
+  - -1
+  - 1
+  parentCanvas: {fileID: 0}

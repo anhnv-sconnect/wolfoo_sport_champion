@@ -14,7 +14,6 @@ namespace WFSport.Home
     {
         [SerializeField] private EllipseLayout ellipseLayout;
         [SerializeField] private ModeItem modePb;
-        [SerializeField] private Button settingBtn;
         [SerializeField] private Button counterBtn;
         [SerializeField] private Button createdToyBtn;
         [SerializeField] private Transform toyArea;
@@ -25,7 +24,6 @@ namespace WFSport.Home
 
         private void Start()
         {
-            settingBtn.onClick.AddListener(OnClickSetting);
             counterBtn.onClick.AddListener(OnClickCounter);
             createdToyBtn.onClick.AddListener(OnClickCreatedToy);
             InitData();
@@ -40,10 +38,6 @@ namespace WFSport.Home
             });
         }
 
-        private void OnClickSetting()
-        {
-            EventDispatcher.Instance.Dispatch(new EventKeyBase.OpenDialog { dialog = PopupManager.DialogName.Setting });
-        }
         private void OnClickCounter()
         {
             EventDispatcher.Instance.Dispatch(new EventKeyBase.ChangeScene

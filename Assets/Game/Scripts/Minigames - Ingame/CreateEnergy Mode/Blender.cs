@@ -66,7 +66,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
         internal void Setup()
         {
             startPos = transform.position;
-            outSideX = ScreenHelper.GetMaxPosition().x;
+            outSideX = ScreenHelper.GetMaxPosition().x + 5;
             initLidPos = lid.localPosition;
             canvas = GetComponentInChildren<Canvas>();
             canvas.worldCamera = Camera.main;
@@ -84,7 +84,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
         {
             lid.localPosition = initLidPos;
             animMoveOut = DOTween.Sequence()
-                .Append(transform.DOMoveX(outSideX + 3, 0.5f));
+                .Append(transform.DOMoveX(outSideX, 0.5f));
         }
 
         private void OnFruitJumpIn(Fruit fruit)

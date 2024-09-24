@@ -35,7 +35,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
                 glass.Setup(config.pouringTime);
                 glass.OnEndDrag += OnEndDrag;
             }
-            outSide = ScreenHelper.GetMaxPosition() + new Vector2(4, 1);
+            outSide = ScreenHelper.GetMaxPosition() + new Vector2(6, 1);
             initPos = transform.position;
         }
         void OnEndDrag(Glass glass)

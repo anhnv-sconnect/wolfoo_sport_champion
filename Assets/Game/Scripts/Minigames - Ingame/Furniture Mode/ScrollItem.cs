@@ -47,8 +47,16 @@ namespace WFSport.Gameplay.FurnitureMode
 
         internal void Setup(Sprite sprite, LocalDataRecord localRecord, Topic.Kind topicKind)
         {
-            coinLockBtn.onClick.AddListener(() => OnClickCoinBtn(localRecord));
-            adLockBtn.onClick.AddListener(OnClickAdsBtn);
+            coinLockBtn.onClick.AddListener(() =>
+            {
+                scrollInfinity.StopAutoMove();
+                OnClickCoinBtn(localRecord);
+            });
+            adLockBtn.onClick.AddListener(() =>
+            {
+                scrollInfinity.StopAutoMove();
+                OnClickAdsBtn();
+            });
 
             icon.sprite = sprite;
             //  icon.SetNativeSize();

@@ -71,7 +71,11 @@ namespace WFSport.Gameplay.FurnitureMode
 
         private void OnPurchase(EventKeyBase.Purchase data)
         {
-            if(data.chair != null)
+            foreach (var scrollInfinity in scrollInfinitys)
+            {
+                scrollInfinity.PlayAutoMove();
+            }
+            if (data.chair != null)
             {
                 data.chair.UnLock();
             }

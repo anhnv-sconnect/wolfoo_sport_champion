@@ -8,11 +8,10 @@ namespace WFSport.Gameplay.FurnitureMode
     public class Chair : DecorItem
     {
         private Sequence animTwinlink;
-
-        // Start is called before the first frame update
-        void Start()
+        protected override void OnDestroy()
         {
-
+            base.OnDestroy();
+            animTwinlink?.Kill();
         }
         public override void Replace(Sprite icon)
         {

@@ -168,6 +168,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
             /// Tutorial is Blur background & Focus to Player
             OnGamePause();
             catchToyStep.Play();
+            player.Play();
         }
 
         void ResetDefault()

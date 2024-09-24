@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AnhNV.Helper;
+using System;
 using UnityEngine;
 
 namespace SCN.HUD
@@ -24,6 +25,7 @@ namespace SCN.HUD
 
         public void OnClickBackBtn()
         {
+            Holder.PlaySound?.Invoke();
             Hide();
         }
 

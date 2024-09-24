@@ -149,6 +149,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         public override void Play()
         {
             isPausing = false;
+            gameState = IMinigame.GameState.Playing;
         }
 
         public override void ResetDefault()

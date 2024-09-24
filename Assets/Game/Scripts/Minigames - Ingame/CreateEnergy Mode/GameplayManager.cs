@@ -50,17 +50,16 @@ namespace WFSport.Gameplay.CreateEnergyMode
         }
         private void OnDestroy()
         {
-            EventDispatcher.Instance.RemoveListener<EventKeyBase.Purchase>(OnPurchase);
-            StopCoroutine("InitFruitDataScroll");
-            CancelInvoke("OnGameWining");
-
-            if(result.gamestate != IMinigame.MatchResult.Win)
+            if (result.gamestate != IMinigame.MatchResult.Win)
             {
                 OnGameStop();
             }
+
+            EventDispatcher.Instance.RemoveListener<EventKeyBase.Purchase>(OnPurchase);
         }
         private void OnPurchase(EventKeyBase.Purchase data)
         {
+            fruitScrollInfinity.PlayAutoMove();
             if (data.fruit != null)
             {
                 data.fruit.UnLock();
@@ -187,14 +186,18 @@ namespace WFSport.Gameplay.CreateEnergyMode
             if (Vector2.Distance(glass.transform.position, player.MouthPos) < 2)
             {
                 glassManager.DisableDrag(glass);
-                player.Drink();
                 glass.ReleaseWater(player.MouthPos);
-
-                playerDrinkingCount++;
-                if (playerDrinkingCount == totalGlass)
+                player.Drink(() =>
                 {
-                    Invoke("OnGameWining", 1.5f);
-                }
+                    playerDrinkingCount++;
+                    GameController.Instance.UpdateEnergy(true, () =>
+                    {
+                        if (playerDrinkingCount == totalGlass)
+                        {
+                            OnGameWining();
+                        }
+                    });
+                });
             }
         }
 

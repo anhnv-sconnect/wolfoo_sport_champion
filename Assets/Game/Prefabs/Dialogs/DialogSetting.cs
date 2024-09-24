@@ -9,6 +9,8 @@ namespace WFSport
     public class DialogSetting : Panel
     {
         [SerializeField] Button backBtn;
+        [SerializeField] Slider musicSlider;
+        [SerializeField] Slider soundSlider;
         protected override void Start()
         {
             base.Start();

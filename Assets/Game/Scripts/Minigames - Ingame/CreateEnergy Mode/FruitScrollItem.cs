@@ -25,6 +25,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
         internal Action<FruitScrollItem> OnDragInSide;
         private Vector3 comparePos;
         private Sequence animUnlock;
+        private bool isLocking;
 
         public Sprite Icon { get => icon.sprite; }
 
@@ -40,11 +41,12 @@ namespace WFSport.Gameplay.CreateEnergyMode
         }
         protected void OnClickAdsBtn()
         {
+            scrollInfinity.StopAutoMove();
             EventDispatcher.Instance.Dispatch(
                 new EventKey.UnlockLocalData
                 {
                     id = order,
-                    isStraw = true,
+                    isFruit = true,
                     purchaseType = WFSport.Base.PurchaseType.Ads,
                     obj = gameObject
                 });
@@ -52,11 +54,12 @@ namespace WFSport.Gameplay.CreateEnergyMode
 
         protected void OnClickCoinBtn(LocalDataRecord localDataRecord)
         {
+            scrollInfinity.StopAutoMove();
             EventDispatcher.Instance.Dispatch(
                 new EventKey.UnlockLocalData
                 {
                     id = order,
-                    isStraw = true,
+                    isFruit = true,
                     purchaseType = PurchaseType.Coin,
                     amount = localDataRecord.Data.Amount,
                     obj = gameObject,
@@ -65,8 +68,8 @@ namespace WFSport.Gameplay.CreateEnergyMode
 
         internal void Setup(Sprite sprite, Vector3 comparePos, LocalDataRecord localRecord)
         {
-            coinLockBtn.onClick.AddListener(OnClickAdsBtn);
-            adLockBtn.onClick.AddListener(() => OnClickCoinBtn(localRecord));
+            coinLockBtn.onClick.AddListener(() => OnClickCoinBtn(localRecord));
+            adLockBtn.onClick.AddListener(OnClickAdsBtn);
 
             icon.sprite = sprite;
             icon.SetNativeSize();
@@ -75,35 +78,47 @@ namespace WFSport.Gameplay.CreateEnergyMode
 
             if (localRecord == null)
             {
+                isLocking = false;
                 UnLock(true);
             }
             else
             {
-                if (localRecord.Data.PurchaseType == WFSport.Base.PurchaseType.Coin)
+                isLocking = !localRecord.IsUnlock;
+                if (isLocking)
                 {
-                    CoinLock();
+                    if (localRecord.Data.PurchaseType == WFSport.Base.PurchaseType.Coin)
+                    {
+                        var priceTxt = coinLockBtn.GetComponentInChildren<TMP_Text>();
+                        priceTxt.text = localRecord.Data.Amount.ToString();
+                        CoinLock();
+                    }
+                    else
+                    {
+                        AdsLock();
+                    }
                 }
                 else
                 {
-                    var priceTxt = coinLockBtn.GetComponentInChildren<TMP_Text>();
-                    priceTxt.text = localRecord.Data.Amount.ToString();
-                    AdsLock();
+                    UnLock(true);
                 }
             }
         }
         private void CoinLock()
         {
             coinLockBtn.gameObject.SetActive(true);
+            adLockBtn.gameObject.SetActive(false);
+
             Lock();
         }
         private void AdsLock()
         {
             adLockBtn.gameObject.SetActive(true);
+            coinLockBtn.gameObject.SetActive(false);
             Lock();
         }
         private void Lock()
         {
-            icon.color = Color.black;
+            icon.color = Color.white;
             icon.DOFade(0.7f, 0);
         }
         public void UnLock(bool isImmediately = false)

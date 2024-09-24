@@ -10,14 +10,14 @@ namespace AnhNV.Dialog
     {
         [SerializeField] CanvasGroup bg;
         [SerializeField] Image fillImg;
+        [SerializeField] private float fillWidth = 1250;
 
         private float playTime = 2;
         private Sequence anim;
+        private Vector2 fillSize;
 
         private void Start()
         {
-            fillImg.fillAmount = 0;
-            bg.DOFade(0, 0);
         }
         private void OnDestroy()
         {
@@ -26,13 +26,19 @@ namespace AnhNV.Dialog
         public void Setup(float time)
         {
             playTime = time;
+            fillSize = fillImg.rectTransform.sizeDelta;
+            fillImg.rectTransform.sizeDelta = new Vector2(0, fillSize.y);
+            bg.DOFade(0, 0);
         }
         public override void Hide()
         {
-            var fillValue = fillImg.fillAmount;
+            var fillValue = fillImg.rectTransform.sizeDelta.x;
             anim?.Kill();
             anim = DOTween.Sequence()
-                .Append(fillImg.DOFillAmount(1, fillValue == 1 ? 0 : 0.25f))
+                .Append(DOVirtual.Float(0, fillWidth, fillValue == fillWidth ? 0.1f : 0.25f, (value) =>
+                {
+                    fillImg.rectTransform.sizeDelta = new Vector2(value, fillSize.y);
+                }))
                 .Join(bg.DOFade(1, 0.25f))
                 .Append(bg.DOFade(0, 0.25f));
             anim.OnComplete(() =>
@@ -46,10 +52,13 @@ namespace AnhNV.Dialog
         {
             gameObject.SetActive(true);
             anim?.Kill();
-            fillImg.fillAmount = 0;
+            fillImg.rectTransform.sizeDelta = new Vector2(0, fillSize.y);
             anim = DOTween.Sequence()
                 .Append(bg.DOFade(1, 0.5f))
-                .Join(fillImg.DOFillAmount(1, playTime));
+                .Join(DOVirtual.Float(0, fillWidth, playTime, (value) =>
+                {
+                    fillImg.rectTransform.sizeDelta = new Vector2(value, fillSize.y);
+                }));
             anim.OnComplete(() =>
             {
                 OnShow?.Invoke();

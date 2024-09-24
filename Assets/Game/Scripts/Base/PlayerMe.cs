@@ -11,10 +11,11 @@ namespace WFSport.Base
     {
         public static readonly string KEY = "PLAYER_KEY";
         private bool HasKey { get => PlayerPrefs.HasKey(KEY); }
-        public bool IsMuteMusic;
-        public bool IsMuteSound;
+        public float musicVolume = 1;
+        public float soundVolume = 1;
         public int totalCoin;
         public int totalEnergy;
+        public int maxEnergy = 4;
 
         private string myVersion;
         private int totalAdsSuccess;
@@ -38,13 +39,8 @@ namespace WFSport.Base
             }
         }
 
-        public PlayerMe(bool isMuteMusic, bool isMuteSound)
-        {
-            IsMuteMusic = isMuteMusic;
-            IsMuteSound = isMuteSound;
-            myVersion = Application.version;
-            LastOpenTime = DateTime.Now;
-        }
+        public string MyVersion { get => myVersion; set => myVersion = value; }
+        public int TotalAdsSuccess { get => totalAdsSuccess; set => totalAdsSuccess = value; }
 
         public void Init()
         {

@@ -12,15 +12,18 @@ namespace WFSport.Gameplay.CreateEnergyMode
         [SerializeField] Transform mouth;
         [SerializeField] CharacterWorldAnimation characterAnim;
         private Sequence moveAnim;
+        private Sequence drinkAnim;
         private bool isInit;
         private Vector3 initPos;
         private Vector2 maxPos;
 
         public Vector3 MouthPos { get => mouth.position; }
+        private Action OnDrinkComplete;
 
         private void OnDestroy()
         {
             moveAnim?.Kill();
+            drinkAnim?.Kill();
         }
         private void Start()
         {
@@ -34,13 +37,22 @@ namespace WFSport.Gameplay.CreateEnergyMode
 
             characterAnim.PlayIdleAnim();
             initPos = transform.position;
-            maxPos = ScreenHelper.GetMaxPosition();
+            maxPos = ScreenHelper.GetMaxPosition() + Vector2.right * 5;
         }
 
-        internal void Drink()
+        internal void Drink(System.Action OnComplete = null)
         {
             characterAnim.PlayIdleAnim();
             characterAnim.PlayEatAnim(false);
+
+            drinkAnim?.Complete();
+            OnDrinkComplete = OnComplete;
+            drinkAnim = DOTween.Sequence()
+                .AppendInterval(characterAnim.GetTimeAnimation(CharacterWorldAnimation.AnimState.Eat));
+            drinkAnim.OnComplete(() =>
+            {
+                OnDrinkComplete?.Invoke();
+            });
         }
         internal void PlayWining()
         {
@@ -52,13 +64,13 @@ namespace WFSport.Gameplay.CreateEnergyMode
             moveAnim?.Kill();
             if (isImmediately)
             {
-                transform.position = new Vector3(-(maxPos.x + 2), initPos.y, initPos.z);
+                transform.position = new Vector3(-(maxPos.x), initPos.y, initPos.z);
                 OnComplete?.Invoke();
                 return;
             }
             characterAnim.PlayRunAnim();
             moveAnim = DOTween.Sequence()
-                .Append(transform.DOMoveX(-(maxPos.x + 2), 0.5f).SetEase(Ease.InBack));
+                .Append(transform.DOMoveX(-(maxPos.x), 0.5f).SetEase(Ease.InBack));
             moveAnim.OnComplete(() =>
             {
                 characterAnim.PlayIdleAnim();

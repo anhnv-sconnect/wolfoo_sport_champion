@@ -27,7 +27,7 @@ namespace WFSport.Home
         private void OnClickMe()
         {
             Debug.Log("click Mode Item");
-            EventDispatcher.Instance.Dispatch(new EventKeyBase.ChangeScene { gameplay = true, minigame = holderMinigame });
+            EventDispatcher.Instance.Dispatch(new EventKeyBase.ChangeScene { gameplay = true, minigame = holderMinigame, isMainMode = true });
         }
     }
 }

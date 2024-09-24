@@ -48,8 +48,6 @@ namespace WFSport.Base
 
             loadSceneManager = GetComponentInChildren<LoadSceneManager>();
             playerMe = DataManager.instance.localSaveloadData.playerMe;
-            systemUI = GetComponentInChildren<MinigameSystemUI>();
-            systemUI.ClickBackBtn = OnClickBackBtn;
 
             gameplayData = DataManager.Instance.configDataManager.GameplayConfig;
 
@@ -68,7 +66,7 @@ namespace WFSport.Base
         private IEnumerator Play()
         {
             yield return new WaitForSeconds(1);
-            systemUI.UpdateCoin();
+            GetSystemUI();
         }
 
         protected override void OnDestroy()
@@ -119,7 +117,10 @@ namespace WFSport.Base
                     playerMe.totalCoin -= data.amount;
                     playerMe.Save();
                     systemUI.UpdateCoin();
-                    OnPurchasingScrollItem();
+                    systemUI.PlayAnimPurchasingCoin(data.obj.transform, () =>
+                    {
+                        OnPurchasingScrollItem();
+                    });
                 }
             }
         }
@@ -166,7 +167,41 @@ namespace WFSport.Base
 
         private void OnClickBackBtn()
         {
+            GotoHomeScene();
+        }
 
+        private void GotoHomeScene()
+        {
+            loadSceneManager.LoadScene(Constant.SCENE.HOME);
+            loadSceneManager.OnLoadComplete = () =>
+            {
+                loadSceneManager.OnLoadSuccess = null;
+                GetSystemUI();
+                if(playerMe.totalEnergy <= 0)
+                {
+                    systemUI.PlayAnimOutOfEnergy();
+                }
+            };
+        }
+        private void GotoGameplayScene(Minigame minigame)
+        {
+            loadSceneManager.LoadScene(Constant.SCENE.GAMEPLAY);
+            loadSceneManager.OnLoadSuccess = () =>
+            {
+                Debug.Log("ONLoad Complete");
+                OnGotoGameplay(minigame);
+                loadSceneManager.OnLoadSuccess = null;
+                GetSystemUI();
+            };
+        }
+        private void GotoLoadScene()
+        {
+            loadSceneManager.LoadScene(Constant.SCENE.LOADING);
+            loadSceneManager.OnLoadComplete = () =>
+            {
+                loadSceneManager.OnLoadSuccess = null;
+                GetSystemUI();
+            };
         }
 
         private void OnGameplayComplete(Gameplay.EventKey.OnGameStop obj)
@@ -178,27 +213,62 @@ namespace WFSport.Base
         {
             if(obj.home)
             {
-                loadSceneManager.LoadScene(Constant.SCENE.HOME);
+                GotoHomeScene();
             }
             else if (obj.loading)
             {
-                loadSceneManager.LoadScene(Constant.SCENE.LOADING);
+                GotoLoadScene();
             }
             else if (obj.gameplay)
             {
-                loadSceneManager.LoadScene(Constant.SCENE.GAMEPLAY);
-                loadSceneManager.OnLoadSuccess = () =>
+                if(!obj.isMainMode)
                 {
-                    Debug.Log("ONLoad Complete");
-                    OnGotoGameplay(obj.minigame);
-                    loadSceneManager.OnLoadSuccess = null;
-                };
+                    GotoGameplayScene(obj.minigame);
+                }
+                else
+                {
+                    if (playerMe.totalEnergy > 0)
+                    {
+                        if (playerMe.totalEnergy > 0)
+                        {
+                            playerMe.totalEnergy -= 1;
+                            playerMe.Save();
+                        }
+                        GotoGameplayScene(obj.minigame);
+                    }
+                }
             }
         }
 
-        public void OrderLocalData()
+        internal void UpdateEnergy(bool isInCrease, System.Action OnComplete)
         {
+            if(isInCrease)
+            {
+                var total = playerMe.totalEnergy;
+                total++;
+                if (total > playerMe.maxEnergy) total = playerMe.maxEnergy;
+                playerMe.totalEnergy = total;
+                playerMe.Save();
 
+                systemUI.PlayAnimInCreaseEnergy(OnComplete);
+            }
+            else
+            {
+                var total = playerMe.totalEnergy;
+                total--;
+                if (total < 0) total = 0;
+                playerMe.totalEnergy = total;
+                playerMe.Save();
+
+                systemUI.PlayAnimDecreaseEnergy(OnComplete);
+            }
+        }
+
+        private void GetSystemUI()
+        {
+            systemUI = FindAnyObjectByType<MinigameSystemUI>();
+            systemUI.ClickBackBtn = OnClickBackBtn;
+            systemUI.Setup();
         }
 
         public IEnumerable<GameplayConfigData> OrderAllMainGameplay()

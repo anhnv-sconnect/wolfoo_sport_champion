@@ -24,6 +24,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
         internal Action<StrawScrollItem> OnDragInSide;
         private Vector3 comparePos;
         private Sequence animUnlock;
+        private bool isLocking;
 
         public Sprite Icon { get => icon.sprite;}
 
@@ -39,6 +40,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
         }
         protected void OnClickAdsBtn()
         {
+            scrollInfinity.StopAutoMove();
             EventDispatcher.Instance.Dispatch(
                 new EventKey.UnlockLocalData
                 {
@@ -51,6 +53,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
 
         protected void OnClickCoinBtn(LocalDataRecord localDataRecord)
         {
+            scrollInfinity.StopAutoMove();
             EventDispatcher.Instance.Dispatch(
                 new EventKey.UnlockLocalData
                 {
@@ -64,8 +67,8 @@ namespace WFSport.Gameplay.CreateEnergyMode
 
         internal void Setup(Sprite sprite, Vector3 comparePos, LocalDataRecord localRecord)
         {
-            coinLockBtn.onClick.AddListener(OnClickAdsBtn);
-            adLockBtn.onClick.AddListener(() => OnClickCoinBtn(localRecord));
+            coinLockBtn.onClick.AddListener(() => OnClickCoinBtn(localRecord));
+            adLockBtn.onClick.AddListener(OnClickAdsBtn);
 
             icon.sprite = sprite;
             icon.SetNativeSize();
@@ -74,30 +77,41 @@ namespace WFSport.Gameplay.CreateEnergyMode
 
             if (localRecord == null)
             {
+                isLocking = false;
                 UnLock(true);
             }
             else
             {
-                if (localRecord.Data.PurchaseType == WFSport.Base.PurchaseType.Coin)
+                isLocking = !localRecord.IsUnlock;
+                if (isLocking)
                 {
-                    CoinLock();
+                    if (localRecord.Data.PurchaseType == WFSport.Base.PurchaseType.Coin)
+                    {
+                        var priceTxt = coinLockBtn.GetComponentInChildren<TMP_Text>();
+                        priceTxt.text = localRecord.Data.Amount.ToString();
+                        CoinLock();
+                    }
+                    else
+                    {
+                        AdsLock();
+                    }
                 }
                 else
                 {
-                    var priceTxt = coinLockBtn.GetComponentInChildren<TMP_Text>();
-                    priceTxt.text = localRecord.Data.Amount.ToString();
-                    AdsLock();
+                    UnLock(true);
                 }
             }
         }
         private void CoinLock()
         {
+            adLockBtn.gameObject.SetActive(false);
             coinLockBtn.gameObject.SetActive(true);
             Lock();
         }
         private void AdsLock()
         {
             adLockBtn.gameObject.SetActive(true);
+            coinLockBtn.gameObject.SetActive(false);
             Lock();
         }
         private void Lock()

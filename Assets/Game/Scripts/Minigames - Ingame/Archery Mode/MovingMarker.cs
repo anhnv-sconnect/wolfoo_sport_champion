@@ -38,6 +38,7 @@ namespace WFSport.Gameplay.ArcheryMode
             _animCorrect?.Kill();
             _tweenShow?.Kill();
             _tweenHide?.Kill();
+            _animScore?.Kill();
         }
         private void Start()
         {

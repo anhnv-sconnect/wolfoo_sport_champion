@@ -38,7 +38,7 @@ namespace WFSport.Base
             public bool gameplay;
 
             public Minigame minigame;
-            public GameplayConfigData gameplayConfig;
+            public bool isMainMode;
         }   
     }
 }
