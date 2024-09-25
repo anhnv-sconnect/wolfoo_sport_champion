@@ -28,7 +28,7 @@ namespace SCN.HUD
                     instance = g.AddComponent<T>();
                     g.AddComponent<GraphicRaycaster>();
                     g.AddComponent<Canvas>();
-                    g.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+             //       g.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
                     g.AddComponent<CanvasScaler>();
                     CanvasScaler cs = g.GetComponent<CanvasScaler>();
                     cs.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;

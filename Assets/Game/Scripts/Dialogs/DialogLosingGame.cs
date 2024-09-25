@@ -1,18 +1,17 @@
 using SCN.HUD;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace WFSport
+namespace WFSport.UI
 {
-    public class DialogPause : Panel
+    public class DialogLosingGame: Panel
     {
         [SerializeField] Button backBtn;
-
         protected override void Start()
         {
+            base.Start();
             backBtn.onClick.AddListener(OnClickBackBtn);
         }
     }

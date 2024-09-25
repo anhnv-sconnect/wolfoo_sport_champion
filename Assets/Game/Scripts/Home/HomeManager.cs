@@ -77,12 +77,10 @@ namespace WFSport.Home
 
             if (furnitureAsset.Equals(default(Gameplay.FurnitureMode.Asset)))
             {
-                Debug.Log("Furniture " + "Fail");
                 Debug.LogError("<!> Your Asset is Empty <!>");
             }
             else
             {
-                Debug.Log("Furniture " + "SCuccess");
                 foreach (var toyCreated in furnitureData.ToysCreated)
                 {
                     if (toyCreated.TopicKind == Gameplay.FurnitureMode.Topic.Kind.Toy)

@@ -8,5 +8,6 @@ namespace WFSport.Helper
     public static class DataTransporter
     {
         public static IMinigame.ConfigData GameplayConfig;
+        public static int Level;
     }
 }

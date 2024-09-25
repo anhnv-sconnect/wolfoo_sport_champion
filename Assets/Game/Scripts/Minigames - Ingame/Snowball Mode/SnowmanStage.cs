@@ -36,6 +36,7 @@ namespace WFSport
 
         private void Start()
         {
+            GetComponentInChildren<Canvas>().worldCamera = Camera.main;
             animatorHelper.OnCloseComplete += OnHide;
             backBtn.onClick.AddListener(StopRepresent);
             Init();

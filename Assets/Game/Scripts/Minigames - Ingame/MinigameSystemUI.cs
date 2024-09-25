@@ -99,6 +99,22 @@ namespace WFSport.Base
                 OnComplete?.Invoke();
             });
         }
+        public void PlayAnimEarningCoin(Vector3 beginPos, System.Action OnComplete, System.Action OnUpdate = null)
+        {
+            var isACtive = coinHolder.activeSelf;
+
+            coinControl.transform.position = beginPos;
+            coinHolder.SetActive(true);
+            coinControl.MagnetTrans = coinHolder.transform;
+            coinControl.Play(coinHolder.transform, null, () =>
+            {
+                OnUpdate?.Invoke();
+            }, () =>
+            {
+                coinHolder.SetActive(isACtive);
+                OnComplete?.Invoke();
+            });
+        }
         public void PlayAnimInCreaseEnergy(System.Action OnComplete)
         {
             var isActive = energyHolder.activeSelf;
@@ -127,17 +143,27 @@ namespace WFSport.Base
                 });
             }
         }
-        public void UpdateCoin()
+        public void UpdateCoin(bool usingAnim = false)
         {
-            var isACtive = coinHolder.activeSelf;
-
-            coinHolder.SetActive(true);
             var total = totalCoin;
             string coinStr = total.ToString();
 
             if (total > 1000) coinStr = (total / 1000) + "." + (total % 1000) + "K";
             if (total > 1000000) coinStr = (total / 1000000) + "." + (total % 1000000) + "M";
 
+            if (usingAnim)
+            {
+                PlayAnimCoinIndexJumping(coinStr);
+            }
+            else
+            {
+                coinTxt.text = coinStr;
+            }
+        }
+        private void PlayAnimCoinIndexJumping(string coinStr)
+        {
+            var isACtive = coinHolder.activeSelf;
+            coinHolder.SetActive(true);
             animCoin?.Complete();
             animCoin = DOTween.Sequence()
                 .Append(coinTxt.transform.DOPunchScale(Vector3.one * 0.5f, 0.5f, 2))

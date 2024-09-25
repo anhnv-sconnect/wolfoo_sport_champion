@@ -6,6 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WFSport.Helper;
+using WFSport.UI;
+using static AnhNV.GameBase.PopupManager;
 using static WFSport.Base.ConfigDataManager;
 
 namespace WFSport.Base
@@ -30,16 +32,15 @@ namespace WFSport.Base
     public class GameController : SingletonResourcesAlive<GameController>
     {
         private LoadSceneManager loadSceneManager;
-        private GameObject curMinigame;
+        private Minigame curMinigame;
         private PlayerMe playerMe;
         private MinigameSystemUI systemUI;
         private GameplayConfigData[] gameplayData;
         private LocalDataManager localData;
+        private Panel curDialog;
 
         public Stack<Action> purchaseActions;
         private Gameplay.EventKey.UnlockLocalData purchaseData;
-
-        public MinigameSystemUI SystemUI { get => systemUI; }
 
         private void Start()
         {
@@ -61,6 +62,7 @@ namespace WFSport.Base
             EventDispatcher.Instance.RegisterListener<Gameplay.EventKey.UnlockLocalData>(OnUnlockItem);
             EventDispatcher.Instance.RegisterListener<EventKeyBase.OnWatchAds>(OnWatchAds);
             EventDispatcher.Instance.RegisterListener<EventKeyBase.OpenDialog>(OnOpenDialog);
+            EventDispatcher.Instance.RegisterListener<EventKeyBase.OnChoosing>(OnChoosingItem);
         }
 
         private IEnumerator Play()
@@ -79,18 +81,62 @@ namespace WFSport.Base
             EventDispatcher.Instance.RemoveListener<Gameplay.EventKey.UnlockLocalData>(OnUnlockItem);
             EventDispatcher.Instance.RemoveListener<EventKeyBase.OnWatchAds>(OnWatchAds);
             EventDispatcher.Instance.RemoveListener<EventKeyBase.OpenDialog>(OnOpenDialog);
+            EventDispatcher.Instance.RemoveListener<EventKeyBase.OnChoosing>(OnChoosingItem);
+        }
+
+        private void OnChoosingItem(EventKeyBase.OnChoosing obj)
+        {
+            if(obj.dialogName == DialogName.ChoosingLevel)
+            {
+                DataTransporter.Level = obj.id;
+                GotoGameplayScene(curMinigame);
+            }
         }
 
         private void OnOpenDialog(EventKeyBase.OpenDialog obj)
         {
-            switch (obj.dialog)
+            OnOpenDialog(obj.dialog);
+        }
+
+        private void OnOpenDialog(DialogName dialogName)
+        {
+            switch (dialogName)
             {
-                case AnhNV.GameBase.PopupManager.DialogName.Pause:
-                    HUDSystem.Instance.Show<DialogPause>(null, UIPanels<HUDSystem>.ShowType.KeepCurrent);
+                case DialogName.Pause:
+                    curDialog = HUDSystem.Instance.Show<DialogPause>(null, UIPanels<HUDSystem>.ShowType.KeepCurrent);
                     break;
-                case AnhNV.GameBase.PopupManager.DialogName.Setting:
-                    HUDSystem.Instance.Show<DialogSetting>(null, UIPanels<HUDSystem>.ShowType.KeepCurrent);
+                case DialogName.Setting:
+                    curDialog = HUDSystem.Instance.Show<DialogSetting>(null, UIPanels<HUDSystem>.ShowType.KeepCurrent);
                     break;
+                case DialogName.ChoosingLevel:
+                    curDialog = HUDSystem.Instance.Show<DialogChoosingLevel>(null, UIPanels<HUDSystem>.ShowType.KeepCurrent);
+                    break;
+                case DialogName.Endgame:
+                    curDialog = HUDSystem.Instance.Show<DialogEndgame>(null, UIPanels<HUDSystem>.ShowType.KeepCurrent);
+                    break;
+                case DialogName.Losegame:
+                    curDialog = HUDSystem.Instance.Show<DialogLosingGame>(null, UIPanels<HUDSystem>.ShowType.KeepCurrent);
+                    break;
+                default:
+                    curDialog = null;
+                    break;
+            }
+
+            if(curDialog != null)
+            {
+                curDialog.OnHide = OnDialogHiding;
+            }
+        }
+
+        private void OnDialogHiding()
+        {
+            if(curDialog as DialogEndgame)
+            {
+                GotoHomeScene();
+            }
+            else if (curDialog as DialogLosingGame)
+            {
+                GotoHomeScene();
             }
         }
 
@@ -206,7 +252,42 @@ namespace WFSport.Base
 
         private void OnGameplayComplete(Gameplay.EventKey.OnGameStop obj)
         {
-            loadSceneManager.LoadScene(Constant.SCENE.HOME);
+            if(curMinigame == Minigame.CreateEnergy || curMinigame == Minigame.Furniture)
+            {
+                GotoHomeScene();
+            }
+            else
+            {
+                if(obj.data.gamestate == Gameplay.IMinigame.MatchResult.Win)
+                {
+                    StartCoroutine("OnPlayerWining", obj.data.claimedCoin);
+                }
+                else
+                {
+                    StartCoroutine("OnPlayerLosing");
+                }
+            }
+        }
+        private IEnumerator OnPlayerWining(int claimedCoin)
+        {
+            var totalCoin = playerMe.totalCoin;
+            yield return new WaitForSeconds(1);
+            OnOpenDialog(DialogName.Endgame);
+            systemUI.PlayAnimEarningCoin(Vector3.zero, () =>
+            {
+                playerMe.totalCoin++;
+                systemUI.UpdateCoin(true);
+            },
+            () =>
+            {
+                playerMe.totalCoin = totalCoin + claimedCoin;
+                systemUI.UpdateCoin(true);
+            });
+        }
+        private IEnumerator OnPlayerLosing()
+        {
+            yield return new WaitForSeconds(1);
+            OnOpenDialog(DialogName.Losegame);
         }
 
         private void OnChangeScene(EventKeyBase.ChangeScene obj)
@@ -221,6 +302,7 @@ namespace WFSport.Base
             }
             else if (obj.gameplay)
             {
+                curMinigame = obj.minigame;
                 if(!obj.isMainMode)
                 {
                     GotoGameplayScene(obj.minigame);
@@ -229,11 +311,15 @@ namespace WFSport.Base
                 {
                     if (playerMe.totalEnergy > 0)
                     {
-                        if (playerMe.totalEnergy > 0)
+                        if (obj.minigame == Minigame.BasketBall)
                         {
-                            playerMe.totalEnergy -= 1;
-                            playerMe.Save();
+                            OnOpenDialog(DialogName.ChoosingLevel);
+                            return;
                         }
+
+                        playerMe.totalEnergy -= 1;
+                        playerMe.Save();
+
                         GotoGameplayScene(obj.minigame);
                     }
                 }
@@ -293,11 +379,12 @@ namespace WFSport.Base
                     gameplayConfig = item;
                 }
             }
+
             DataTransporter.GameplayConfig = gameplayConfig.data;
             var data = DataManager.instance.OrderMinigame(gameplayConfig.Mode);
             if (data != null)
             {
-                curMinigame = Instantiate(data);
+                Instantiate(data);
             }
         }
 

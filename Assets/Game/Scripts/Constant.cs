@@ -4,6 +4,14 @@ namespace WFSport
     {
         public static class Constant
         {
+            public struct LEVEL
+            {
+                public const int LEVEL_1 = 1;
+                public const int LEVEL_2 = 2;
+                public const int LEVEL_3 = 3;
+                public const int LEVEL_4 = 4;
+                public const int LEVEL_5 = 5;
+            }
             public struct TAG
             {
                 public const string GROUND      = "Ground";

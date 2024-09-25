@@ -31,6 +31,11 @@ namespace WFSport.Base
         {
             public int id;
         }
+        public struct OnChoosing : IEventParams
+        {
+            public int id;
+            public DialogName dialogName;
+        }
         public struct ChangeScene: IEventParams
         {
             public bool home;
@@ -39,6 +44,7 @@ namespace WFSport.Base
 
             public Minigame minigame;
             public bool isMainMode;
+            public int level;
         }   
     }
 }

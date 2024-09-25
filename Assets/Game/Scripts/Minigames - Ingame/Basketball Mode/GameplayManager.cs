@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WFSport.Base;
 using WFSport.Helper;
 
 namespace WFSport.Gameplay.BasketballMode
@@ -116,9 +117,13 @@ namespace WFSport.Gameplay.BasketballMode
                     level = 0,
                 };
             }
-            if (myData.level == 1) curLevel = levelConfig.mode1;
-            else if (myData.level == 2) curLevel = levelConfig.mode2;
-            else if (myData.level == 3) curLevel = levelConfig.mode3;
+            else
+            {
+                myData.level = DataTransporter.Level;
+            }
+            if (myData.level == Constant.LEVEL.LEVEL_1) curLevel = levelConfig.mode1;
+            else if (myData.level == Constant.LEVEL.LEVEL_2) curLevel = levelConfig.mode2;
+            else if (myData.level == Constant.LEVEL.LEVEL_3) curLevel = levelConfig.mode3;
             else curLevel = levelConfig.modeTest;
 
             myData.timelineScore = curLevel.timelineScores;
@@ -185,7 +190,7 @@ namespace WFSport.Gameplay.BasketballMode
                 ui.PlayTime();
                 foreach (var basket in myBaskets) { basket.Play(); }
                 player.Play();
-                if (myData.level >= 1) bot.Play();
+                if (HasBot) bot.Play();
             });
         }
 

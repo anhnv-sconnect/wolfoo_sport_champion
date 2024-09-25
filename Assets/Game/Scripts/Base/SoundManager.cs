@@ -12,8 +12,8 @@ namespace WFSport.Base
         private float soundVolume;
         private float musicVolume;
 
-        public float SoundVolume { get => DataManager.instance.localSaveloadData.playerMe.soundVolume; }
-        public float MusicVolume { get => DataManager.instance.localSaveloadData.playerMe.musicVolume ; }
+        public float SoundVolume { get => DataManager.instance.localSaveloadData.playerMe.soundVolume; set => soundVolume = value; }
+        public float MusicVolume { get => DataManager.instance.localSaveloadData.playerMe.musicVolume; set => musicVolume = value; }
 
         private void Start()
         {
@@ -26,9 +26,9 @@ namespace WFSport.Base
             return sound;
         }
 
-        public void PlayMusic()
+        public void PlayMusic(AudioClip clip)
         {
-            
+            musicAus.clip = clip;
         }
     }
 }

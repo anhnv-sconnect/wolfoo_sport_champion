@@ -14,6 +14,9 @@ namespace AnhNV.GameBase
         {
             Pause,
             Setting,
+            ChoosingLevel,
+            Endgame,
+            Losegame,
         }
         [SerializeField] string path;
         [SerializeField] GameObject popup;

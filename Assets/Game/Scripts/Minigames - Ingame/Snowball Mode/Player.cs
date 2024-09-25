@@ -256,6 +256,7 @@ namespace WFSport.Gameplay.SnowballMode
 
         public override void Lose()
         {
+            GameplayState = IMinigame.GameState.Stopping;
         }
 
         public override void OnDragging(Vector3 force)
@@ -317,6 +318,10 @@ namespace WFSport.Gameplay.SnowballMode
             {
                 candrag = false;
                 canMoveCam = false;
+            }
+            else
+            {
+                gamestate = IMinigame.GameState.Pausing;
             }
         }
 

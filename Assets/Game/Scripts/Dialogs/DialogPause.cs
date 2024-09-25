@@ -1,19 +1,18 @@
 using SCN.HUD;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace WFSport
+namespace WFSport.UI
 {
-    public class DialogSetting : Panel
+    public class DialogPause : Panel
     {
         [SerializeField] Button backBtn;
-        [SerializeField] Slider musicSlider;
-        [SerializeField] Slider soundSlider;
+
         protected override void Start()
         {
-            base.Start();
             backBtn.onClick.AddListener(OnClickBackBtn);
         }
     }

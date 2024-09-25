@@ -12,6 +12,8 @@ Mode Archery: 26/08/2024 -
 GamePLay
 Mode1: 
 
+Load data cho mỗi cục SoundManager của mỗi gameplay
+
 MiniGame
 I. Nước tăng lực
  Mini gameplay ở ngoài màn Home
