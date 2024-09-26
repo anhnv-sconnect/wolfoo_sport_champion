@@ -32,10 +32,9 @@ namespace AnhNV.Dialog
         }
         public override void Hide()
         {
-            var fillValue = fillImg.rectTransform.sizeDelta.x;
             anim?.Kill();
             anim = DOTween.Sequence()
-                .Append(DOVirtual.Float(0, fillWidth, fillValue == fillWidth ? 0.1f : 0.25f, (value) =>
+                .Append(DOVirtual.Float(fillWidth, 0, 0.25f, (value) =>
                 {
                     fillImg.rectTransform.sizeDelta = new Vector2(value, fillSize.y);
                 }))

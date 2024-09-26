@@ -465,7 +465,7 @@ namespace Coffee.UIExtensions
 
         private void InitializeIfNeeded()
         {
-            if (enabled && m_IsTrail)
+            if (this != null && enabled && m_IsTrail)
             {
                 UnityEngine.Debug.LogWarningFormat(this, "[UIParticle] The UIParticle component should be removed: {0}\nReason: UIParticle for trails is no longer needed.", name);
                 gameObject.hideFlags = HideFlags.None;

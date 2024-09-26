@@ -5,7 +5,7 @@ using WFSport.Gameplay;
 
 namespace WFSport.Base
 {
-    public class DataManager : SingletonBind<DataManager>
+    public class DataManager : MonoBehaviour
     {
         [SerializeField] public ConfigDataManager configDataManager;
         [SerializeField] private AssetDataManager assetDataManager;

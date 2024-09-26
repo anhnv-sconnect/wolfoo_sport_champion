@@ -17,7 +17,7 @@ namespace WFSport.Load
             loadingPanel.Show();
             loadingPanel.OnShow = () =>
             {
-                EventDispatcher.Instance.Dispatch(new EventKeyBase.ChangeScene { home = true });
+                EventDispatcher.Instance.Dispatch(new EventKeyBase.ChangeScene { home = true, notUsingLoading = true });
                 loadingPanel.Hide();
             };
         }

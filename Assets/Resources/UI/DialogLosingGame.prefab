@@ -106,8 +106,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6761306748685439702}
-  - {fileID: 5350113130601435689}
   - {fileID: 3876193882423466410}
+  - {fileID: 5350113130601435689}
   m_Father: {fileID: 0}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

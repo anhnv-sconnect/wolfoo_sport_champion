@@ -272,7 +272,7 @@ namespace WFSport.Gameplay.FurnitureMode
         }
         private IEnumerator InitToysCreated()
         {
-            if (!DataManager.Instance.localSaveloadData.IsLoadCompleted)
+            if (!GameController.Instance.IsLoadLocalDataCompleted)
             {
                 yield return new WaitForSeconds(0.5f);
             }
@@ -301,7 +301,7 @@ namespace WFSport.Gameplay.FurnitureMode
         }
         private IEnumerator InitCreatedChair()
         {
-            if (!DataManager.Instance.localSaveloadData.IsLoadCompleted)
+            if (!GameController.Instance.IsLoadLocalDataCompleted)
             {
                 yield return new WaitForSeconds(0.5f);
             }
@@ -321,10 +321,10 @@ namespace WFSport.Gameplay.FurnitureMode
                 topics[i].Setup(i, i == 0);
                 topics[i].Click = OnClickTopic;
             }
-            localData = DataManager.Instance.localSaveloadData.furnitureData;
+            localData = GameController.Instance.FurnitureData;
             limitSpriteRender = limitToyArea.GetComponentsInChildren<SpriteRenderer>();
 
-            myAsset = DataManager.Instance.OrderAsset<Asset>(WFSport.Base.Minigame.Furniture);
+            myAsset = GameController.Instance.OrderAsset<Asset>(WFSport.Base.Minigame.Furniture);
             StartCoroutine(InitToysCreated());
             StartCoroutine(InitCreatedChair());
         }

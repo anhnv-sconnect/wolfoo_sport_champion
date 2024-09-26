@@ -12,8 +12,8 @@ namespace WFSport.Base
         private float soundVolume;
         private float musicVolume;
 
-        public float SoundVolume { get => DataManager.instance.localSaveloadData.playerMe.soundVolume; set => soundVolume = value; }
-        public float MusicVolume { get => DataManager.instance.localSaveloadData.playerMe.musicVolume; set => musicVolume = value; }
+        public float SoundVolume { get => GameController.Instance.PlayerMe.soundVolume; set => soundVolume = value; }
+        public float MusicVolume { get => GameController.Instance.PlayerMe.musicVolume; set => musicVolume = value; }
 
         private void Start()
         {

@@ -34,9 +34,13 @@ namespace WFSport.Base
                 }
             };
         }
-        public void LoadScene(string name)
+        public void LoadScene(string name, bool isUsingLoading = true)
         {
-            loadingPanel.Show();
+            if(isUsingLoading)
+            {
+                loadingPanel.Show();
+            }
+
             OnLoadScene(name, () =>
             {
                 loadingPanel.Hide();

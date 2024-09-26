@@ -50,7 +50,7 @@ namespace WFSport.Home
         private void InitData()
         {
             var gameplayData = GameController.Instance.OrderAllMainGameplay();
-            furnitureData = DataManager.Instance.localSaveloadData.furnitureData;
+            furnitureData = GameController.Instance.FurnitureData;
 
             var array = new Transform[gameplayData.Count()];
             var count = 0;
@@ -68,12 +68,12 @@ namespace WFSport.Home
         }
         private IEnumerator SpawnCreatedToy()
         {
-            if (!DataManager.Instance.localSaveloadData.IsLoadCompleted)
+            if (!GameController.Instance.IsLoadLocalDataCompleted)
             {
                 yield return new WaitForSeconds(0.5f);
             }
 
-            furnitureAsset = DataManager.Instance.OrderAsset<Gameplay.FurnitureMode.Asset>(Minigame.Furniture);
+            furnitureAsset = GameController.Instance.OrderAsset<Gameplay.FurnitureMode.Asset>(Minigame.Furniture);
 
             if (furnitureAsset.Equals(default(Gameplay.FurnitureMode.Asset)))
             {

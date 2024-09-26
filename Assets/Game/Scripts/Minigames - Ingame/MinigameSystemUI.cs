@@ -24,8 +24,8 @@ namespace WFSport.Base
 
         private bool canClick = true;
         public Action ClickBackBtn;
-        private int totalCoin { get => DataManager.Instance.localSaveloadData.playerMe.totalCoin; }
-        private int totalEnergy { get => DataManager.Instance.localSaveloadData.playerMe.totalEnergy; }
+        private int totalCoin { get => GameController.Instance.PlayerMe.totalCoin; }
+        private int totalEnergy { get => GameController.Instance.PlayerMe.totalEnergy; }
         private Sequence animCoin;
         private Sequence animEnergy;
         private Image holderEnergyImg;

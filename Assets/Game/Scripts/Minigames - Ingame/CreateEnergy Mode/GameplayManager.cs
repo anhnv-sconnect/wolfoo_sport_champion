@@ -164,7 +164,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
         {
             myData = DataTransporter.GameplayConfig;
             result = new IMinigame.ResultData();
-            localData = DataManager.Instance.localSaveloadData.createEnergyData;
+            localData = GameController.Instance.CreateEnergyData;
 
             fruitData = asset.fruitData;
             totalFruit = fruitData.Length;

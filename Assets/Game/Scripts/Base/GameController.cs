@@ -29,9 +29,10 @@ namespace WFSport.Base
         Coin
     }
 
-    public class GameController : SingletonResourcesAlive<GameController>
+    public class GameController : MonoBehaviour
     {
         private LoadSceneManager loadSceneManager;
+        private DataManager dataManager;
         private Minigame curMinigame;
         private PlayerMe playerMe;
         private MinigameSystemUI systemUI;
@@ -41,6 +42,25 @@ namespace WFSport.Base
 
         public Stack<Action> purchaseActions;
         private Gameplay.EventKey.UnlockLocalData purchaseData;
+        public static GameController Instance;
+
+        public LocalDataCreateEnergy CreateEnergyData { get => localData.createEnergyData; }
+        public LocalDataFurniture FurnitureData { get => localData.furnitureData; }
+        public PlayerMe PlayerMe { get => playerMe; }
+        public bool IsLoadLocalDataCompleted => localData.IsLoadCompleted;
+
+        private void Awake()
+        {
+            if(Instance != null)
+            {
+                Destroy(Instance.gameObject);
+            }
+            else
+            {
+                Instance = this;
+            }
+            DontDestroyOnLoad(this);
+        }
 
         private void Start()
         {
@@ -48,11 +68,12 @@ namespace WFSport.Base
             Application.targetFrameRate = 60;
 
             loadSceneManager = GetComponentInChildren<LoadSceneManager>();
-            playerMe = DataManager.instance.localSaveloadData.playerMe;
 
-            gameplayData = DataManager.Instance.configDataManager.GameplayConfig;
+            dataManager = GetComponentInChildren<DataManager>();
 
-            localData = DataManager.instance.localSaveloadData;
+            playerMe = dataManager.localSaveloadData.playerMe;
+            gameplayData = dataManager.configDataManager.GameplayConfig;
+            localData = dataManager.localSaveloadData;
             localData.Load();
 
             StartCoroutine("Play");
@@ -71,7 +92,7 @@ namespace WFSport.Base
             GetSystemUI();
         }
 
-        protected override void OnDestroy()
+        private void OnDestroy()
         {
             playerMe.LastOpenTime = DateTime.Now;
             playerMe.Save();
@@ -82,6 +103,10 @@ namespace WFSport.Base
             EventDispatcher.Instance.RemoveListener<EventKeyBase.OnWatchAds>(OnWatchAds);
             EventDispatcher.Instance.RemoveListener<EventKeyBase.OpenDialog>(OnOpenDialog);
             EventDispatcher.Instance.RemoveListener<EventKeyBase.OnChoosing>(OnChoosingItem);
+        }
+        internal T OrderAsset<T>(Minigame game) where T : Gameplay.IAsset
+        {
+            return dataManager.OrderAsset<T>(game);
         }
 
         private void OnChoosingItem(EventKeyBase.OnChoosing obj)
@@ -216,14 +241,14 @@ namespace WFSport.Base
             GotoHomeScene();
         }
 
-        private void GotoHomeScene()
+        private void GotoHomeScene(bool isUsingLoading = true)
         {
-            loadSceneManager.LoadScene(Constant.SCENE.HOME);
+            loadSceneManager.LoadScene(Constant.SCENE.HOME, isUsingLoading);
             loadSceneManager.OnLoadComplete = () =>
             {
                 loadSceneManager.OnLoadSuccess = null;
                 GetSystemUI();
-                if(playerMe.totalEnergy <= 0)
+                if (playerMe.totalEnergy <= 0)
                 {
                     systemUI.PlayAnimOutOfEnergy();
                 }
@@ -294,7 +319,7 @@ namespace WFSport.Base
         {
             if(obj.home)
             {
-                GotoHomeScene();
+                GotoHomeScene(!obj.notUsingLoading);
             }
             else if (obj.loading)
             {
@@ -381,7 +406,7 @@ namespace WFSport.Base
             }
 
             DataTransporter.GameplayConfig = gameplayConfig.data;
-            var data = DataManager.instance.OrderMinigame(gameplayConfig.Mode);
+            var data = dataManager.OrderMinigame(gameplayConfig.Mode);
             if (data != null)
             {
                 Instantiate(data);
