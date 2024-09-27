@@ -289,7 +289,7 @@ RectTransform:
   - {fileID: 2728148321674897275}
   - {fileID: 9173649089259178798}
   m_Father: {fileID: 0}
-  m_RootOrder: -2
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -310,6 +310,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bg: {fileID: 3483603211460813903}
   fillImg: {fileID: 6870918364002754732}
+  fillWidth: 1250
+  fillWeight: 150
 --- !u!222 &2218622217136820331
 CanvasRenderer:
   m_ObjectHideFlags: 0

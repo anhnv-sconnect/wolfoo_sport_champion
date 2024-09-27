@@ -15,10 +15,12 @@ namespace AnhNV.Dialog
         [SerializeField] GameObject[] countingObjs;
         [SerializeField] CharacterUIAnimation kat;
         [SerializeField] Transform[] characterMoves;
+        [SerializeField] Image clockImg;
 
         private Sequence _sequence;
         private int count;
         private bool isInited;
+        private Vector3 clockTarget;
 
         private void Start()
         {
@@ -50,6 +52,12 @@ namespace AnhNV.Dialog
                 item.SetActive(false);
                 item.transform.localScale = Vector3.one * 1.5f;
             }
+        }
+        public void Setup(Vector3 clockArea)
+        {
+            clockTarget = clockArea;
+            clockImg.DOFade(0, 0);
+            clockImg.gameObject.SetActive(false);
         }
 
         public void ShowToHide()
@@ -95,12 +103,20 @@ namespace AnhNV.Dialog
                     countingObjs[count].SetActive(true);
                     countingObjs[count - 1].SetActive(false);
                     Holder.PlaySound?.Invoke();
+                    clockImg.gameObject.SetActive(true);
                 }))
-                .AppendCallback(() =>
-                {
-                    OnHide?.Invoke();
-                    Hide();
-                });
+                .Append(clockImg.DOFade(1, 0.5f))
+                .Join(clockImg.transform.DOMoveY(1.5f, 0.5f))
+                .Append(clockImg.transform.DORotate(Vector3.forward * 10, 0.25f))
+                .Append(clockImg.transform.DORotate(Vector3.forward * -10, 0.5f))
+                .Join(clockImg.transform.DOPunchScale(Vector3.one * 0.1f, 0.25f, 3))
+                .Append(clockImg.transform.DOJump(clockTarget, 2, 1, 0.5f));
+
+            _sequence.OnComplete(() =>
+            {
+                OnHided?.Invoke();
+                Hide();
+            });
         }
     }
 }

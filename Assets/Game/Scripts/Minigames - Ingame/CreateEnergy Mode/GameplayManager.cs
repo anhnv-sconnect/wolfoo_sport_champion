@@ -45,8 +45,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
         private void Start()
         {
             EventDispatcher.Instance.RegisterListener<EventKeyBase.Purchase>(OnPurchase);
-            Init();
-            OnGameStart();
+            StartCoroutine("Init");
         }
         private void OnDestroy()
         {
@@ -85,36 +84,46 @@ namespace WFSport.Gameplay.CreateEnergyMode
         }
         private void BlenderGrinding()
         {
-            if (countFruitInBlender != config.maxFruitInBlender) return;
-
-            blender.Grind(() =>
+            if(countFruitInBlender == config.maxFruitInBlender)
             {
-                fruitScrollInfinity.MoveOut();
-                glassManager.MoveIn(grindingCount > 1, () =>
-                {
-                    // Pouring
-                    glassManager.GetNextGlassofWaterToPouringWater((glass) =>
-                    {
-                        blender.Pouring(glass.transform.position,
-                        () =>
-                        {
-                            glass.OnGettingWater();
-                        },
-                        () =>
-                        {
-                            countFruitInBlender = 0;
-                            glass.JumpBacktoTray(null);
+                blender.Grind();
+                return;
+            }
+            if (countFruitInBlender > 1) 
+            {
+                blender.SetGrind();
+                blender.OnGrindingComplete = OnBlendingCompleted;
+            }
+        }
 
-                            grindingCount++;
-                            if (grindingCount == totalGlass)
-                            {
-                                blender.MoveOut();
-                                StartCoroutine("InitStrawDataScroll");
-                            }else
-                            {
-                                fruitScrollInfinity.MoveIn();
-                            }
-                        });
+        private void OnBlendingCompleted()
+        {
+            fruitScrollInfinity.MoveOut();
+            glassManager.MoveIn(grindingCount > 1, () =>
+            {
+                // Pouring
+                glassManager.GetNextGlassofWaterToPouringWater((glass) =>
+                {
+                    blender.Pouring(glass.transform.position + new Vector3(-0.8f, 1, 0),
+                    () =>
+                    {
+                        glass.OnGettingWater();
+                    },
+                    () =>
+                    {
+                        countFruitInBlender = 0;
+                        glass.JumpBacktoTray(null);
+
+                        grindingCount++;
+                        if (grindingCount == totalGlass)
+                        {
+                            blender.MoveOut();
+                            StartCoroutine("InitStrawDataScroll");
+                        }
+                        else
+                        {
+                            fruitScrollInfinity.MoveIn();
+                        }
                     });
                 });
             });
@@ -160,10 +169,13 @@ namespace WFSport.Gameplay.CreateEnergyMode
             });
         }
 
-        private void Init()
+        private IEnumerator Init()
         {
             myData = DataTransporter.GameplayConfig;
             result = new IMinigame.ResultData();
+
+            yield return new WaitUntil(() => GameController.Instance.IsLoadSceneCompleted);
+
             localData = GameController.Instance.CreateEnergyData;
 
             fruitData = asset.fruitData;
@@ -179,6 +191,8 @@ namespace WFSport.Gameplay.CreateEnergyMode
             glassManager.SetUp(config);
             glassManager.MoveOut(true);
             glassManager.OnGlassEndDrag = OnGlassEndDrag;
+
+            OnGameStart();
         }
 
         private void OnGlassEndDrag(Glass glass)
@@ -215,7 +229,8 @@ namespace WFSport.Gameplay.CreateEnergyMode
             var count = 0;
             foreach (var item in items)
             {
-                item.Setup(fruitData[count],blender.transform.position, 
+                item.Setup(fruitData[count], 
+                    blender, 
                     count < localData.fruitUnlocked.Length ? localData.fruitUnlocked[count] : null);
                 fruitScrollItems[count] = item;
                 item.OnDragInSide = CreateFruit;

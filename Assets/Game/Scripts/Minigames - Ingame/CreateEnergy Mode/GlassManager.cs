@@ -105,7 +105,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
             countGlass++;
             if (countGlass >= allGlass.Length) countGlass = 0;
 
-            var endPos = new Vector2(-4, -2);
+            var endPos = new Vector2(-1.78f, -2.84f);
             allGlass[countGlass].transform.SetParent(transform.parent);
             allGlass[countGlass].JumpOutOfTray(endPos, () =>
             {

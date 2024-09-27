@@ -15,6 +15,7 @@ namespace WFSport.Base
         public LocalDataRecord[] fruitUnlocked;
         public LocalDataRecord[] strawUnlocked;
 
+        [NaughtyAttributes.Button]
         public LocalDataCreateEnergy Load()
         {
             if (HasKey)

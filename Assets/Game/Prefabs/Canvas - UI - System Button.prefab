@@ -128,7 +128,6 @@ MonoBehaviour:
   - {fileID: 3592368174770818240}
   - {fileID: 339323954479790675}
   - {fileID: 6813030235937144314}
-  maxEnergy: 4
 --- !u!223 &4359950305763628860
 Canvas:
   m_ObjectHideFlags: 0
@@ -1008,7 +1007,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -281.1494, y: -157.44366}
+  m_AnchoredPosition: {x: -240, y: -114}
   m_SizeDelta: {x: 311, y: 145}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7711153873098351917
@@ -1090,7 +1089,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -281.1494, y: -157.44366}
+  m_AnchoredPosition: {x: -240, y: -114}
   m_SizeDelta: {x: 400, y: 128}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1269597360714772901

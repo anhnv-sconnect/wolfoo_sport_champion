@@ -39,7 +39,7 @@ namespace SCN.UIExtend
 			moveAnim?.Kill();
 			if(isImmediately)
 			{
-				transform.position = new Vector3(outSide.x + 3.2f, initPos.y, 0);
+				transform.position = new Vector3(outSide.x + 3.2f, initPos.y, initPos.z);
 				return;
 			}
             moveAnim = DOTween.Sequence()

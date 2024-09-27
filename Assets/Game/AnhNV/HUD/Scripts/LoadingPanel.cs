@@ -6,8 +6,10 @@ namespace AnhNV.Dialog
 {
     public abstract class LoadingPanel : MonoBehaviour
     {
-        public System.Action OnShow;
-        public System.Action OnHide;
+        public System.Action OnShown;
+        public System.Action OnShowing;
+        public System.Action OnHided;
+        public System.Action OnHiding;
 
         public abstract void Show();
         public abstract void Hide();

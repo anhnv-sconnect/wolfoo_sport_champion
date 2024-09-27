@@ -15,10 +15,12 @@ namespace WFSport.Load
         {
             loadingPanel.Setup(2);
             loadingPanel.Show();
-            loadingPanel.OnShow = () =>
+            loadingPanel.OnShown = () =>
             {
+                SoundManager.Instance.PlayTest1();
                 EventDispatcher.Instance.Dispatch(new EventKeyBase.ChangeScene { home = true, notUsingLoading = true });
                 loadingPanel.Hide();
+                loadingPanel.Setup(2);
             };
         }
     }

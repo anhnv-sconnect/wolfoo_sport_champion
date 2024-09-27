@@ -41,7 +41,16 @@ namespace WFSport.Gameplay.SnowballMode
         private Sequence _throwAnim;
         private bool isTrigglingWithSnow;
 
-        protected override IMinigame.GameState GameplayState { get => gamestate; set => gamestate = value; }
+        protected override IMinigame.GameState GameplayState
+        {
+            get => gamestate;
+            set
+            {
+                gamestate = value;
+                OnChangeGameState?.Invoke(gamestate);
+            }
+        }
+        public Action<IMinigame.GameState> OnChangeGameState;
 
         #region UNITY METHODS
         // Start is called before the first frame update

@@ -97,6 +97,7 @@ namespace WFSport.Home
         }
         private void CreateToy(Sprite icon, Vector3 localPos)
         {
+                SoundManager.Instance.PlayTest1();
             var toy = Instantiate(toypb, toyArea);
             toy.transform.localPosition = localPos;
             toy.sprite = icon;

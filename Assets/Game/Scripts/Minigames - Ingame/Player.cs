@@ -6,6 +6,7 @@ using NaughtyAttributes;
 using UnityEngine.Rendering;
 using static WFSport.Gameplay.IPlayer;
 using static WFSport.Gameplay.IMinigame;
+using WFSport.Helper;
 
 namespace WFSport.Gameplay.Base
 {
@@ -147,34 +148,34 @@ namespace WFSport.Gameplay.Base
 
                 if(detectType == DetectType.Dragging || detectType == DetectType.Swiping)
                 {
+                    Debug.Log("Dragging Mode");
+
+                    if (touch.phase == TouchPhase.Began)
+                    {
+                        Debug.Log("Began Dragging");
+                        touchBeginPos = ScreenHelper.GetMousePos();
+                        touchPos = touchBeginPos;
+                        lastTouchPos = touchPos;
+                        OnBeginDrag();
+                    }
+                    if (touch.phase == TouchPhase.Ended)
+                    {
+                        Debug.Log("End Dragging");
+                        OnEndDrag();
+                    }
                     if (touch.phase == TouchPhase.Moved)
                     {
-                        touchPos = touch.position;
+                        Debug.Log("Dragging");
+                        touchPos = ScreenHelper.GetMousePos();
                         OnDrag();
-                    }
-
-                    if (Input.touchCount == 2)
-                    {
-                        touch = Input.GetTouch(1);
-
-                        if (touch.phase == TouchPhase.Began)
-                        {
-                            touchBeginPos = touch.position;
-                            touchPos = touchBeginPos;
-                            lastTouchPos = touchPos;
-                            OnBeginDrag();
-                        }
-
-                        if (touch.phase == TouchPhase.Ended)
-                        {
-                            OnEndDrag();
-                        }
                     }
                 }
                 else if (detectType == DetectType.Clicking)
                 {
+                    Debug.Log("Click Mode");
                     if(touch.phase == TouchPhase.Stationary)
                     {
+                    Debug.Log("Click Stationary");
                         touchPos = touchBeginPos;
                         touchPos.z = 0;
                         OnTouching(touchPos);

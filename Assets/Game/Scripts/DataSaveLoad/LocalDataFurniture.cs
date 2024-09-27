@@ -18,6 +18,7 @@ namespace WFSport.Base
         public List<CreatedToyData> ToysCreated = new List<CreatedToyData>();
         public int createdChairId;
 
+        [NaughtyAttributes.Button]
         public LocalDataFurniture Load()
         {
             if (HasKey)

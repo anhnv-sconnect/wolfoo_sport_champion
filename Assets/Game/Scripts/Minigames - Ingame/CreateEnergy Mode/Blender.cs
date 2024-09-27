@@ -18,6 +18,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
         [SerializeField] private Button powerBtn;
         [SerializeField] private Transform cup;
         [SerializeField] private Transform pourArea;
+        [SerializeField] private Transform[] limits;
 
         private Vector3 startPos;
         private float outSideX;
@@ -36,7 +37,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
         private Sequence animMoveOut;
         private Sequence lidAnim;
 
-        public Action OnGrindingComplete { get; private set; }
+        public Action OnGrindingComplete { get; set; }
 
         public (Vector3 position, Transform holder) FruitArea
         { 
@@ -48,12 +49,42 @@ namespace WFSport.Gameplay.CreateEnergyMode
             }
         }
 
+        private Vector3 GetPosAfterPour(float degree)
+        {
+            var theta = degree * Mathf.Deg2Rad;
+            var pos = pourArea.position - transform.position;
+            var x = pos.x * Mathf.Cos(theta) - pos.y * Mathf.Sin(theta);
+            var y = pos.x * Mathf.Sin(theta) + pos.y * Mathf.Cos(theta);
+
+            return new Vector3(x, y, 0) + transform.position;
+        }
+
         private void Start()
         {
             EventManager.OnFruitJumpIn += OnFruitJumpIn;
-            powerBtn.onClick.AddListener(OnClickPower);
+            powerBtn.onClick.AddListener(Grind);
         }
+        public bool CheckInside(Transform point)
+        {
+            if (limits.Length < 3) return false;
 
+            var v = limits[0].position - limits[1].position;
+            var u = point.position - limits[0].position;
+            var cross = Vector3.Cross(v, u);
+            var firstVal = cross.z > 0;
+
+            for (int i = 0; i < limits.Length; i++)
+            {
+                var next = i + 1 == limits.Length ? 0 : i + 1;
+                v = limits[i].position - limits[next].position;
+                u = point.position - limits[i].position;
+                cross = Vector3.Cross(v, u);
+
+                if ((cross.z > 0) != firstVal) return false;
+            }
+
+            return true;
+        }
         private void OnDestroy()
         {
             EventManager.OnFruitJumpIn -= OnFruitJumpIn;
@@ -72,12 +103,15 @@ namespace WFSport.Gameplay.CreateEnergyMode
             canvas.worldCamera = Camera.main;
         }
 
-        private void OnClickPower()
+        public void Grind()
         {
             if (!canGrinding) return;
             canGrinding = false;
             StopGrindTutorial();
-            OnGrinding();
+            CloseLid(() =>
+            {
+                OnGrinding();
+            });
         }
 
         internal void MoveOut()
@@ -124,7 +158,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
             animShaking?.Kill();
             foreach (var fruit in myFruits) { fruit.Dancing(); }
             animShaking = DOTween.Sequence()
-                .Append(transform.DOPunchPosition(Vector3.one * 0.1f, 0.5f, 1).SetLoops((int)loop, LoopType.Restart))
+                .Append(transform.DOPunchPosition(Vector3.one * 0.1f, 0.5f, 1).SetLoops((int)loop, LoopType.Yoyo))
                 .AppendCallback(() => {
                     foreach (var fruit in myFruits)
                     {
@@ -154,18 +188,14 @@ namespace WFSport.Gameplay.CreateEnergyMode
                 .AppendInterval(1)
                 .SetLoops(-1, LoopType.Restart);
         }
-        internal void Grind(System.Action OnComplete)
+        public void SetGrind()
         {
-            CloseLid(() =>
-            {
-                PlayGrindTutorial();
-                canGrinding = true;
-                OnGrindingComplete = OnComplete;
-            });
+            canGrinding = true;
+            PlayGrindTutorial();
         }
         internal void Pouring(Vector3 endPos, System.Action OnPouring, System.Action OnComplete)
         {
-            endPos = new Vector3(0.4f, 1.384f);
+            endPos += transform.position - GetPosAfterPour(55);
             animShaking?.Kill();
             var cupBeginPos = cup.position;
             animShaking = DOTween.Sequence()

@@ -100,8 +100,9 @@ namespace WFSport.Gameplay
         internal void OpenCountingToStart(System.Action OnCompleted)
         {
             if (countingPanel == null) countingPanel = Instantiate(countingPanelPb, transform);
+            countingPanel.Setup(timeTxt.transform.position);
             countingPanel.ShowToHide();
-            countingPanel.OnHide = OnCompleted;
+            countingPanel.OnHided = OnCompleted;
         }
 
         internal void OpenLoading(System.Action OnCompleted, System.Action OnShowing, float delay = 0)
@@ -112,8 +113,8 @@ namespace WFSport.Gameplay
             {
                 if (loadingPanel == null) loadingPanel = Instantiate(loadingPanelPb, transform);
                 loadingPanel.ShowToHide(1);
-                loadingPanel.OnHide = OnCompleted;
-                loadingPanel.OnShow = OnShowing;
+                loadingPanel.OnHided = OnCompleted;
+                loadingPanel.OnShown = OnShowing;
             });
         }
 

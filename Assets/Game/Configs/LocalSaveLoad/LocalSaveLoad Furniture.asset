@@ -111,7 +111,7 @@ MonoBehaviour:
     Data:
       PurchaseType: 0
       Amount: 0
-  - IsUnlock: 1
+  - IsUnlock: 0
     Data:
       PurchaseType: 1
       Amount: 5
@@ -119,11 +119,5 @@ MonoBehaviour:
     Data:
       PurchaseType: 1
       Amount: 5
-  ToysCreated:
-  - Position: {x: -0.845536, y: -1.140384, z: 0}
-    Id: 5
-    TopicKind: 2
-  - Position: {x: 1.4365557, y: -3.554712, z: 0}
-    Id: 6
-    TopicKind: 2
+  ToysCreated: []
   createdChairId: 1

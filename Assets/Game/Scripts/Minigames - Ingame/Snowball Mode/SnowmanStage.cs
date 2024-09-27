@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace WFSport
+namespace WFSport.Gameplay.SnowballMode
 {
     public class SnowmanStage : MonoBehaviour
     {
@@ -45,7 +45,6 @@ namespace WFSport
         {
             animatorHelper.OnCloseComplete -= OnHide;
         }
-
         private void Init()
         {
             idxSnowman = UnityEngine.Random.Range(0, snowmanData.Length);

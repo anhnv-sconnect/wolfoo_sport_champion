@@ -27,7 +27,7 @@ namespace AnhNV.Dialog
             _tween = bgImg.DOFade(0, 1).OnComplete(() =>
             {
             Debug.Log("Loading Blur Hided");
-                OnHide?.Invoke();
+                OnHided?.Invoke();
                 gameObject.SetActive(false);
             });
         }
@@ -40,7 +40,7 @@ namespace AnhNV.Dialog
             _tween = bgImg.DOFade(1, 1).OnComplete(() =>
             {
                 Debug.Log("Loading Blur Showed");
-                OnShow?.Invoke();
+                OnShown?.Invoke();
             });
         }
 
@@ -50,10 +50,10 @@ namespace AnhNV.Dialog
             gameObject.SetActive(true);
             _sequence = DOTween.Sequence()
                 .Append(bgImg.DOFade(1, 1))
-                .AppendCallback(() => OnShow?.Invoke())
+                .AppendCallback(() => OnShown?.Invoke())
                 .AppendInterval(time)
                 .Append(bgImg.DOFade(0, 1))
-                .AppendCallback(() => OnHide?.Invoke())
+                .AppendCallback(() => OnHided?.Invoke())
                 .AppendCallback(() =>
                 {
                     gameObject.SetActive(false);

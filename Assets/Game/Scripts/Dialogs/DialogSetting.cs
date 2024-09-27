@@ -23,12 +23,12 @@ namespace WFSport.UI
 
         private void OnSlidingSound(float value)
         {
-            SoundManager.Instance.SoundVolume = value;
+            GameController.Instance.UpdatSound(value);
         }
 
         private void OnSlidingMusic(float value)
         {
-            SoundManager.Instance.MusicVolume = value;
+            GameController.Instance.UpdatMusic(value);
         }
     }
 }

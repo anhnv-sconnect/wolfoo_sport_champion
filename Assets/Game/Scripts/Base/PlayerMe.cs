@@ -49,6 +49,7 @@ namespace WFSport.Base
             LastOpenTime = DateTime.Now;
         }
 
+        [NaughtyAttributes.Button]
         public PlayerMe Load()
         {
             if (HasKey)

@@ -15,8 +15,11 @@ namespace WFSport.Base
         public Action OnLoadComplete;
         public Action OnLoadSuccess;
 
+        public bool IsLoadCompleted;
+
         void OnChangeScene(System.Action OnComplete)
         {
+            IsLoadCompleted = false;
             var lastSceneHandleName = SceneManager.GetActiveScene();
             SceneManager.LoadSceneAsync(sceneHandleName, LoadSceneMode.Single).completed += (data) =>
             {
@@ -44,7 +47,11 @@ namespace WFSport.Base
             OnLoadScene(name, () =>
             {
                 loadingPanel.Hide();
-                loadingPanel.OnHide = () =>
+                loadingPanel.OnHiding = () =>
+                {
+                    IsLoadCompleted = true;
+                };
+                loadingPanel.OnHided = () =>
                 {
                     OnLoadComplete?.Invoke();
                 };

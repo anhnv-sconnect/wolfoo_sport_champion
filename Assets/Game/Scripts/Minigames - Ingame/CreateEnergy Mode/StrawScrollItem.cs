@@ -130,11 +130,12 @@ namespace WFSport.Gameplay.CreateEnergyMode
             }
             else
             {
+                var time = 0.25f;
                 animUnlock = DOTween.Sequence()
-                    .Append(adLockBtn.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
-                    .Join(coinLockBtn.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
-                    .Join(icon.DOColor(Color.white, 0.5f).SetEase(Ease.Linear))
-                    .Join(icon.DOFade(1, 0.5f).SetEase(Ease.Linear));
+                    .Append(adLockBtn.transform.DOScale(Vector3.zero, time).SetEase(Ease.InBack))
+                    .Join(coinLockBtn.transform.DOScale(Vector3.zero, time).SetEase(Ease.InBack))
+                    .Join(icon.DOColor(Color.white, time).SetEase(Ease.Linear))
+                    .Join(icon.DOFade(1, time).SetEase(Ease.Linear));
             }
         }
 

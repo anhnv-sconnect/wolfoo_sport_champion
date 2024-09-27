@@ -48,6 +48,7 @@ namespace WFSport.Base
         public LocalDataFurniture FurnitureData { get => localData.furnitureData; }
         public PlayerMe PlayerMe { get => playerMe; }
         public bool IsLoadLocalDataCompleted => localData.IsLoadCompleted;
+        public bool IsLoadSceneCompleted => localData.IsLoadCompleted && loadSceneManager.IsLoadCompleted;
 
         private void Awake()
         {
@@ -103,6 +104,14 @@ namespace WFSport.Base
             EventDispatcher.Instance.RemoveListener<EventKeyBase.OnWatchAds>(OnWatchAds);
             EventDispatcher.Instance.RemoveListener<EventKeyBase.OpenDialog>(OnOpenDialog);
             EventDispatcher.Instance.RemoveListener<EventKeyBase.OnChoosing>(OnChoosingItem);
+        }
+        internal void UpdatSound(float volume)
+        {
+            playerMe.soundVolume = volume;
+        }
+        internal void UpdatMusic(float volume)
+        {
+            playerMe.musicVolume = volume;
         }
         internal T OrderAsset<T>(Minigame game) where T : Gameplay.IAsset
         {
@@ -263,6 +272,14 @@ namespace WFSport.Base
                 OnGotoGameplay(minigame);
                 loadSceneManager.OnLoadSuccess = null;
                 GetSystemUI();
+
+                switch (minigame)
+                {
+                    case Minigame.CreateEnergy:
+                    case Minigame.Furniture:
+                        systemUI.Setup(true, false);
+                        break;
+                }
             };
         }
         private void GotoLoadScene()
@@ -279,7 +296,7 @@ namespace WFSport.Base
         {
             if(curMinigame == Minigame.CreateEnergy || curMinigame == Minigame.Furniture)
             {
-                GotoHomeScene();
+              //  GotoHomeScene();
             }
             else
             {

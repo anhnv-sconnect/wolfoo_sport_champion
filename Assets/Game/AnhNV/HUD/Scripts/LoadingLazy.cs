@@ -11,56 +11,68 @@ namespace AnhNV.Dialog
         [SerializeField] CanvasGroup bg;
         [SerializeField] Image fillImg;
         [SerializeField] private float fillWidth = 1250;
+        [SerializeField] private float fillWeight;
 
         private float playTime = 2;
-        private Sequence anim;
-        private Vector2 fillSize;
+        private Sequence animShow;
+        private Sequence animHide;
 
         private void Start()
         {
+
         }
         private void OnDestroy()
         {
-            anim?.Kill();
+            animHide?.Kill();
+            animShow?.Kill();
         }
         public void Setup(float time)
         {
             playTime = time;
-            fillSize = fillImg.rectTransform.sizeDelta;
-            fillImg.rectTransform.sizeDelta = new Vector2(0, fillSize.y);
-            bg.DOFade(0, 0);
         }
         public override void Hide()
         {
-            anim?.Kill();
-            anim = DOTween.Sequence()
-                .Append(DOVirtual.Float(fillWidth, 0, 0.25f, (value) =>
+            if (animShow.IsActive())
+            {
+                animShow.OnComplete(() =>
                 {
-                    fillImg.rectTransform.sizeDelta = new Vector2(value, fillSize.y);
-                }))
-                .Join(bg.DOFade(1, 0.25f))
+                    OnHideExcuting();
+                });
+            }
+            else
+            {
+                OnHideExcuting();
+            }
+        }
+        private void OnHideExcuting()
+        {
+            OnHiding?.Invoke();
+            animHide = DOTween.Sequence()
                 .Append(bg.DOFade(0, 0.25f));
-            anim.OnComplete(() =>
+            animHide.OnComplete(() =>
             {
                 gameObject.SetActive(false);
-                OnHide?.Invoke();
+                fillImg.rectTransform.sizeDelta = new Vector2(0, fillWeight);
+                OnHided?.Invoke();
             });
         }
 
         public override void Show()
         {
+            animHide?.Kill();
+            fillImg.rectTransform.sizeDelta = new Vector2(0, fillWeight);
+            
+            OnShowing?.Invoke();
             gameObject.SetActive(true);
-            anim?.Kill();
-            fillImg.rectTransform.sizeDelta = new Vector2(0, fillSize.y);
-            anim = DOTween.Sequence()
-                .Append(bg.DOFade(1, 0.5f))
-                .Join(DOVirtual.Float(0, fillWidth, playTime, (value) =>
+            animShow = DOTween.Sequence()
+                .Append(bg.DOFade(1, 0))
+                .Join(DOVirtual.Float(10, fillWidth, playTime, (value) =>
                 {
-                    fillImg.rectTransform.sizeDelta = new Vector2(value, fillSize.y);
+                    fillImg.rectTransform.sizeDelta = new Vector2(value, fillWeight);
                 }));
-            anim.OnComplete(() =>
+            animShow.OnComplete(() =>
             {
-                OnShow?.Invoke();
+                OnShown?.Invoke();
             });
         }
     }

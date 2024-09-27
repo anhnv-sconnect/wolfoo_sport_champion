@@ -23,9 +23,9 @@ namespace WFSport.Gameplay.CreateEnergyMode
         private Vector3 lastPos;
 
         internal Action<FruitScrollItem> OnDragInSide;
-        private Vector3 comparePos;
         private Sequence animUnlock;
         private bool isLocking;
+        private Blender blender;
 
         public Sprite Icon { get => icon.sprite; }
 
@@ -66,14 +66,14 @@ namespace WFSport.Gameplay.CreateEnergyMode
                 });
         }
 
-        internal void Setup(Sprite sprite, Vector3 comparePos, LocalDataRecord localRecord)
+        internal void Setup(Sprite sprite, Blender blender, LocalDataRecord localRecord)
         {
             coinLockBtn.onClick.AddListener(() => OnClickCoinBtn(localRecord));
             adLockBtn.onClick.AddListener(OnClickAdsBtn);
 
             icon.sprite = sprite;
             icon.SetNativeSize();
-            this.comparePos = comparePos;
+            this.blender = blender;
             gameObject.SetActive(true);
 
             if (localRecord == null)
@@ -132,11 +132,12 @@ namespace WFSport.Gameplay.CreateEnergyMode
             }
             else
             {
+                var time = 0.25f;
                 animUnlock = DOTween.Sequence()
-                    .Append(adLockBtn.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
-                    .Join(coinLockBtn.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
-                    .Join(icon.DOColor(Color.white, 0.5f).SetEase(Ease.Linear))
-                    .Join(icon.DOFade(1, 0.5f).SetEase(Ease.Linear));
+                    .Append(adLockBtn.transform.DOScale(Vector3.zero, time).SetEase(Ease.InBack))
+                    .Join(coinLockBtn.transform.DOScale(Vector3.zero, time).SetEase(Ease.InBack))
+                    .Join(icon.DOColor(Color.white, time).SetEase(Ease.Linear))
+                    .Join(icon.DOFade(1, time).SetEase(Ease.Linear));
             }
         }
 
@@ -155,8 +156,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
         {
             if (isDragging)
             {
-                var distance = Vector2.Distance(lastPos, comparePos);
-                if (distance < 2)
+                if (blender.CheckInside(transform))
                 {
                     OnDragInSide?.Invoke(this);
                 }

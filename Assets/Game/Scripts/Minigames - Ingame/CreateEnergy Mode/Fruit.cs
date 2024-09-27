@@ -43,7 +43,6 @@ namespace WFSport.Gameplay.CreateEnergyMode
 
         internal void Release()
         {
-            jumpAnim?.Kill();
             gameObject.SetActive(false);
         }
     }
