@@ -29,7 +29,7 @@ namespace WFSport.Base
         Coin
     }
 
-    public class GameController : MonoBehaviour
+    public class GameController : SingletonResourcesAlive<GameController>
     {
         private LoadSceneManager loadSceneManager;
         private DataManager dataManager;
@@ -42,26 +42,15 @@ namespace WFSport.Base
 
         public Stack<Action> purchaseActions;
         private Gameplay.EventKey.UnlockLocalData purchaseData;
-        public static GameController Instance;
 
         public LocalDataCreateEnergy CreateEnergyData { get => localData.createEnergyData; }
         public LocalDataFurniture FurnitureData { get => localData.furnitureData; }
+        public TutorialLocalData TutorialData { get => localData.tutorialData; }
         public PlayerMe PlayerMe { get => playerMe; }
         public bool IsLoadLocalDataCompleted => localData.IsLoadCompleted;
         public bool IsLoadSceneCompleted => localData.IsLoadCompleted && loadSceneManager.IsLoadCompleted;
 
-        private void Awake()
-        {
-            if(Instance != null)
-            {
-                Destroy(Instance.gameObject);
-            }
-            else
-            {
-                Instance = this;
-            }
-            DontDestroyOnLoad(this);
-        }
+        public MinigameSystemUI SystemUI { get => systemUI; }
 
         private void Start()
         {
@@ -69,15 +58,12 @@ namespace WFSport.Base
             Application.targetFrameRate = 60;
 
             loadSceneManager = GetComponentInChildren<LoadSceneManager>();
-
             dataManager = GetComponentInChildren<DataManager>();
 
             playerMe = dataManager.localSaveloadData.playerMe;
             gameplayData = dataManager.configDataManager.GameplayConfig;
             localData = dataManager.localSaveloadData;
             localData.Load();
-
-            StartCoroutine("Play");
 
             EventDispatcher.Instance.RegisterListener<EventKeyBase.ChangeScene>(OnChangeScene);
             EventDispatcher.Instance.RegisterListener<Gameplay.EventKey.OnGameStop>(OnGameplayComplete);
@@ -87,14 +73,10 @@ namespace WFSport.Base
             EventDispatcher.Instance.RegisterListener<EventKeyBase.OnChoosing>(OnChoosingItem);
         }
 
-        private IEnumerator Play()
+        protected override void OnDestroy()
         {
-            yield return new WaitForSeconds(1);
-            GetSystemUI();
-        }
+            if (!enabled) return;
 
-        private void OnDestroy()
-        {
             playerMe.LastOpenTime = DateTime.Now;
             playerMe.Save();
 
@@ -202,6 +184,10 @@ namespace WFSport.Base
                         OnPurchasingScrollItem();
                     });
                 }
+                else
+                {
+                    systemUI.PlayAnimOutOfCoin();
+                }
             }
         }
         private void OnPurchasingScrollItem()
@@ -252,10 +238,13 @@ namespace WFSport.Base
 
         private void GotoHomeScene(bool isUsingLoading = true)
         {
+            HUDSystem.Instance.HideAll();
+
+            Debug.Log("GotoHomeScene ");
+            StopCoroutine("DelayToGoHome");
             loadSceneManager.LoadScene(Constant.SCENE.HOME, isUsingLoading);
             loadSceneManager.OnLoadComplete = () =>
             {
-                loadSceneManager.OnLoadSuccess = null;
                 GetSystemUI();
                 if (playerMe.totalEnergy <= 0)
                 {
@@ -265,12 +254,14 @@ namespace WFSport.Base
         }
         private void GotoGameplayScene(Minigame minigame)
         {
+            HUDSystem.Instance.HideAll();
+
+            Debug.Log("GotoGameplayScene ");
+            StopCoroutine("DelayToGoHome");
             loadSceneManager.LoadScene(Constant.SCENE.GAMEPLAY);
-            loadSceneManager.OnLoadSuccess = () =>
+            loadSceneManager.OnLoadComplete = () =>
             {
-                Debug.Log("ONLoad Complete");
                 OnGotoGameplay(minigame);
-                loadSceneManager.OnLoadSuccess = null;
                 GetSystemUI();
 
                 switch (minigame)
@@ -284,23 +275,35 @@ namespace WFSport.Base
         }
         private void GotoLoadScene()
         {
+            HUDSystem.Instance.HideAll();
+
+            Debug.Log("GotoGameplayScene ");
+            StopCoroutine("DelayToGoHome");
             loadSceneManager.LoadScene(Constant.SCENE.LOADING);
             loadSceneManager.OnLoadComplete = () =>
             {
-                loadSceneManager.OnLoadSuccess = null;
                 GetSystemUI();
             };
+        }
+        private IEnumerator DelayToGoHome(float time)
+        {
+            yield return new WaitForSeconds(time);
+            GotoHomeScene();
         }
 
         private void OnGameplayComplete(Gameplay.EventKey.OnGameStop obj)
         {
-            if(curMinigame == Minigame.CreateEnergy || curMinigame == Minigame.Furniture)
+            if (curMinigame == Minigame.CreateEnergy || curMinigame == Minigame.Furniture)
             {
-              //  GotoHomeScene();
+                //  GotoHomeScene();
+                if (obj.data.gamestate == Gameplay.IMinigame.MatchResult.Win)
+                {
+                    StartCoroutine("DelayToGoHome", 2);
+                }
             }
             else
             {
-                if(obj.data.gamestate == Gameplay.IMinigame.MatchResult.Win)
+                if (obj.data.gamestate == Gameplay.IMinigame.MatchResult.Win)
                 {
                     StartCoroutine("OnPlayerWining", obj.data.claimedCoin);
                 }
@@ -314,7 +317,11 @@ namespace WFSport.Base
         {
             var totalCoin = playerMe.totalCoin;
             yield return new WaitForSeconds(1);
+
             OnOpenDialog(DialogName.Endgame);
+
+            yield return new WaitForSeconds(0.5f);
+
             systemUI.PlayAnimEarningCoin(Vector3.zero, () =>
             {
                 playerMe.totalCoin++;
@@ -330,13 +337,14 @@ namespace WFSport.Base
         {
             yield return new WaitForSeconds(1);
             OnOpenDialog(DialogName.Losegame);
+            StartCoroutine("DelayToGoHome", 3);
         }
 
         private void OnChangeScene(EventKeyBase.ChangeScene obj)
         {
             if(obj.home)
             {
-                GotoHomeScene(!obj.notUsingLoading);
+                GotoHomeScene();
             }
             else if (obj.loading)
             {
@@ -394,6 +402,7 @@ namespace WFSport.Base
 
         private void GetSystemUI()
         {
+            Debug.Log("Get System UI " + UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
             systemUI = FindAnyObjectByType<MinigameSystemUI>();
             systemUI.ClickBackBtn = OnClickBackBtn;
             systemUI.Setup();

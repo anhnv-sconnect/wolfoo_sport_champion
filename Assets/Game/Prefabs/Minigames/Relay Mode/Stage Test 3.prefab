@@ -83,6 +83,7 @@ MonoBehaviour:
   mode: 3
   beginPoint: {fileID: 6837299109147543826}
   finisher: {fileID: 7611271015696899701}
+  smokeFx: {fileID: 5575008375837846084, guid: 13cee15025255824ab6d52dbbc889158, type: 3}
 --- !u!1 &5363950147369416448
 GameObject:
   m_ObjectHideFlags: 0

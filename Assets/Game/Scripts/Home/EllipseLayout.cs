@@ -31,9 +31,6 @@ namespace WFSport.Home
         private void Start()
         {
             RegisterDragEvent();
-
-            if (items == null) return;
-            Representation();
         }
         private void OnDestroy()
         {
@@ -54,7 +51,7 @@ namespace WFSport.Home
             this.items = items;
             InitItem();
         }
-        private void Representation()
+        public void Representation()
         {
             run = true;
             animRepresent = DOVirtual.DelayedCall(1, () =>

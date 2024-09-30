@@ -21,6 +21,7 @@ namespace WFSport.Gameplay.RelayMode
         [SerializeField] bool isLine1;
         public bool IsLine1 { get => isLine1; }
         public float Lane { get => line; }
+        public ParticleSystem SmokeFx { get => smokeFx; set => smokeFx = value; }
 
         [SerializeField] bool isCreating;
         [NaughtyAttributes.ShowIf("isCreating")]
@@ -91,6 +92,7 @@ namespace WFSport.Gameplay.RelayMode
         {
             Holder.PlaySound?.Invoke();
             Holder.PlayAnim?.Invoke();
+            if (smokeFx != null) smokeFx.Play();
         }
 
         #region ANIMATION MEthod

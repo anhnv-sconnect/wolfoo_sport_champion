@@ -4,6 +4,7 @@ using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using WFSport;
@@ -16,6 +17,7 @@ namespace AnhNV.Dialog
         [SerializeField] CharacterUIAnimation kat;
         [SerializeField] Transform[] characterMoves;
         [SerializeField] Image clockImg;
+        [SerializeField] TMP_Text timeTxt;
 
         private Sequence _sequence;
         private int count;
@@ -53,11 +55,13 @@ namespace AnhNV.Dialog
                 item.transform.localScale = Vector3.one * 1.5f;
             }
         }
-        public void Setup(Vector3 clockArea)
+        public void Setup(Vector3 clockArea, string timeString)
         {
             clockTarget = clockArea;
             clockImg.DOFade(0, 0);
             clockImg.gameObject.SetActive(false);
+
+            timeTxt.text = timeString;
         }
 
         public void ShowToHide()
@@ -103,9 +107,14 @@ namespace AnhNV.Dialog
                     countingObjs[count].SetActive(true);
                     countingObjs[count - 1].SetActive(false);
                     Holder.PlaySound?.Invoke();
-                    clockImg.gameObject.SetActive(true);
+
                 }))
-                .Append(clockImg.DOFade(1, 0.5f))
+                .AppendCallback(() =>
+                {
+                    countingObjs[count].SetActive(false);
+                    clockImg.gameObject.SetActive(true);
+                })
+                .Append(clockImg.DOFade(1, 0.25f))
                 .Join(clockImg.transform.DOMoveY(1.5f, 0.5f))
                 .Append(clockImg.transform.DORotate(Vector3.forward * 10, 0.25f))
                 .Append(clockImg.transform.DORotate(Vector3.forward * -10, 0.5f))

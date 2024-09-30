@@ -275,7 +275,7 @@ Transform:
   - {fileID: 674947222761810170}
   - {fileID: 5467901927130778928}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1806692658449058749
 MonoBehaviour:
@@ -335,6 +335,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loadingPanel: {fileID: 3503791173744299479}
+  IsLoadCompleted: 0
 --- !u!1 &1269223958638796726
 GameObject:
   m_ObjectHideFlags: 0
@@ -674,6 +675,7 @@ MonoBehaviour:
   playerMe: {fileID: 11400000, guid: 1c5c8c190f0b800409f9da2626a6a0b1, type: 2}
   createEnergyData: {fileID: 11400000, guid: cfa49d888927cd545a0cfca3be045e1a, type: 2}
   furnitureData: {fileID: 11400000, guid: d87b6d66d8d2d8846a59b429bcf7844a, type: 2}
+  tutorialData: {fileID: 11400000, guid: 9b92d3872ce793540853f32b92f7a47d, type: 2}
 --- !u!1 &5155329591579287613
 GameObject:
   m_ObjectHideFlags: 0

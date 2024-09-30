@@ -14,6 +14,7 @@ namespace WFSport.Base
         private string sceneHandleName;
         public Action OnLoadComplete;
         public Action OnLoadSuccess;
+        public Action OnLoadClosing;
 
         public bool IsLoadCompleted;
 
@@ -23,9 +24,13 @@ namespace WFSport.Base
             var lastSceneHandleName = SceneManager.GetActiveScene();
             SceneManager.LoadSceneAsync(sceneHandleName, LoadSceneMode.Single).completed += (data) =>
             {
-                OnLoadSuccess?.Invoke();
                 if (lastSceneHandleName.IsValid())
                 {
+                    OnLoadSuccess?.Invoke();
+
+                    GC.Collect();
+                    Resources.UnloadUnusedAssets();
+
                     SceneManager.UnloadSceneAsync(lastSceneHandleName).completed += (handle) =>
                     {
                         OnComplete?.Invoke();
@@ -49,25 +54,20 @@ namespace WFSport.Base
                 loadingPanel.Hide();
                 loadingPanel.OnHiding = () =>
                 {
+                    Debug.Log("OnLoad Success");
                     IsLoadCompleted = true;
+                    OnLoadComplete?.Invoke();
                 };
                 loadingPanel.OnHided = () =>
                 {
-                    OnLoadComplete?.Invoke();
+                    OnLoadClosing?.Invoke();
                 };
             });
         }
         public void OnLoadScene(string name, System.Action OnComplete)
         {
             sceneHandleName = name;
-
-            OnChangeScene(() =>
-            {
-                GC.Collect();
-                Resources.UnloadUnusedAssets();
-
-                OnComplete?.Invoke();
-            });
+            OnChangeScene(OnComplete);
         }
 
     }

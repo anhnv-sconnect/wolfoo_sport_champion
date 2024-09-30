@@ -22,6 +22,7 @@ namespace WFSport.Gameplay.RelayMode
         [SerializeField] private Player.Mode CurrentMode;
         [SerializeField] private Vector3 cameraRange;
         [SerializeField] private float levelScore;
+        [SerializeField] private bool isTesting;
 
         private int levelIdx;
         private int playerScore;
@@ -50,6 +51,8 @@ namespace WFSport.Gameplay.RelayMode
         private IMinigame.ResultData result;
         public IMinigame.ConfigData InternalData { get => myData; set => myData = value; }
         IMinigame.ResultData IMinigame.ExternalData { get => result; set => result = value; }
+
+        private TutorialLocalData tutorialLocalData => GameController.Instance.TutorialData;
 
         private void Awake()
         {
@@ -155,9 +158,22 @@ namespace WFSport.Gameplay.RelayMode
             SetupMap();
             SetupNextStage();
 
-            SetupTutorial();
-            PlayTutorial();
-            //     StartCoroutine("PlayNextLevel");
+            if(!isTesting)
+            {
+                if (!tutorialLocalData.IsRelayShown)
+                {
+                    SetupTutorial();
+                    PlayTutorial();
+                }
+                else
+                {
+                    StartCoroutine("PlayNextLevel");
+                }
+            }
+            else
+            {
+                StartCoroutine("PlayNextLevel");
+            }
         }
 
         private void PlayTutorial()
@@ -170,7 +186,7 @@ namespace WFSport.Gameplay.RelayMode
 
         private void OnCompareDistancePlayer(Barrier barrier, float distance)
         {
-            if (!tutorialSwipeUp.IsAllStepCompleted && barrier != tutBarrier && distance < 3f)
+            if (tutorialSwipeUp != null && !tutorialSwipeUp.IsAllStepCompleted && barrier != tutBarrier && distance < 3f)
             {
                 tutBarrier = barrier;
                 tutBarriers.Add(tutBarrier);
@@ -192,7 +208,10 @@ namespace WFSport.Gameplay.RelayMode
             currentTutStep.Completed();
             currentTutStep.Stop();
 
-            if (tutorialSwipeUp.IsAllStepCompleted)
+            tutorialLocalData.IsRelayShown = true;
+            tutorialLocalData.Save();
+
+            if (tutorialSwipeUp != null && tutorialSwipeUp.IsAllStepCompleted)
             {
                 tutorialSwipeUp.ReleaseAll();
                 _tweenDelay = DOVirtual.DelayedCall(1, () =>

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9030381336709633503}
   - component: {fileID: 7468857794519923993}
   m_Layer: 0
-  m_Name: Mode - Replay
+  m_Name: Mode - Relay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -56,5 +56,4 @@ MonoBehaviour:
   playerPb: {fileID: 7426507142215621170, guid: 103620d931181d9408b0b032b09e6b84, type: 3}
   CurrentMode: 0
   cameraRange: {x: 4.5, y: 0, z: 0}
-  limitPlayTimer: 250
   levelScore: 40

@@ -32,6 +32,7 @@ namespace AnhNV.Dialog
         }
         public override void Hide()
         {
+            Debug.Log("Begin Hide");
             if (animShow.IsActive())
             {
                 animShow.OnComplete(() =>
@@ -46,11 +47,13 @@ namespace AnhNV.Dialog
         }
         private void OnHideExcuting()
         {
+                Debug.Log("On OnHideExcuting");
             OnHiding?.Invoke();
             animHide = DOTween.Sequence()
                 .Append(bg.DOFade(0, 0.25f));
             animHide.OnComplete(() =>
             {
+                Debug.Log("Completed Hide");
                 gameObject.SetActive(false);
                 fillImg.rectTransform.sizeDelta = new Vector2(0, fillWeight);
                 OnHided?.Invoke();
@@ -59,6 +62,7 @@ namespace AnhNV.Dialog
 
         public override void Show()
         {
+            Debug.Log("Begin Show");
             animHide?.Kill();
             fillImg.rectTransform.sizeDelta = new Vector2(0, fillWeight);
             
@@ -72,6 +76,8 @@ namespace AnhNV.Dialog
                 }));
             animShow.OnComplete(() =>
             {
+                Debug.Log("Completed Show");
+
                 OnShown?.Invoke();
             });
         }

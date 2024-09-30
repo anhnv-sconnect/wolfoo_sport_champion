@@ -98,9 +98,12 @@ namespace SCN.HUD
         public void HideAll()
         {
             if (activing.Count == 0) return;
-            foreach (var p in activing)
+
+            for (int i = 0; i < activing.Count; i++)
             {
-                p.Hide();
+                var p = activing.Pop();
+                if (p != null) p.Hide();
+
             }
             activing.Clear();
         }

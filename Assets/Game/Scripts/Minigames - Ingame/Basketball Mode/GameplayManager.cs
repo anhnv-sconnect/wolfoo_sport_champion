@@ -19,6 +19,7 @@ namespace WFSport.Gameplay.BasketballMode
         [SerializeField] private Transform basketHolder;
         [SerializeField] private ScoreManager scoreAnimManager;
         [SerializeField] private CharacterWorldAnimation[] characterData;
+        [SerializeField] private Transform bg;
 
         private int totalBasket;
         private Basket[] myBaskets;
@@ -34,6 +35,22 @@ namespace WFSport.Gameplay.BasketballMode
         public IMinigame.ConfigData InternalData { get => myData; set => myData = value; }
         IMinigame.ResultData IMinigame.ExternalData { get => result; set => result = value; }
 
+        private void Awake()
+        {
+            ScreenHelper.CheckSize(() =>
+            {
+                bg.localScale = Vector3.one;
+            }, () =>
+            {
+                bg.localScale = Vector3.one;
+            }, () =>
+            {
+                bg.localScale = new Vector3(1.185f, 1.126f, 0);
+            }, () =>
+            {
+                bg.localScale = new Vector3(1.32f, 1.3f, 0);
+            });
+        }
         private void Start()
         {
             EventManager.OnGetScore += OnPlayerGetScore;

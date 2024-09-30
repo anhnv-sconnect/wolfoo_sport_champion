@@ -49,11 +49,6 @@ namespace WFSport.Gameplay.CreateEnergyMode
         }
         private void OnDestroy()
         {
-            if (result.gamestate != IMinigame.MatchResult.Win)
-            {
-                OnGameStop();
-            }
-
             EventDispatcher.Instance.RemoveListener<EventKeyBase.Purchase>(OnPurchase);
         }
         private void OnPurchase(EventKeyBase.Purchase data)
@@ -152,10 +147,13 @@ namespace WFSport.Gameplay.CreateEnergyMode
                 if (countStraw == totalGlass)
                 {
                     strawScrollInfinity.MoveOut();
-                    glassManager.MoveToRight(null);
-                    player.MoveIn(() =>
+                    glassManager.MoveToRight(() =>
                     {
-                        glassManager.EnableDrag();
+                        GameController.Instance.SystemUI.Setup(false, true);
+                        player.MoveIn(() =>
+                        {
+                            glassManager.EnableDrag();
+                        });
                     });
                     return;
                 }
@@ -204,6 +202,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
                 player.Drink(() =>
                 {
                     playerDrinkingCount++;
+                    player.PlayWining();
                     GameController.Instance.UpdateEnergy(true, () =>
                     {
                         if (playerDrinkingCount == totalGlass)
@@ -300,7 +299,6 @@ namespace WFSport.Gameplay.CreateEnergyMode
         public void OnGameWining()
         {
             Debug.Log("ONGame WIning");
-            player.PlayWining();
             glassManager.MoveOut(false);
             OnEndgame(IMinigame.MatchResult.Win);
         }

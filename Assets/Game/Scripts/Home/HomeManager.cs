@@ -94,6 +94,9 @@ namespace WFSport.Home
                 }
                 createdToyBtn.image.sprite = furnitureAsset.chairData[furnitureData.createdChairId];
             }
+
+            yield return new WaitForEndOfFrame();
+            ellipseLayout.Representation();
         }
         private void CreateToy(Sprite icon, Vector3 localPos)
         {

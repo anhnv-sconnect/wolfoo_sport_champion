@@ -13,6 +13,7 @@ namespace WFSport.Base
         public PlayerMe playerMe;
         public LocalDataCreateEnergy createEnergyData;
         public LocalDataFurniture furnitureData;
+        public TutorialLocalData tutorialData;
 
         public bool IsLoadCompleted { get; private set; }
 
@@ -30,6 +31,9 @@ namespace WFSport.Base
 
             furnitureData.Load();
             if (furnitureData == null) furnitureData.Save();
+
+            tutorialData.Load();
+            if (tutorialData == null) tutorialData.Save();
 
             IsLoadCompleted = true;
         }

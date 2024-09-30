@@ -30,6 +30,11 @@ namespace WFSport.Base
         private Sequence animEnergy;
         private Image holderEnergyImg;
 
+        private void Awake()
+        {
+            var a = GameController.Instance;
+        }
+
         // Start is called before the first frame update
         void Start()
         {
@@ -87,6 +92,18 @@ namespace WFSport.Base
             if (holderEnergyImg == null) holderEnergyImg = energyHolder.GetComponent<Image>();
             holderEnergyImg.color = Color.white;
             energyHolder.transform.localScale = Vector3.one;
+        }
+        public void PlayAnimOutOfCoin()
+        {
+            animCoin?.Kill();
+            coinTxt.transform.localScale = Vector3.one;
+            coinTxt.color = Color.white;
+
+            animCoin = DOTween.Sequence()
+                .Append(coinTxt.DOColor(Color.red, 0.25f).SetLoops(1, LoopType.Yoyo).SetEase(Ease.Flash))
+                .Join(coinTxt.transform.DOPunchScale(Vector3.one * 1, 0.25f, 3))
+                .Append(coinTxt.DOColor(Color.white, 0.25f).SetEase(Ease.Flash))
+                .SetLoops(1, LoopType.Restart);
         }
         public void PlayAnimPurchasingCoin(Transform target, System.Action OnComplete)
         {
@@ -167,12 +184,14 @@ namespace WFSport.Base
             animCoin?.Complete();
             animCoin = DOTween.Sequence()
                 .Append(coinTxt.transform.DOPunchScale(Vector3.one * 0.5f, 0.5f, 2))
+                .Join(coinTxt.DOColor(Color.green, 0.3f))
                 .Join(DOVirtual.DelayedCall(0.25f, () =>
                 {
                     coinTxt.text = coinStr;
                 }));
             animCoin.OnComplete(() =>
             {
+                coinTxt.DOColor(Color.white, 0);
                 coinHolder.SetActive(isACtive);
             });
         }

@@ -116,7 +116,7 @@ public class SingletonFreeAlive<T> : SingletonFree<T> where T : MonoBehaviour {
  * </summary> */
 public class SingletonResources<T> : SingletonMono<T> where T : Component {
     protected static string PrefabPath {
-        get { return string.Format("Prefabs/{0}/{1}", typeof(T).Name, typeof(T).Name); }
+        get { return string.Format("Prefabs/{0}", typeof(T).Name); }
     }
 
     public static T Instance {

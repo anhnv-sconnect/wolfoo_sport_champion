@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using WFSport.Base;
 using WFSport.Helper;
 
 namespace WFSport.Gameplay.ArcheryMode
@@ -35,6 +36,7 @@ namespace WFSport.Gameplay.ArcheryMode
         private Tutorial tutorial;
 
         private Sequence _tweenSpecialArrow;
+        private TutorialLocalData tutorialLocalData => GameController.Instance.TutorialData;
 
         public MovingMarker[] MovingMarkers { get => poolingMovingMarkers; }
         public IdleMarker[] IdleMarkers { get => curRandomMarkers; }
@@ -71,8 +73,20 @@ namespace WFSport.Gameplay.ArcheryMode
             EventManager.OnTimeOut += OnGameLosing;
 
             Init();
-            InitTutorial();
-            PlayTutorial();
+
+            if (!tutorialLocalData.IsArcheryShown)
+            {
+                InitTutorial();
+                PlayTutorial();
+            }
+            else
+            {
+                SetupMainGameplay();
+                ui.OpenCountingToStart(() =>
+                {
+                    OnGameStart();
+                });
+            }
         }
 
         private void OnDestroy()
@@ -200,7 +214,7 @@ namespace WFSport.Gameplay.ArcheryMode
             var holderPlayer = obj.AssignPlayer;
             var isBot = obj.AssignPlayer as Bot;
 
-            if(!tutorial.IsAllStepCompleted)
+            if(tutorial != null && !tutorial.IsAllStepCompleted)
             {
                 tutorial.Stop();
                 if (tutorialMarker.IsInside(obj.transform.position))
@@ -447,6 +461,9 @@ namespace WFSport.Gameplay.ArcheryMode
 
         public void OnGameStart()
         {
+            tutorialLocalData.IsArcheryShown = true;
+            tutorialLocalData.Save();
+
             SpawnNextMarker();
             player.Play();
             bot.Play();

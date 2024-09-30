@@ -48,17 +48,22 @@ namespace WFSport.Gameplay
             EventManager.OnInitGame -= InitScreen;
         }
 
+        private void GetTimeUITemplate()
+        {
+            var minutes = totalTime / 60;
+            var seconds = totalTime % 60;
+
+            var minutesStr = minutes < 10 ? "0" + minutes : minutes.ToString();
+            var secondsStr = seconds < 10 ? "0" + seconds : seconds.ToString();
+
+            timeTxt.text = $"{minutesStr} : {secondsStr}";
+        }
+
         private IEnumerator CountTime()
         {
             while (totalTime >= 0)
             {
-                var minutes = totalTime / 60;
-                var seconds = totalTime % 60;
-
-                var minutesStr = minutes < 10 ? "0" + minutes : minutes.ToString();
-                var secondsStr = seconds < 10 ? "0" + seconds : seconds.ToString();
-
-                timeTxt.text = $"{minutesStr} : {secondsStr}";
+                GetTimeUITemplate();
 
                 totalTime--;
                 yield return new WaitForSeconds(1);
@@ -95,12 +100,14 @@ namespace WFSport.Gameplay
 
             /// Anim Setup Timing
             totalTime = time;
+            GetTimeUITemplate();
+            
             Holder.PlayAnim?.Invoke();
         }
         internal void OpenCountingToStart(System.Action OnCompleted)
         {
             if (countingPanel == null) countingPanel = Instantiate(countingPanelPb, transform);
-            countingPanel.Setup(timeTxt.transform.position);
+            countingPanel.Setup(timeTxt.transform.position, timeTxt.text);
             countingPanel.ShowToHide();
             countingPanel.OnHided = OnCompleted;
         }

@@ -11,6 +11,7 @@ namespace WFSport.Gameplay.RelayMode
         [SerializeField] private Player.Mode mode;
         [SerializeField] private Transform beginPoint;
         [SerializeField] private FinishPointing finisher;
+        [SerializeField] private ParticleSystem smokeFx;
 
         private bool isDispatched;
         private Base.Player player;
@@ -29,6 +30,15 @@ namespace WFSport.Gameplay.RelayMode
         private void OnDisable()
         {
             EventManager.OnPlayerIsMoving -= OnPlayerIsMoving;
+        }
+        private void Start()
+        {
+            foreach (var item in GetComponentsInChildren<TrafficCone>())
+            {
+                item.SmokeFx = Instantiate(smokeFx, item.transform);
+                item.SmokeFx.transform.localPosition = Vector3.up * -1f;
+                item.SmokeFx.transform.localScale = Vector3.one * 2;
+            }
         }
 
         private void OnPlayerIsMoving(Base.Player player)

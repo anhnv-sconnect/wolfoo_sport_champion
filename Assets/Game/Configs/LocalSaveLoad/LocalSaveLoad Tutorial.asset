@@ -9,11 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 460fabacf54313f4995a931e7e68b461, type: 3}
-  m_Name: PlayerMe
+  m_Script: {fileID: 11500000, guid: 7e7845572e5bf464aa31ba48cfe6a4cd, type: 3}
+  m_Name: LocalSaveLoad Tutorial
   m_EditorClassIdentifier: 
-  musicVolume: 1
-  soundVolume: 1
-  totalCoin: 0
-  totalEnergy: 8
-  maxEnergy: 4

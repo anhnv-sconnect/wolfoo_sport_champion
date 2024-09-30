@@ -114,6 +114,7 @@ MonoBehaviour:
   mode: 0
   beginPoint: {fileID: 3253253246915944114}
   finisher: {fileID: 7554193746095963540}
+  smokeFx: {fileID: 5575008375837846084, guid: 13cee15025255824ab6d52dbbc889158, type: 3}
 --- !u!1001 &1535293025366053964
 PrefabInstance:
   m_ObjectHideFlags: 0

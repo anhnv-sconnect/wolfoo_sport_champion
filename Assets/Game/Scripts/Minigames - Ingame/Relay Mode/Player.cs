@@ -37,6 +37,7 @@ namespace WFSport.Gameplay.RelayMode
         [SerializeField] private GameObject[] colliderStages;
         [SerializeField] private GameObject shield;
         [SerializeField] private CharacterWorldAnimation[] characterData;
+        [SerializeField] private ParticleSystem stunedFx;
 
         private Mode playerMode;
         private GameState gameState;
@@ -232,6 +233,7 @@ namespace WFSport.Gameplay.RelayMode
         {
             mySpeed = speed;
             characterAnimation.PlayRunAnim();
+            stunedFx.Stop();
         }
         private void DisableShield()
         {
@@ -336,6 +338,8 @@ namespace WFSport.Gameplay.RelayMode
                     isStunning = false;
                     PlayRun();
                     canJumping = true;
+
+                    StopCoroutine("OnCollisonWithBarrier");
                 }
             }
         }
@@ -347,7 +351,8 @@ namespace WFSport.Gameplay.RelayMode
         {
             if (!isStop)
             {
-                transform.Translate((Vector3.up * force.y) * dragMovingSpeed);
+                transform.position += Vector3.up * force.y * dragMovingSpeed * Time.deltaTime;
+                //transform.Translate((Vector3.up * force.y) * dragMovingSpeed * Time.deltaTime);
                 if (transform.position.y > Constant.ABOVE_LIMIT)
                 {
                     transform.position = new Vector3(transform.position.x, Constant.ABOVE_LIMIT, transform.position.z);
@@ -490,6 +495,7 @@ namespace WFSport.Gameplay.RelayMode
             Debug.Log("OnChecking Mode pathway 2");
             isStop = true;
             characterAnimation.PlayDizzyAnim();
+            stunedFx.Play();
 
             Holder.PlayAnim?.Invoke();
 
@@ -519,6 +525,7 @@ namespace WFSport.Gameplay.RelayMode
             Debug.Log("OnChecking Mode pathway 1");
             isStop = true;
             characterAnimation.PlayDizzyAnim();
+            stunedFx.Play();
 
             Holder.PlayAnim?.Invoke();
 
@@ -571,12 +578,22 @@ namespace WFSport.Gameplay.RelayMode
         {
             Debug.Log("OnCollisonWithBarrier");
             characterAnimation.PlayDizzyAnim();
+            stunedFx.Play();
+
             canTouch = false;
             isStunning = true;
 
             yield return new WaitForSeconds(1);
 
             canTouch = true;
+
+            yield return new WaitForSeconds(2);
+
+            PlayRun();
+            isStop = false;
+            canTouch = false;
+            isStunning = false;
+            canJumping = true;
         }
 
         private void OnJumping()

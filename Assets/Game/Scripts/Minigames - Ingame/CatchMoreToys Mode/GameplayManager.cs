@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using WFSport.Base;
 using WFSport.Helper;
 
 namespace WFSport.Gameplay.CatchMoreToysMode
@@ -29,11 +30,11 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         private TutorialSwipe catchToyStep;
         private float finalScore;
 
-
         private IMinigame.ConfigData myData;
         private IMinigame.ResultData result;
         public IMinigame.ConfigData InternalData { get => myData; set => myData = value; }
         IMinigame.ResultData IMinigame.ExternalData { get => result; set => result = value; }
+        private TutorialLocalData tutorialLocalData => GameController.Instance.TutorialData;
 
         private void Awake()
         {
@@ -56,8 +57,20 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         private void Start()
         {
             Init();
-            SetupTutorial();
-            PlayTutorial();
+
+            if (!tutorialLocalData.IsCatchMoreToyShown)
+            {
+                SetupTutorial();
+                PlayTutorial();
+            }
+            else
+            {
+                ResetDefault();
+                ui.OpenCountingToStart(() =>
+                {
+                    OnGameStart();
+                });
+            }
 
             EventManager.OnPlayerClaimNewStar += OnPlayerCollectStar;
             EventManager.OnFinishStage += OnGameWining;
@@ -104,7 +117,6 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         private IEnumerator DelayToPlaygame()
         {
             yield return new WaitForSeconds(2);
-
 
             ui.OpenLoading(() =>
             {
@@ -206,7 +218,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
 
         private void OnPlayerCollectStar(Base.Player obj, bool isSpecial)
         {
-            if(!tutorial.IsAllStepCompleted)
+            if(tutorial != null && !tutorial.IsAllStepCompleted)
             {
                 OnTutorialCompleted();
                 return;
@@ -313,7 +325,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
             curCharacter = throwMachines[idx];
             curCharacter.Throw(() =>
             {
-                if(!tutorial.IsAllStepCompleted)
+                if(tutorial != null && !tutorial.IsAllStepCompleted)
                 {
                     PlayNextCharacter(idx);
                 }
@@ -322,9 +334,13 @@ namespace WFSport.Gameplay.CatchMoreToysMode
 
         public void OnGameStart()
         {
+            tutorialLocalData.IsCatchMoreToyShown = true;
+            tutorialLocalData.Save();
+
             PlayNextCharacter();
             ui.PlayTime();
             StartCoroutine("CountSpawnTime");
+            player.Play();
         }
 
 

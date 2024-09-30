@@ -12,6 +12,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         [SerializeField] private TMPro.TMP_Text scoreTxt;
         [SerializeField] private Transform cart;
         [SerializeField] private CharacterWorldAnimation[] characters;
+        [SerializeField] private ParticleSystem[] stunedFxs;
 
         private int score;
         private IMinigame.GameState gameState;
@@ -32,15 +33,17 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         private IEnumerator OnStunning()
         {
             isStunning = true;
-            foreach (var item in characters)
+            for (int i = 0; i < characters.Length; i++)
             {
-                item.PlayDizzyAnim(true);
+                characters[i].PlayDizzyAnim(true);
+                stunedFxs[i].Play();
             }
             yield return new WaitForSeconds(config.stunningTime);
             isStunning = false;
-            foreach (var item in characters)
+            for (int i = 0; i < characters.Length; i++)
             {
-                item.PlayIdleAnim();
+                characters[i].PlayIdleAnim();
+                stunedFxs[i].Stop();
             }
         }
         private void OnGetItem()
@@ -115,6 +118,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
             for (int i = 0; i < characters.Length; i++)
             {
                 characters[i].PlayPushAnim();
+                stunedFxs[i].Stop();
             }
         }
         protected override void OnEndDrag()

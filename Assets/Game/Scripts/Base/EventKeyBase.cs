@@ -41,7 +41,6 @@ namespace WFSport.Base
             public bool home;
             public bool loading;
             public bool gameplay;
-            public bool notUsingLoading;
 
             public Minigame minigame;
             public bool isMainMode;

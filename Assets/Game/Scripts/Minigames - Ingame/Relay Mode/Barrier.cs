@@ -45,6 +45,7 @@ namespace WFSport.Gameplay.RelayMode
                 Holder.PlaySound?.Invoke();
                 myCollider.isTrigger = true;
                 PlayCallapseAnim();
+                if (smokeFx != null) smokeFx.Play();
             }
         }
         private void Start()
