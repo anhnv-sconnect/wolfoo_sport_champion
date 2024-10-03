@@ -32,7 +32,8 @@ namespace WFSport.Gameplay.CatchMoreToysMode
         internal void Setup(Transform itemHolder, 
             GameplayManager gameplay, 
             GameplayConfig config, 
-            CharacterWorldAnimation character)
+            CharacterWorldAnimation character,
+            int idx)
         {
             this.itemHolder = itemHolder;
             gameManager = gameplay;
@@ -41,6 +42,8 @@ namespace WFSport.Gameplay.CatchMoreToysMode
 
             var boneFollower = hand.gameObject.AddComponent<BoneFollower>();
             boneFollower.SkeletonRenderer = character.SkeletonAnim;
+            character.GetComponent<MeshRenderer>().sortingOrder = idx;
+
             var isValid = false;
             for (int i = 0; i < config.rightHandBoneNames.Length; i++)
             {

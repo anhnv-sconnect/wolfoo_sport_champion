@@ -12,3 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e7845572e5bf464aa31ba48cfe6a4cd, type: 3}
   m_Name: LocalSaveLoad Tutorial - OnlySave
   m_EditorClassIdentifier: 
+  isArcheryShown: 0
+  isBasketShown: 0
+  isCatchMoreToyShown: 0
+  isCreateEnergyShown: 0
+  isFurnitureShown: 0
+  isLatinDanceShown: 0
+  isRelayShown: 0
+  isSnowballShown: 0

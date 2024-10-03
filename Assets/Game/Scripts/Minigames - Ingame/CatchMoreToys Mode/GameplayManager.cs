@@ -208,11 +208,13 @@ namespace WFSport.Gameplay.CatchMoreToysMode
             ui.Setup(myData.playTime, myData.timelineScore);
 
             /// Spawn character in ThrowingMachine
+            var idx = UnityEngine.Random.Range(0, characters.Length);
             foreach (var machine in throwMachines)
             {
-                var idx = UnityEngine.Random.Range(0, characters.Length);
                 var character = Instantiate(characters[idx], machine.transform);
-                machine.Setup(transform, this, config, character);
+                machine.Setup(transform, this, config, character, idx);
+                idx++;
+                if (idx >= characters.Length) idx = 0;
             }
         }
 

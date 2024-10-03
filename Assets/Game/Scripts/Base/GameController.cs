@@ -332,6 +332,8 @@ namespace WFSport.Base
                 playerMe.totalCoin = totalCoin + claimedCoin;
                 systemUI.UpdateCoin(true);
             });
+
+            StartCoroutine("DelayToGoHome", 3);
         }
         private IEnumerator OnPlayerLosing()
         {

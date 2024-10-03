@@ -1,3 +1,4 @@
+using AnhNV.GameBase;
 using DG.Tweening;
 using SCN;
 using System;
@@ -32,6 +33,9 @@ namespace WFSport.Gameplay.BasketballMode
 
         private IMinigame.ConfigData myData;
         private IMinigame.ResultData result;
+        private Tutorial tutorial;
+        private TutorialLocalData tutorialData;
+
         public IMinigame.ConfigData InternalData { get => myData; set => myData = value; }
         IMinigame.ResultData IMinigame.ExternalData { get => result; set => result = value; }
 
@@ -55,9 +59,40 @@ namespace WFSport.Gameplay.BasketballMode
         {
             EventManager.OnGetScore += OnPlayerGetScore;
             EventManager.OnTimeOut += OnGameLosing;
+
             Init();
-            OnGameStart();
+            StartCoroutine("OnReadyToPlay");
         }
+        private IEnumerator OnReadyToPlay()
+        {
+            yield return new WaitForSeconds(0.1f);
+            yield return new WaitUntil(() => GameController.Instance.IsLoadLocalDataCompleted);
+            tutorialData = GameController.Instance.TutorialData;
+
+            if (tutorialData.IsBasketShown)
+            {
+                OnGameStart();
+            }
+            else
+            {
+                SetupTutorial();
+                PlayTutorial();
+            }
+        }
+
+        private void PlayTutorial()
+        {
+            tutorial.PlayNextStep();
+            player.Play();
+        }
+
+        private void SetupTutorial()
+        {
+            tutorial = TutorialController.Instance.CreateTutorial("Basketball");
+            var step = TutorialController.Instance.CreateStep<TutorialClick>(tutorial);
+            step.Setup(myBaskets[0].HolePos);
+        }
+
         private void OnDestroy()
         {
             EventManager.OnGetScore -= OnPlayerGetScore;
@@ -68,6 +103,25 @@ namespace WFSport.Gameplay.BasketballMode
         {
             if (basePlayer == player)
             {
+                if(tutorial != null && !tutorial.IsAllStepCompleted)
+                {
+                    tutorial.Stop();
+                    tutorial.SetCompletedCurrentStep();
+                    tutorialData.IsBasketShown = true;
+                    tutorialData.Save();
+
+                    player.Pause(true);
+                    ui.OpenLoading(() =>
+                    {
+                        OnGameStart();
+                    },
+                    () =>
+                    {
+                    },
+                    2);
+
+                    return;
+                }
                 ui.UpdateLoadingBar(player.Score / maxScore);
 
                 result.claimedCoin += myData.normalPlusCoin;
