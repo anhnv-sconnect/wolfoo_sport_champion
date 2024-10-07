@@ -22,6 +22,7 @@ namespace WFSport.Gameplay.RelayMode
         [SerializeField] private Player.Mode CurrentMode;
         [SerializeField] private Vector3 cameraRange;
         [SerializeField] private float levelScore;
+        [SerializeField] private CharacterWorldAnimation[] characterData;
         [SerializeField] private bool isTesting;
 
         private int levelIdx;
@@ -342,7 +343,7 @@ namespace WFSport.Gameplay.RelayMode
 
                 player.Current = Instantiate(playerPb, transform);
                 player.Current.transform.position = pos;
-                player.Current.Setup(level.Current.Mode);
+                player.Current.Setup(level.Current.Mode, characterData);
                 level.Current.Assign(player.Current);
             }
             else
@@ -351,7 +352,7 @@ namespace WFSport.Gameplay.RelayMode
 
                 player.Next = Instantiate(playerPb, transform);
                 player.Next.transform.position = pos;
-                player.Next.Setup(level.Next.Mode);
+                player.Next.Setup(level.Next.Mode, characterData);
                 level.Next.Assign(player.Next);
             }
         }

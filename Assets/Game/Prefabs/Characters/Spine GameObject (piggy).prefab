@@ -60,12 +60,14 @@ MonoBehaviour:
   jumpAnim: Jump
   happyAnim: Idle_Laugh
   sadAnim: Sad
-  specialAnim: Waving_hand
+  specialAnim: Special
   wavehandAnim: Waving
   dizzyAnim: Stuned
   slowAnim: Run_Slow
   runFastAnim: Run_ninja
   pushAnim: push_Fast
+  pushSlowAnim: push_Slow
+  pushFastAnim: push_Fast
   throwAnim: Throw_Right
   skating1Anim: Skating1
   skating2Anim: Skating2
@@ -76,6 +78,8 @@ MonoBehaviour:
   throwBackAnim: Back_Throw
   backIdleAnim: Back_Idle
   eatAnim: Eat
+  driveAnim: Drive_Bike1
+  driveFasterAnim: Drive_Bike2
 --- !u!114 &224903901224286137
 MonoBehaviour:
   m_ObjectHideFlags: 0

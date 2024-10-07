@@ -8,35 +8,44 @@ namespace WFSport.Gameplay.ArcheryMode
 {
     public class BombController : MonoBehaviour
     {
-        [SerializeField] private Bomb[] bombs;
+        [SerializeField] private Bomb bombPb;
         [SerializeField] private SpriteRenderer circleSpriteRender;
 
+        private Bomb[] bombs;
         private GameplayConfig config;
         private Sequence _anim;
+        private int bombIdx;
+        private int maxBomb;
 
         private void OnDestroy()
         {
             _anim?.Kill();
         }
-        internal void CreateBomb()
+        internal Bomb CreateBomb(Marker holder)
         {
-            var idx = UnityEngine.Random.Range(0, bombs.Length);
-            var bomb = bombs[idx];
+            var bomb = bombs[bombIdx];
 
-            if(bomb != null && !bomb.IsShowing)
+            if(bomb == null)
             {
-                bomb.Setup(config.bombUsedTime);
-                bomb.Show();
+                bomb = Instantiate(bombPb, holder.transform);
+                bombs[bombIdx] = bomb;
+                bomb.transform.localPosition = Vector3.up * 2;
             }
-            else
-            {
-                CreateBomb();
-            }
+
+            bomb.Setup(config.bombUsedTime, holder);
+            bomb.Show();
+
+            bombIdx++;
+            bombIdx = bombIdx >= maxBomb ? 0 : bombIdx;
+
+            return bomb;
         }
 
-        internal void Setup(GameplayConfig config)
+        internal void Setup(GameplayConfig config, int maxBomb)
         {
             this.config = config;
+            this.maxBomb = maxBomb;
+            bombs = new Bomb[maxBomb];
         }
 
         internal bool IsArrowShooted(Arrow arrow)

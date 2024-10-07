@@ -29,9 +29,12 @@ namespace WFSport.Gameplay.ArcheryMode
         private float mySpeed;
         private Sequence _animScore;
         private SortingGroup sortingGroup;
+        private Bomb myBomb;
 
         public float MovingTime { get => movingTime; }
         public float Width { get => myCollider.radius * 2; }
+
+        public bool HasBomb { get => myBomb != null && myBomb.IsShowing; }
 
         private void OnDestroy()
         {
@@ -43,6 +46,10 @@ namespace WFSport.Gameplay.ArcheryMode
         private void Start()
         {
             Init();
+        }
+        internal void Setup(Bomb bomb)
+        {
+            myBomb = bomb;
         }
 
         internal override void OnHitCorrect(Vector3 position)
@@ -98,6 +105,7 @@ namespace WFSport.Gameplay.ArcheryMode
             markedHole.SetActive(false);
             gameObject.SetActive(false);
             IsShowing = false;
+            OnHidingEvent?.Invoke(this);
         }
 
         internal override void Hide()

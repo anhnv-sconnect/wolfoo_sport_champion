@@ -1,5 +1,6 @@
 using AnhNV.Helper;
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -122,7 +123,7 @@ namespace WFSport.Gameplay.ArcheryMode
             InitSpecial();
         }
 
-        internal void Setup(float delayHideTime)
+        internal void Setup(float delayHideTime, Marker marker)
         {
             Init();
 
@@ -130,6 +131,10 @@ namespace WFSport.Gameplay.ArcheryMode
             markedHole.SetActive(false);
 
             canCompare = true;
+            marker.OnHidingEvent = (mk) =>
+            {
+                Hide();
+            };
         }
 
         internal override bool IsInside(Vector3 position)

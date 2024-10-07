@@ -117,7 +117,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
 
             for (int i = 0; i < characters.Length; i++)
             {
-                characters[i].PlayPushAnim();
+                characters[i].PlayPushFastAnim();
                 stunedFxs[i].Stop();
             }
         }

@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,17 +19,18 @@ namespace WFSport.Gameplay.LatinDanceMode
         private IMinigame.GameState gameState;
         private Vector3 inititalPos;
         private Vector2 inittialLimited;
-        private Camera cam;
         private Vector3 initialCamPos;
         private bool isCalculating = false;
-        private Sequence _introduceSequence;
         private bool canDrag;
 
-        protected override IMinigame.GameState GameplayState { get => gameState; set => gameState = value; }
-
+        private Camera cam;
+        private Sequence _introduceSequence;
         CharacterWorldAnimation[] characters;
         CharacterWorldAnimation wolfoo;
         private Tween _tweenSkate;
+
+        public Action OnDragEvent;
+        protected override IMinigame.GameState GameplayState { get => gameState; set => gameState = value; }
 
         #region UNITY METHODS
 
@@ -122,8 +124,8 @@ namespace WFSport.Gameplay.LatinDanceMode
         }
         internal void IntroduceWolfoo(System.Action OnCompleted)
         {
+            if (wolfoo == null) return;
 
-            CreateWolfoo();
             wolfoo.transform.position = Vector3.up * 10;
 
             _introduceSequence = DOTween.Sequence()
@@ -165,7 +167,7 @@ namespace WFSport.Gameplay.LatinDanceMode
 
             return partner;
         }
-        private CharacterWorldAnimation CreateWolfoo()
+        public CharacterWorldAnimation CreateWolfoo()
         {
             wolfoo = Instantiate(wolfooPb, transform);
             wolfoo.ChangeSkin(CharacterWorldAnimation.SkinType.Prince);
@@ -268,6 +270,7 @@ namespace WFSport.Gameplay.LatinDanceMode
             } 
 
             isCalculating = false;
+            OnDragEvent?.Invoke();
         }
         private void PlaySkate()
         {
@@ -330,7 +333,8 @@ namespace WFSport.Gameplay.LatinDanceMode
                 _tweenSkate?.Kill();
                 foreach (var item in characters)
                 {
-                    item.PlayIdleAnim();
+                    if (item)
+                        item.PlayIdleAnim();
                 }
             }
         }

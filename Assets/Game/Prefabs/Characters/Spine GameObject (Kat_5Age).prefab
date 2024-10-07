@@ -66,6 +66,8 @@ MonoBehaviour:
   slowAnim: Run_Slow
   runFastAnim: Run_ninja
   pushAnim: push_Fast
+  pushSlowAnim: push_Slow
+  pushFastAnim: push_Fast
   throwAnim: Throw_Right
   skating1Anim: Skating1
   skating2Anim: Skating2
@@ -76,6 +78,8 @@ MonoBehaviour:
   throwBackAnim: Back_Throw
   backIdleAnim: Back_Idle
   eatAnim: Eat
+  driveAnim: Drive_Bike1
+  driveFasterAnim: Drive_Bike2
 --- !u!114 &2445799749166508281
 MonoBehaviour:
   m_ObjectHideFlags: 0

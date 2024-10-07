@@ -47,6 +47,7 @@ namespace WFSport.Gameplay.ArcheryMode
         private IMinigame.ResultData result;
         public IMinigame.ConfigData InternalData { get => myData; set => myData = value; }
         IMinigame.ResultData IMinigame.ExternalData { get => result; set => result = value; }
+        public bool HasBombTime { get; private set; }
 
         [NaughtyAttributes.Button]
         private void SortingLayer()
@@ -73,6 +74,21 @@ namespace WFSport.Gameplay.ArcheryMode
             EventManager.OnTimeOut += OnGameLosing;
 
             Init();
+            StartCoroutine("Play");
+        }
+
+        private void OnDestroy()
+        {
+            EventManager.OnShooting -= OnArrowShooting;
+            EventManager.OnTimeOut -= OnGameLosing;
+            StopCoroutine("SetupNextMarker");
+            StopCoroutine("CountingTime");
+            _tweenSpecialArrow?.Kill();
+        }
+        private IEnumerator Play()
+        {
+            yield return new WaitForSeconds(1);
+            yield return new WaitUntil(() => GameController.Instance.IsLoadLocalDataCompleted);
 
             if (!tutorialLocalData.IsArcheryShown)
             {
@@ -87,15 +103,6 @@ namespace WFSport.Gameplay.ArcheryMode
                     OnGameStart();
                 });
             }
-        }
-
-        private void OnDestroy()
-        {
-            EventManager.OnShooting -= OnArrowShooting;
-            EventManager.OnTimeOut -= OnGameLosing;
-            StopCoroutine("SetupNextMarker");
-            StopCoroutine("CountingTime");
-            _tweenSpecialArrow?.Kill();
         }
         private void SetupMainGameplay()
         {
@@ -169,7 +176,7 @@ namespace WFSport.Gameplay.ArcheryMode
                 var item = config.bombSpawnTimelines[i];
                 if (item == countTime)
                 {
-                    bombController.CreateBomb();
+                    HasBombTime = true;
                 }
             }
 
@@ -203,6 +210,13 @@ namespace WFSport.Gameplay.ArcheryMode
                 if (i > 0) { movingMarker.SetupNext(lastMarkerPos, config.movingMarkerSpacing); }
                 lastMarkerPos = movingMarker.transform.position;
                 movingMarker.Show();
+
+                if(HasBombTime)
+                {
+                    HasBombTime = false;
+                    var bomb = bombController.CreateBomb(movingMarker);
+                    movingMarker.Setup(bomb);
+                }
 
                 movingMarkedCount++;
                 movingMarkedCount = movingMarkedCount >= poolingMovingMarkers.Length ? 0 : movingMarkedCount;
@@ -246,34 +260,41 @@ namespace WFSport.Gameplay.ArcheryMode
                 if (!obj.IsAttached && marker.IsInside(obj.transform.position))
                 {
                     obj.IsAttached = true;
-                    if (holderPlayer.IsSpecialMode || marker.IsSpecial)
+                    if (marker.HasBomb)
                     {
-                        marker.SetupScore(config.specialScore);
+                        StopCoroutine("OnShootedBomb");
+                        StartCoroutine("OnShootedBomb");
                     }
                     else
                     {
-                        marker.SetupScore(config.normalScore);
-                    }
-                    marker.OnHitCorrect(obj.transform.position);
-
-                    markedCount++;
-                    if(curRandomMarkers != null && markedCount >= curRandomMarkers.Length)
-                    {
-                        holderPlayer.UpgradeScore(config.normalScore);
-                        OnTrackingScore(holderPlayer, isBot, myData.normalPlusCoin);
-                        SpawnNextMarker();
-                    }
-
-                    if(marker.IsSpecial)
-                    {
-                        holderPlayer.UpgradeScore(config.specialScore);
-                        OnTrackingScore(holderPlayer, isBot, myData.specialPlusCoin);
-                        PlayAnimPlayerGetSpecialArrow(obj.transform.position, holderPlayer.BowPos, () =>
+                        if (holderPlayer.IsSpecialMode || marker.IsSpecial)
                         {
-                            holderPlayer.PlayWithSpecialItem();
-                        });
-                    }
+                            marker.SetupScore(config.specialScore);
+                        }
+                        else
+                        {
+                            marker.SetupScore(config.normalScore);
+                        }
+                        marker.OnHitCorrect(obj.transform.position);
 
+                        markedCount++;
+                        if (curRandomMarkers != null && markedCount >= curRandomMarkers.Length)
+                        {
+                            holderPlayer.UpgradeScore(config.normalScore);
+                            OnTrackingScore(holderPlayer, isBot, myData.normalPlusCoin);
+                            SpawnNextMarker();
+                        }
+
+                        if (marker.IsSpecial)
+                        {
+                            holderPlayer.UpgradeScore(config.specialScore);
+                            OnTrackingScore(holderPlayer, isBot, myData.specialPlusCoin);
+                            PlayAnimPlayerGetSpecialArrow(obj.transform.position, holderPlayer.BowPos, () =>
+                            {
+                                holderPlayer.PlayWithSpecialItem();
+                            });
+                        }
+                    }
                     return;
                 }
             }
@@ -285,19 +306,20 @@ namespace WFSport.Gameplay.ArcheryMode
                     if (!obj.IsAttached && poolingMovingMarkers[i] != null && poolingMovingMarkers[i].IsInside(obj.transform.position))
                     {
                         obj.IsAttached = true;
-                        poolingMovingMarkers[i].OnHitCorrect(obj.transform.position);
-                        holderPlayer.UpgradeScore(config.movingScore);
-                        OnTrackingScore(holderPlayer, isBot, myData.special2PlusCoin);
+                        if (poolingMovingMarkers[i].HasBomb)
+                        {
+                            StopCoroutine("OnShootedBomb");
+                            StartCoroutine("OnShootedBomb");
+                        }
+                        else
+                        {
+                            poolingMovingMarkers[i].OnHitCorrect(obj.transform.position);
+                            holderPlayer.UpgradeScore(config.movingScore);
+                            OnTrackingScore(holderPlayer, isBot, myData.special2PlusCoin);
+                        }
                         return;
                     }
                 }
-            }
-
-            var isShootedBomb = bombController.IsArrowShooted(obj);
-            if (isShootedBomb) {
-                // Decrease Score
-                StopCoroutine("OnShootedBomb");
-                StartCoroutine("OnShootedBomb");
             }
         }
         private void OnTrackingScore(Player player, bool isBot, int plusScore)
@@ -388,7 +410,7 @@ namespace WFSport.Gameplay.ArcheryMode
             ScreenHeightRange = new Vector2(-maxUp.y, maxUp.y);
 
             InitMovingMarker();
-            bombController.Setup(config);
+            bombController.Setup(config, totalSpecialMarker + idleMarkers.Length);
 
             specialArrowIcon.gameObject.SetActive(false);
             player.Init();
@@ -401,40 +423,50 @@ namespace WFSport.Gameplay.ArcheryMode
         }
         private IEnumerator SetupNextMarker()
         {
-            var maxRange = config.randomRange;
-            if (curRandomMarkers != null)
+            while (true)
             {
-                foreach (var item in curRandomMarkers)
+                var maxRange = config.randomRange;
+                if (curRandomMarkers != null)
                 {
-                    item.Hide();
+                    foreach (var item in curRandomMarkers)
+                    {
+                        item.Hide();
+                    }
+                    maxRange = Mathf.Min(idleMarkers.Length - curRandomMarkers.Length, config.randomRange);
                 }
-                maxRange = Mathf.Min(idleMarkers.Length - curRandomMarkers.Length, config.randomRange);
+
+                markedCount = 0;
+                var totalRandom = UnityEngine.Random.Range(1, maxRange);
+                curRandomMarkers = new IdleMarker[totalRandom];
+
+                for (int i = 0; i < totalRandom; i++)
+                {
+                    int idx = UnityEngine.Random.Range(0, idleMarkers.Length);
+                    while (idleMarkers[idx].IsShowing)
+                    {
+                        idx = UnityEngine.Random.Range(0, idleMarkers.Length);
+                    }
+                    idleMarkers[idx].Setup(config.delayHideTime);
+                    if (totalSpecialMarker > 0)
+                    {
+                        idleMarkers[idx].SetupSpecial();
+                        totalSpecialMarker--;
+                    }
+                    else
+                    {
+                        if (HasBombTime)
+                        {
+                            HasBombTime = false;
+                            var bomb = bombController.CreateBomb(idleMarkers[idx]);
+                            idleMarkers[idx].Setup(bomb);
+                        }
+                    }
+                    idleMarkers[idx].Show();
+                    curRandomMarkers[i] = idleMarkers[idx];
+                }
+
+                yield return new WaitForSeconds(config.randomSpawnTime);
             }
-
-            markedCount = 0;
-            var totalRandom = UnityEngine.Random.Range(1, maxRange);
-            curRandomMarkers = new IdleMarker[totalRandom];
-
-            for (int i = 0; i < totalRandom; i++)
-            {
-                int idx = UnityEngine.Random.Range(0, idleMarkers.Length);
-                while (idleMarkers[idx].IsShowing)
-                {
-                    idx = UnityEngine.Random.Range(0, idleMarkers.Length);
-                }
-                idleMarkers[idx].Setup(config.delayHideTime);
-                if(totalSpecialMarker > 0)
-                {
-                    idleMarkers[idx].SetupSpecial();
-                    totalSpecialMarker--;
-                }
-                idleMarkers[idx].Show();
-                curRandomMarkers[i] = idleMarkers[idx];
-            }
-
-            yield return new WaitForSeconds(config.randomSpawnTime);
-
-            StartCoroutine("SetupNextMarker");
         }
 
         public void OnGameLosing()

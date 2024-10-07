@@ -1,3 +1,4 @@
+using AnhNV.GameBase;
 using DG.Tweening;
 using SCN;
 using System;
@@ -28,6 +29,8 @@ namespace WFSport.Gameplay.LatinDanceMode
         private IMinigame.ResultData result;
         private IMinigame.MatchResult matchResult;
         private float beginTime;
+        private Tutorial tutorial;
+        private bool isDragged;
 
         public IMinigame.ConfigData InternalData { get => myData; set => myData = value; }
         IMinigame.ResultData IMinigame.ExternalData { get => result; set => result = value; }
@@ -98,10 +101,14 @@ namespace WFSport.Gameplay.LatinDanceMode
             EventManager.OnPlayerClaimNewStar += OnPlayerClaimNewStar;
             EventManager.OnHide += OnItemHiding;
             EventManager.OnTimeOut += OnGameLosing;
+            player.OnDragEvent = OnDragging;
 
             Init();
-            OnGameStart();
+            InitTutorial();
+            PlayTutorial();
+       //     OnGameStart();
         }
+
         private void OnDestroy()
         {
             EventManager.OnPlayerClaimNewStar -= OnPlayerClaimNewStar;
@@ -109,6 +116,27 @@ namespace WFSport.Gameplay.LatinDanceMode
             EventManager.OnHighlight -= OnHighlight;
             EventManager.OnStopHighlight -= OnStopHighlight;
             EventManager.OnTimeOut -= OnGameLosing;
+        }
+
+        private void OnDragging()
+        {
+            if(tutorial != null && !tutorial.IsAllStepCompleted)
+            {
+                tutorial.Stop();
+                isDragged = true;
+            }
+        }
+
+        private void InitTutorial()
+        {
+            tutorial = TutorialController.Instance.CreateTutorial("Latin");
+            var step = TutorialController.Instance.CreateStep<TutorialDragInRange>(tutorial);
+        }
+
+        private void PlayTutorial()
+        {
+            tutorial.PlayNextStep();
+            player.Play();
         }
 
         private void OnHighlight(Transform arg1, bool arg2)
@@ -166,10 +194,33 @@ namespace WFSport.Gameplay.LatinDanceMode
             ui = FindAnyObjectByType<SoloMinigameUI>(FindObjectsInactive.Include);
             ui.gameObject.SetActive(true);
             ui.Setup(myData.playTime, myData.timelineScore);
+
+            player.Init();
+            player.CreateWolfoo();
+            CreateRandomItems();
         }
 
         private void OnPlayerClaimNewStar(Base.Player obj, bool isSpecial)
         {
+            if (tutorial != null && !tutorial.IsAllStepCompleted && isDragged)
+            {
+                tutorial.SetCompletedCurrentStep();
+                player.Pause(true);
+                ui.OpenLoading(() =>
+                {
+                    ui.OpenCountingToStart(() =>
+                    {
+                        OnGameStart();
+                    });
+                },
+                () =>
+                {
+                    player.gameObject.SetActive(false);
+                },
+                1.5f);
+                return;
+            }
+
             score++;
             ui.UpdateLoadingBar(score / finalScore);
 
@@ -216,17 +267,13 @@ namespace WFSport.Gameplay.LatinDanceMode
         public void OnGameStart()
         {
             beginTime = Time.time;
-            ui.OpenCountingToStart(() =>
+            player.Setup(11);
+            player.gameObject.SetActive(true);
+            player.IntroduceWolfoo(() =>
             {
-                player.Init();
-                player.Setup(11);
-                player.IntroduceWolfoo(() =>
-                {
-                    CreateRandomItems();
-                    ui.PlayTime();
-                    player.Setup(1);
-                    player.Play();
-                });
+                ui.PlayTime();
+                player.Setup(1);
+                player.Play();
             });
         }
 

@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,5 +24,7 @@ namespace WFSport.Gameplay.ArcheryMode
         public bool IsSpecial { get => isSpecial; protected set => isSpecial = value; }
 
         public Vector3 TargetPosition { get => myCollider.bounds.center; }
+
+        public Action<Marker> OnHidingEvent;
     }
 }

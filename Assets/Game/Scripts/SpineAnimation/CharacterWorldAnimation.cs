@@ -33,6 +33,10 @@ public class CharacterWorldAnimation : MonoBehaviour
     [SerializeField, SpineAnimation] private string runFastAnim;
     [Header("Push")]
     [SerializeField, SpineAnimation] private string pushAnim;
+    [Header("PushSlow")]
+    [SerializeField, SpineAnimation] private string pushSlowAnim;
+    [Header("PushFast")]
+    [SerializeField, SpineAnimation] private string pushFastAnim;
     [Header("Throw")]
     [SerializeField, SpineAnimation] private string throwAnim;
     [Header("Skate1")]
@@ -53,6 +57,10 @@ public class CharacterWorldAnimation : MonoBehaviour
     [SerializeField, SpineAnimation] private string backIdleAnim;
     [Header("Eat")]
     [SerializeField, SpineAnimation] private string eatAnim;
+    [Header("Drive")]
+    [SerializeField, SpineAnimation] private string driveAnim;
+    [Header("Drive Fast")]
+    [SerializeField, SpineAnimation] private string driveFasterAnim;
 
     private AnimState animState;
     private Tween _tween;
@@ -140,6 +148,16 @@ public class CharacterWorldAnimation : MonoBehaviour
         _tween?.Kill();
         PlayIdle();
     }
+    public void PlayDriveAnim()
+    {
+        _tween?.Kill();
+        PlayDrive(true);
+    }
+    public void PlayDriveFasterAnim()
+    {
+        _tween?.Kill();
+        PlayDriveFaster(true);
+    }
     public void PlayDizzyAnim(bool isLoop = true)
     {
         _tween?.Kill();
@@ -154,6 +172,26 @@ public class CharacterWorldAnimation : MonoBehaviour
     {
         _tween?.Kill();
         PlayPush(isLoop);
+        if (!isLoop)
+        {
+            _tween?.Kill();
+            _tween = DOVirtual.DelayedCall(GetTimeAnimation(animState), () => PlayIdle());
+        }
+    }
+    public void PlayPushFastAnim(bool isLoop = true)
+    {
+        _tween?.Kill();
+        PlayPushFast(isLoop);
+        if (!isLoop)
+        {
+            _tween?.Kill();
+            _tween = DOVirtual.DelayedCall(GetTimeAnimation(animState), () => PlayIdle());
+        }
+    }
+    public void PlayPushSlowAnim(bool isLoop = true)
+    {
+        _tween?.Kill();
+        PlayPushSlow(isLoop);
         if (!isLoop)
         {
             _tween?.Kill();
@@ -371,6 +409,18 @@ public class CharacterWorldAnimation : MonoBehaviour
         animState = AnimState.Push;
         AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, pushAnim, isLoop);
     }
+    private void PlayPushFast(bool isLoop)
+    {
+        if (animState == AnimState.PushFast) return;
+        animState = AnimState.PushFast;
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, pushFastAnim, isLoop);
+    }
+    private void PlayPushSlow(bool isLoop)
+    {
+        if (animState == AnimState.PushSlow) return;
+        animState = AnimState.PushSlow;
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, pushSlowAnim, isLoop);
+    }
     private void PlayThrow(bool isLoop)
     {
         if (animState == AnimState.Throw) return;
@@ -425,6 +475,18 @@ public class CharacterWorldAnimation : MonoBehaviour
         animState = AnimState.BackIdle;
         AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, backIdleAnim, isLoop);
     }
+    private void PlayDrive(bool isLoop)
+    {
+        if (animState == AnimState.Drive) return;
+        animState = AnimState.Drive;
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, driveAnim, isLoop);
+    }
+    private void PlayDriveFaster(bool isLoop)
+    {
+        if (animState == AnimState.DriveFast) return;
+        animState = AnimState.DriveFast;
+        AnimationHelper.PlayAnimation(SkeletonAnim.AnimationState, driveFasterAnim, isLoop);
+    }
     private void PlayEat(bool isLoop)
     {
         if (animState == AnimState.Eat) return;
@@ -471,6 +533,12 @@ public class CharacterWorldAnimation : MonoBehaviour
             case AnimState.Push:
                 myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(pushAnim);
                 break;
+            case AnimState.PushFast:
+                myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(pushFastAnim);
+                break;
+            case AnimState.PushSlow:
+                myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(pushSlowAnim);
+                break;
             case AnimState.Throw:
                 myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(throwAnim);
                 break;
@@ -501,6 +569,12 @@ public class CharacterWorldAnimation : MonoBehaviour
             case AnimState.Eat:
                 myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(eatAnim);
                 break;
+            case AnimState.Drive:
+                myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(driveAnim);
+                break;
+            case AnimState.DriveFast:
+                myAnimation = SkeletonAnim.Skeleton.Data.FindAnimation(driveFasterAnim);
+                break;
         }
 
         if (myAnimation == null) return 0;
@@ -523,6 +597,8 @@ public class CharacterWorldAnimation : MonoBehaviour
         Slow,
         RunFast,
         Push,
+        PushSlow,
+        PushFast,
         Throw,
         /// <summary>
         /// Normal Skating
@@ -548,6 +624,8 @@ public class CharacterWorldAnimation : MonoBehaviour
         Throwback,
         BackIdle,
         Eat,
+        Drive,
+        DriveFast
     }
     #endregion
    

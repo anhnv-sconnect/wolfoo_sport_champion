@@ -64,6 +64,7 @@ namespace WFSport.Base
             gameplayData = dataManager.configDataManager.GameplayConfig;
             localData = dataManager.localSaveloadData;
             localData.Load();
+            GetSystemUI();
 
             EventDispatcher.Instance.RegisterListener<EventKeyBase.ChangeScene>(OnChangeScene);
             EventDispatcher.Instance.RegisterListener<Gameplay.EventKey.OnGameStop>(OnGameplayComplete);

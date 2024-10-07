@@ -34,10 +34,11 @@ namespace WFSport.Gameplay.RelayMode
         [SerializeField] private float speedBoostingTime;
         [SerializeField] private float protectedTimer;
         [SerializeField] private int totalProtectTime;
+        [SerializeField] private float ballSpeed;
         [SerializeField] private GameObject[] colliderStages;
         [SerializeField] private GameObject shield;
-        [SerializeField] private CharacterWorldAnimation[] characterData;
         [SerializeField] private ParticleSystem stunedFx;
+        [SerializeField] private Transform ball;
 
         private Mode playerMode;
         private GameState gameState;
@@ -65,6 +66,8 @@ namespace WFSport.Gameplay.RelayMode
         private Tweener _tweenDelay;
 
         public bool IsRightMoving { get; private set; }
+
+        private CharacterWorldAnimation[] characterData;
 
         private void OnEnable()
         {
@@ -198,7 +201,7 @@ namespace WFSport.Gameplay.RelayMode
 
         private void OnPlayModeChanged()
         {
-            Setup(playerMode);
+            Setup(playerMode, characterData);
             isInited = false;
         }
 
@@ -222,18 +225,54 @@ namespace WFSport.Gameplay.RelayMode
         private void PlayRunFaster()
         {
             mySpeed = boostSpeed;
-            characterAnimation.PlayRunFastAnim();
+            switch (playerMode)
+            {
+                case Mode.Hurdling:
+                    characterAnimation.PlayRunFastAnim();
+                    break;
+                case Mode.Passthrough:
+                    characterAnimation.PlayPushFastAnim();
+                    break;
+                case Mode.Pathway1:
+                case Mode.Pathway2:
+                    characterAnimation.PlayDriveFasterAnim();
+                    break;
+            }
         }
         private void PlayRunSlower()
         {
             mySpeed = slowSpeed;
-            characterAnimation.PlaySlowAnim();
+            switch (playerMode)
+            {
+                case Mode.Hurdling:
+                    characterAnimation.PlaySlowAnim();
+                    break;
+                case Mode.Passthrough:
+                    characterAnimation.PlayPushSlowAnim();
+                    break;
+                case Mode.Pathway1:
+                case Mode.Pathway2:
+                    characterAnimation.PlayDriveAnim();
+                    break;
+            }
         }
         private void PlayRun()
         {
             mySpeed = speed;
-            characterAnimation.PlayRunAnim();
-            stunedFx.Stop();
+            SetStunAnim(false);
+            switch (playerMode)
+            {
+                case Mode.Hurdling:
+                    characterAnimation.PlayRunAnim();
+                    break;
+                case Mode.Passthrough:
+                    characterAnimation.PlayPushAnim();
+                    break;
+                case Mode.Pathway1:
+                case Mode.Pathway2:
+                    characterAnimation.PlayDriveAnim();
+                    break;
+            }
         }
         private void DisableShield()
         {
@@ -265,8 +304,8 @@ namespace WFSport.Gameplay.RelayMode
 
         private void OnFinishStage()
         {
-            rb2D.bodyType = RigidbodyType2D.Static;
-            characterAnimation.PlayRunAnim();
+            rb2D.bodyType = RigidbodyType2D.Static;            
+            PlayRun();
 
             myLane = 1;
             OnSwitchLane();
@@ -369,7 +408,13 @@ namespace WFSport.Gameplay.RelayMode
             if (!isStop)
             {
                 AutoMoving(Direction.Right);
+                BallRotating();
             }
+        }
+        private void BallRotating()
+        {
+            var rotation = ball.rotation.eulerAngles + Vector3.forward * 0.001f * ballSpeed;
+            ball.rotation = Quaternion.Euler(rotation);
         }
 
         public override void Init()
@@ -403,7 +448,7 @@ namespace WFSport.Gameplay.RelayMode
         }
         public override void Play()
         {
-            characterAnimation.PlayRunAnim();
+            PlayRun();
             GameplayState = GameState.Playing;
             isTutorialing = false;
         }
@@ -426,14 +471,15 @@ namespace WFSport.Gameplay.RelayMode
         public override void ResetDefault()
         {
             transform.position = startPos;
-            Setup(playerMode);
+            Setup(playerMode, characterData);
         }
-        public void Setup(Mode mode)
+        public void Setup(Mode mode, CharacterWorldAnimation[] characterData)
         {
             Init();
 
             playerMode = mode;
             IsRightMoving = true;
+            this.characterData = characterData;
 
             if (characterAnimation == null) CreateNew();
             shield.SetActive(false);
@@ -454,12 +500,14 @@ namespace WFSport.Gameplay.RelayMode
                     EnableTopDown = false;
                     speed = 7;
                     canJumping = true;
+                    ball.gameObject.SetActive(false);
                     break;
                 case Mode.Passthrough:
                     rb2D.bodyType = RigidbodyType2D.Kinematic;
                     DetectType = DetectType.Swiping;
                     EnableTopDown = false;
                     speed = 7;
+                    ball.gameObject.SetActive(true);
                     break;
                 case Mode.Pathway1:
                 case Mode.Pathway2:
@@ -467,9 +515,12 @@ namespace WFSport.Gameplay.RelayMode
                     DetectType = DetectType.Dragging;
                     EnableTopDown = true;
                     speed = 10;
+                    ball.gameObject.SetActive(false);
                     break;
             }
             mySpeed = speed;
+            characterAnimation.PlayIdleAnim();
+            characterAnimation.ChangeSkin(CharacterWorldAnimation.SkinType.Sport);
         }
         #endregion
 
@@ -494,8 +545,7 @@ namespace WFSport.Gameplay.RelayMode
         {
             Debug.Log("OnChecking Mode pathway 2");
             isStop = true;
-            characterAnimation.PlayDizzyAnim();
-            stunedFx.Play();
+            SetStunAnim(true);
 
             Holder.PlayAnim?.Invoke();
 
@@ -516,7 +566,7 @@ namespace WFSport.Gameplay.RelayMode
             {
                 isStop = false;
                 neighborCrossCone = (null, 0, true, Constant.CONE_LINE3);
-                characterAnimation.PlayRunAnim();
+                PlayRun();
             });
 
         }
@@ -524,8 +574,7 @@ namespace WFSport.Gameplay.RelayMode
         {
             Debug.Log("OnChecking Mode pathway 1");
             isStop = true;
-            characterAnimation.PlayDizzyAnim();
-            stunedFx.Play();
+            SetStunAnim(true);
 
             Holder.PlayAnim?.Invoke();
 
@@ -546,7 +595,7 @@ namespace WFSport.Gameplay.RelayMode
 
             isStop = false;
             neighborCrossCone = (null, 0, true, Constant.CONE_LINE3);
-            characterAnimation.PlayRunAnim();
+            PlayRun();
         }
 
         public void FindWaytoPassObstacle(TrafficCone cone)
@@ -570,15 +619,27 @@ namespace WFSport.Gameplay.RelayMode
                 }
             }
         }
+        private void SetStunAnim(bool isPlay)
+        {
+            if (isPlay)
+            {
+                stunedFx.gameObject.SetActive(true);
+                stunedFx.Play();
+                characterAnimation.PlayDizzyAnim();
+            }
+            else
+            {
+                stunedFx.gameObject.SetActive(false);
+                stunedFx.Stop();
+            }
+        }
 
         #endregion
 
         #region Hurdling Mode
         private IEnumerator OnCollisonWithBarrier()
         {
-            Debug.Log("OnCollisonWithBarrier");
-            characterAnimation.PlayDizzyAnim();
-            stunedFx.Play();
+            SetStunAnim(true);
 
             canTouch = false;
             isStunning = true;
@@ -604,7 +665,7 @@ namespace WFSport.Gameplay.RelayMode
 
         private void MovingTo(Vector2 position, System.Action OnCompleted)
         {
-            characterAnimation.PlayRunAnim();
+            PlayRun();
             _tweenMove?.Kill();
             _tweenMove = transform.DOMove(position, 0.5f)
                 .OnUpdate(() =>

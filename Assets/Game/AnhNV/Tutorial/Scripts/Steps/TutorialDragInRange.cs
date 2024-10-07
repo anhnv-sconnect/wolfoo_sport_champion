@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,62 +7,22 @@ namespace AnhNV.GameBase
 {
     public class TutorialDragInRange : TutorialStep
     {
-        [SerializeField] private Transform pointer;
-        [SerializeField] private Transform beginTarget;
-        [SerializeField] private Transform endTarget;
-        [SerializeField] private float speed;
-
+        [SerializeField] Animator animator;
+        [SerializeField] string playName;
+        [SerializeField] string stopName;
         private string id;
-        private bool isMoving;
-        private int count;
-        private bool canMove;
+        private Tween dotween;
 
         public override string TutorialID { get => id; set => id = value; }
 
-        private void Start()
-        {
-            Play();
-        }
         private void OnDestroy()
         {
-            Stop();
+            dotween?.Kill();   
         }
-
-        public void Setup(Transform begin, Transform end, float speed = 1)
-        {
-            beginTarget = begin;
-            endTarget = end;
-            this.speed = speed;
-        }
-
         public override void Play()
         {
-            canMove = true;
-            StartCoroutine("Moving");
-        }
-
-        private IEnumerator Moving()
-        {
-            isMoving = true;
-            pointer.position = beginTarget.position;
-            count = 0;
-
-            while (isMoving && canMove)
-            {
-                yield return null;
-                pointer.gameObject.SetActive(true);
-                pointer.position = Vector3.Lerp(beginTarget.position, endTarget.position, count * speed * 0.01f);
-                count += 1;
-
-                if (Vector2.Distance(pointer.position, endTarget.position) <= 0.01f)
-                {
-                    count = 0;
-                    pointer.position = beginTarget.position;
-                    pointer.gameObject.SetActive(false);
-                }
-            }
-
-            isMoving = false;
+            animator.enabled = true;
+            animator.Play(playName, 0, 0);
         }
 
         public override void Release()
@@ -70,9 +31,16 @@ namespace AnhNV.GameBase
 
         public override void Stop()
         {
-            canMove = false;
-            StopCoroutine("Moving");
-            pointer.gameObject.SetActive(false);
+            animator.Play(stopName, 0, 0);
+            dotween?.Kill();
+            dotween = DOVirtual.DelayedCall(0.5f, () =>
+            {
+                gameObject.SetActive(false);
+            });
+        }
+        public void Setup(Transform target)
+        {
+            animator.enabled = false;
         }
     }
 }

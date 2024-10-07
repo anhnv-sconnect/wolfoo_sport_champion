@@ -26,6 +26,9 @@ namespace WFSport.Gameplay.ArcheryMode
         private Sequence _animScore;
         private int myScore;
         private SortingGroup sortingGroup;
+        private Bomb myBomb;
+
+        public bool HasBomb { get => myBomb != null && myBomb.IsShowing; }
 
         private void Start()
         {
@@ -110,6 +113,7 @@ namespace WFSport.Gameplay.ArcheryMode
 
             IsSpecial = false;
             specialItem.gameObject.SetActive(false);
+            OnHidingEvent?.Invoke(this);
         }
 
         internal override void Hide()
@@ -140,6 +144,10 @@ namespace WFSport.Gameplay.ArcheryMode
         {
             IsSpecial = true;
             InitSpecial();
+        }
+        internal void Setup(Bomb bomb)
+        {
+            myBomb = bomb;
         }
 
         internal void SetupScore(int score)
