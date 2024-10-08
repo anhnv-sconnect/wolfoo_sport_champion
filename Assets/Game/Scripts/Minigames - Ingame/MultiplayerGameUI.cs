@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using WFSport.Base;
 
 namespace WFSport.Gameplay
 {
@@ -26,6 +27,13 @@ namespace WFSport.Gameplay
             base.OnDestroy();
             _tweenLoadingBar2?.Kill();
             _tweenLoadingBar?.Kill();
+        }
+        public void Setup(Sprite playerIcon1,Sprite playerIcon2)
+        {
+            if (playerIcon1 != null)
+                mainCharcterIcon.sprite = playerIcon1;
+            if (playerIcon2 != null)
+                otherCharcterIcon.sprite = playerIcon2;
         }
 
         internal override void Setup(int time, float[] timeline)

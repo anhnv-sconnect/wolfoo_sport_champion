@@ -22,6 +22,7 @@ namespace WFSport.Gameplay
         [SerializeField] private Image[] starImgs;
         [SerializeField] private LoadingBlur loadingPanelPb;
         [SerializeField] private LoadingCounting countingPanelPb;
+        [SerializeField] private Image timer;
         
         private int totalTime;
         private int totalStarClaimed;
@@ -32,6 +33,7 @@ namespace WFSport.Gameplay
 
         private float[] timeline;
         private Sequence tweenFadeScreen;
+        private Sequence _animLowerTime;
 
         public int TotalStarClaimed { get => totalStarClaimed; }
 
@@ -44,6 +46,7 @@ namespace WFSport.Gameplay
         {
             _tweenLoadingBar?.Kill();
             _tweenStar?.Kill();
+            _animLowerTime?.Kill();
             tweenFadeScreen?.Kill();
             EventManager.OnInitGame -= InitScreen;
         }
@@ -67,9 +70,25 @@ namespace WFSport.Gameplay
 
                 totalTime--;
                 yield return new WaitForSeconds(1);
+
+                if(totalTime <= 10)
+                {
+                    PlayAnimTimerisLow();
+                }
             }
 
             EventManager.OnTimeOut?.Invoke();
+        }
+        private void PlayAnimTimerisLow()
+        {
+            _animLowerTime?.Kill();
+            timer.color = Color.white;
+            timer.transform.localScale = Vector2.one;
+            _animLowerTime = DOTween.Sequence()
+                .Append(timer.DOColor(Color.red, 0.25f))
+                .Join(timer.transform.DOPunchScale(Vector2.one * 0.1f, 0.5f, 2))
+                .Append(timer.DOColor(Color.white, 0.25f));
+
         }
 
         internal void PlayTime()

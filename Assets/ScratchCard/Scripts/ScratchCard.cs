@@ -83,7 +83,7 @@ public class ScratchCard : MonoBehaviour
 	
 	void Start()
 	{
-		Init();
+	//	Init();
 	}
 
 	void OnDestroy()
@@ -100,7 +100,7 @@ public class ScratchCard : MonoBehaviour
 	{
 		if (lastFrameId == Time.frameCount)
 			return;
-		
+		if (cardInput == null) return;
 		cardInput.Update();
 		if (isFirstFrame)
 		{
@@ -122,7 +122,7 @@ public class ScratchCard : MonoBehaviour
 
 	#region Initializaion
 	
-	private void Init()
+	public void Init()
 	{
 		GetScratchBounds();
 		InitVariables();
@@ -137,6 +137,10 @@ public class ScratchCard : MonoBehaviour
 		surfaceRenderer = Surface.GetComponent<Renderer>();
 		if (surfaceRenderer != null)
 		{
+			Debug.Log("Parent " + transform.parent.name);
+			Debug.Log(surfaceRenderer);
+			Debug.Log(surfaceRenderer.sharedMaterial);
+			Debug.Log(surfaceRenderer.sharedMaterial.mainTexture);
 			var sourceTexture = surfaceRenderer.sharedMaterial.mainTexture;
 			imageSize = new Vector2(sourceTexture.width, sourceTexture.height);
 			surfaceMeshFilter = Surface.GetComponent<MeshFilter>();
@@ -189,6 +193,7 @@ public class ScratchCard : MonoBehaviour
 		cardRenderer = new ScratchCardRenderer(this);
 		cardRenderer.SetImageSize(imageSize);
 		cardRenderer.CreateRenderTexture();
+		Debug.Log("Card " + cardInput);
 	}
 		
 	private void InitTriangle()

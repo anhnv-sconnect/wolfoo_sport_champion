@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicVolume: 1
   soundVolume: 1
-  totalCoin: 3
+  totalCoin: 57
   totalEnergy: 10
   maxEnergy: 4

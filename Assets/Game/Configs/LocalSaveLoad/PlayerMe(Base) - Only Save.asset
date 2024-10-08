@@ -15,5 +15,5 @@ MonoBehaviour:
   musicVolume: 1
   soundVolume: 1
   totalCoin: 5
-  totalEnergy: 3
+  totalEnergy: 4
   maxEnergy: 4

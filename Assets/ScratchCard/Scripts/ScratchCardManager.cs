@@ -118,6 +118,8 @@ public class ScratchCardManager : MonoBehaviour
 			image.sprite = ScratchSurfaceSprite;
 			image.material = scratchSurfaceMaterial;
 		}
+
+		Card.Init();
 	}
 	
 	public void SetEraseTexture(Texture texture)

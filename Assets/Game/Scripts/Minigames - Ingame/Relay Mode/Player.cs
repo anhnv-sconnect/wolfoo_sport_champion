@@ -64,10 +64,9 @@ namespace WFSport.Gameplay.RelayMode
 
         private TweenerCore<Vector3, Vector3, VectorOptions> _tweenMove;
         private Tweener _tweenDelay;
+        private CharacterWorldAnimation characterPb;
 
         public bool IsRightMoving { get; private set; }
-
-        private CharacterWorldAnimation[] characterData;
 
         private void OnEnable()
         {
@@ -201,7 +200,7 @@ namespace WFSport.Gameplay.RelayMode
 
         private void OnPlayModeChanged()
         {
-            Setup(playerMode, characterData);
+            Setup(playerMode);
             isInited = false;
         }
 
@@ -428,7 +427,7 @@ namespace WFSport.Gameplay.RelayMode
 
         public void CreateNew()
         {
-            var character = Instantiate(characterData[UnityEngine.Random.Range(0, characterData.Length)], transform);
+            var character = Instantiate(characterPb, transform);
             characterAnimation = character;
             characterAnimation.gameObject.layer = 6;
             characterAnimation.transform.localPosition = new Vector3(0, -1, 0);
@@ -471,15 +470,15 @@ namespace WFSport.Gameplay.RelayMode
         public override void ResetDefault()
         {
             transform.position = startPos;
-            Setup(playerMode, characterData);
+            Setup(playerMode);
         }
-        public void Setup(Mode mode, CharacterWorldAnimation[] characterData)
+        public void Setup(Mode mode, CharacterWorldAnimation character = null)
         {
             Init();
 
             playerMode = mode;
             IsRightMoving = true;
-            this.characterData = characterData;
+            if(characterPb == null) characterPb = character;
 
             if (characterAnimation == null) CreateNew();
             shield.SetActive(false);

@@ -10,13 +10,6 @@ using WFSport.Base;
 
 namespace WFSport.Gameplay.FurnitureMode
 {
-    [System.Serializable] 
-    public struct Asset: IAsset
-    {
-        public Sprite[] toyData;
-        public Sprite[] chairData;
-        public Sprite[] otherData;
-    }
     public class GameplayManager : MonoBehaviour, IMinigame
     {
         [SerializeField] private Topic[] topics;
@@ -28,7 +21,6 @@ namespace WFSport.Gameplay.FurnitureMode
         [SerializeField] private float toyReplaceRange;
         [SerializeField] private Canvas ui;
 
-        private Asset myAsset;
         private IMinigame.ResultData result;
         private IMinigame.ConfigData myData;
         private Camera cam;
@@ -48,6 +40,7 @@ namespace WFSport.Gameplay.FurnitureMode
         private Sequence camAnim;
         private LocalDataFurniture localData;
         private SpriteRenderer[] limitSpriteRender;
+        private AssetConfig myAsset;
         private Sequence animLimit;
         private ToyScrollItem[] toyScrollItems;
         private OtherScrollItem[] otherScrollItems;
@@ -324,7 +317,7 @@ namespace WFSport.Gameplay.FurnitureMode
             localData = GameController.Instance.FurnitureData;
             limitSpriteRender = limitToyArea.GetComponentsInChildren<SpriteRenderer>();
 
-            myAsset = GameController.Instance.OrderAsset<Asset>(WFSport.Base.Minigame.Furniture);
+            myAsset = GameController.Instance.OrderAsset<AssetConfig>(WFSport.Base.Minigame.Furniture);
             StartCoroutine(InitToysCreated());
             StartCoroutine(InitCreatedChair());
         }

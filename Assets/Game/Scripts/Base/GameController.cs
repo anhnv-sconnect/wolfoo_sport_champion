@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WFSport.Gameplay;
 using WFSport.Helper;
 using WFSport.UI;
 using static AnhNV.GameBase.PopupManager;
@@ -46,11 +47,13 @@ namespace WFSport.Base
         public LocalDataCreateEnergy CreateEnergyData { get => localData.createEnergyData; }
         public LocalDataFurniture FurnitureData { get => localData.furnitureData; }
         public TutorialLocalData TutorialData { get => localData.tutorialData; }
+        public CharacterAsset CharacterDataAsset { get => dataManager.GetCharacterData(); }
         public PlayerMe PlayerMe { get => playerMe; }
         public bool IsLoadLocalDataCompleted => localData.IsLoadCompleted;
         public bool IsLoadSceneCompleted => localData.IsLoadCompleted && loadSceneManager.IsLoadCompleted;
 
         public MinigameSystemUI SystemUI { get => systemUI; }
+        public Action OnChangeSceneCompleted;
 
         private void Start()
         {
@@ -96,7 +99,7 @@ namespace WFSport.Base
         {
             playerMe.musicVolume = volume;
         }
-        internal T OrderAsset<T>(Minigame game) where T : Gameplay.IAsset
+        internal T OrderAsset<T>(Minigame game) where T : IAsset
         {
             return dataManager.OrderAsset<T>(game);
         }
@@ -246,6 +249,7 @@ namespace WFSport.Base
             loadSceneManager.LoadScene(Constant.SCENE.HOME, isUsingLoading);
             loadSceneManager.OnLoadComplete = () =>
             {
+                OnChangeSceneCompleted?.Invoke();
                 GetSystemUI();
                 if (playerMe.totalEnergy <= 0)
                 {
@@ -262,6 +266,7 @@ namespace WFSport.Base
             loadSceneManager.LoadScene(Constant.SCENE.GAMEPLAY);
             loadSceneManager.OnLoadComplete = () =>
             {
+                OnChangeSceneCompleted?.Invoke();
                 OnGotoGameplay(minigame);
                 GetSystemUI();
 
@@ -283,6 +288,7 @@ namespace WFSport.Base
             loadSceneManager.LoadScene(Constant.SCENE.LOADING);
             loadSceneManager.OnLoadComplete = () =>
             {
+                OnChangeSceneCompleted?.Invoke();
                 GetSystemUI();
             };
         }

@@ -19,7 +19,6 @@ namespace WFSport.Gameplay.BasketballMode
         [SerializeField] private Bot bot;
         [SerializeField] private Transform basketHolder;
         [SerializeField] private ScoreManager scoreAnimManager;
-        [SerializeField] private CharacterWorldAnimation[] characterData;
         [SerializeField] private Transform bg;
 
         private int totalBasket;
@@ -38,6 +37,7 @@ namespace WFSport.Gameplay.BasketballMode
 
         public IMinigame.ConfigData InternalData { get => myData; set => myData = value; }
         IMinigame.ResultData IMinigame.ExternalData { get => result; set => result = value; }
+        private CharacterAsset characterData;
 
         private void Awake()
         {
@@ -204,20 +204,23 @@ namespace WFSport.Gameplay.BasketballMode
             ui.Setup(myData.playTime, curLevel.timelineScores);
             if (!HasBot) ui.SetupSinglePlayer();
 
-            foreach (var character in characterData)
+            characterData = GameController.Instance.CharacterDataAsset;
+            foreach (var character in characterData.records)
             {
                 if (character.Name == CharacterWorldAnimation.CharacterName.Wolfoo)
                 {
                     player.Setup(config, curLevel, this);
-                    player.Create(character);
+                    player.Create(character.characterAnimWorld);
                     player.Init();
+                    ui.Setup(character.icon, null);
                 }
 
                 if (HasBot && character.Name == curLevel.botName)
                 {
                     bot.Setup(config, curLevel, this);
-                    bot.Create(character);
+                    bot.Create(character.characterAnimWorld);
                     bot.Init();
+                    ui.Setup(null, character.icon);
                 }
             }
 

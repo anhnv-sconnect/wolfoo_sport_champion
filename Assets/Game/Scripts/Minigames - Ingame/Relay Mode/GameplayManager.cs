@@ -50,6 +50,8 @@ namespace WFSport.Gameplay.RelayMode
 
         private IMinigame.ConfigData myData;
         private IMinigame.ResultData result;
+        private int rdCharacterIdx;
+
         public IMinigame.ConfigData InternalData { get => myData; set => myData = value; }
         IMinigame.ResultData IMinigame.ExternalData { get => result; set => result = value; }
 
@@ -328,6 +330,8 @@ namespace WFSport.Gameplay.RelayMode
 
         private void SetupNextStage()
         {
+            rdCharacterIdx = UnityEngine.Random.Range(0, characterData.Length);
+
             CreateNextLevel();
             CreateNextPlayer();
         }
@@ -343,7 +347,7 @@ namespace WFSport.Gameplay.RelayMode
 
                 player.Current = Instantiate(playerPb, transform);
                 player.Current.transform.position = pos;
-                player.Current.Setup(level.Current.Mode, characterData);
+                player.Current.Setup(level.Current.Mode, characterData[rdCharacterIdx]);
                 level.Current.Assign(player.Current);
             }
             else
@@ -352,9 +356,11 @@ namespace WFSport.Gameplay.RelayMode
 
                 player.Next = Instantiate(playerPb, transform);
                 player.Next.transform.position = pos;
-                player.Next.Setup(level.Next.Mode, characterData);
+                player.Next.Setup(level.Next.Mode, characterData[rdCharacterIdx]);
                 level.Next.Assign(player.Next);
             }
+            rdCharacterIdx++;
+            rdCharacterIdx = rdCharacterIdx >= characterData.Length ? 0 : rdCharacterIdx;
         }
 
         private Player.Mode GetLevelMode(int id)

@@ -10,11 +10,23 @@ namespace WFSport.Load
     public class LoadScene : MonoBehaviour
     {
         [SerializeField] LoadingLazy loadingPanel;
-  
+
+        private void Awake()
+        {
+            var a = GameController.Instance;
+        }
         // Start is called before the first frame update
         void Start()
         {
-            EventDispatcher.Instance.Dispatch(new EventKeyBase.ChangeScene { home = true });
+            Debug.Log("LoadScene 1 ");
+            loadingPanel.Setup(3);
+            loadingPanel.Show();
+            loadingPanel.OnShown = () =>
+            {
+                EventDispatcher.Instance.Dispatch(new EventKeyBase.ChangeScene { home = true });
+                loadingPanel.Hide();
+                loadingPanel.Setup(2);
+            };
         }
     }
 }

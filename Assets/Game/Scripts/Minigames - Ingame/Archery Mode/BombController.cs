@@ -48,6 +48,11 @@ namespace WFSport.Gameplay.ArcheryMode
             bombs = new Bomb[maxBomb];
         }
 
+        public void OnBombShooted(Vector3 endPos)
+        {
+            PlayAnimExploring(endPos);
+        }
+
         internal bool IsArrowShooted(Arrow arrow)
         {
             foreach (var bomb in bombs)
@@ -64,7 +69,7 @@ namespace WFSport.Gameplay.ArcheryMode
             return false;
         }
 
-        private void PlayAnimExploring(Vector3 pos)
+        public void PlayAnimExploring(Vector3 pos)
         {
             _anim?.Kill();
 

@@ -1,5 +1,6 @@
 using AnhNV.Helper;
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -179,6 +180,12 @@ namespace WFSport.Gameplay.ArcheryMode
         internal override void InitSpecial()
         {
             specialItem.gameObject.SetActive(true);
+        }
+
+        internal void OnHitBomb(Vector3 position)
+        {
+            myBomb.OnHitCorrect(position);
+            OnHiding();
         }
     }
 }

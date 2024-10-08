@@ -262,8 +262,10 @@ namespace WFSport.Gameplay.ArcheryMode
                     obj.IsAttached = true;
                     if (marker.HasBomb)
                     {
-                        StopCoroutine("OnShootedBomb");
+                        //    StopCoroutine("OnShootedBomb");
                         StartCoroutine("OnShootedBomb");
+                        marker.OnHitBomb(obj.transform.position);
+                        bombController.PlayAnimExploring(marker.TargetPosition);
                     }
                     else
                     {
@@ -308,8 +310,10 @@ namespace WFSport.Gameplay.ArcheryMode
                         obj.IsAttached = true;
                         if (poolingMovingMarkers[i].HasBomb)
                         {
-                            StopCoroutine("OnShootedBomb");
+                       //     StopCoroutine("OnShootedBomb");
                             StartCoroutine("OnShootedBomb");
+                            poolingMovingMarkers[i].OnHitBomb(obj.transform.position);
+                            bombController.PlayAnimExploring(poolingMovingMarkers[i].TargetPosition);
                         }
                         else
                         {

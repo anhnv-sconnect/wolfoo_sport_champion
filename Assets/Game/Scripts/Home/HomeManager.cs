@@ -1,4 +1,5 @@
 using AnhNV.GameBase;
+using DG.Tweening;
 using SCN;
 using System;
 using System.Collections;
@@ -18,15 +19,30 @@ namespace WFSport.Home
         [SerializeField] private Button createdToyBtn;
         [SerializeField] private Transform toyArea;
         [SerializeField] private SpriteRenderer toypb;
+        [SerializeField] private ParticleSystem lightingFx;
         private ConfigDataManager.GameplayConfigData[] gameplayData;
         private LocalDataFurniture furnitureData;
-        private Gameplay.FurnitureMode.Asset furnitureAsset;
+        private Gameplay.FurnitureMode.AssetConfig furnitureAsset;
+        private Sequence animRefresh;
 
         private void Start()
         {
             counterBtn.onClick.AddListener(OnClickCounter);
             createdToyBtn.onClick.AddListener(OnClickCreatedToy);
+
             InitData();
+            PlayAnimRefreshFurniture();
+        }
+        private void OnDestroy()
+        {
+            animRefresh?.Kill();
+        }
+
+        private void PlayAnimRefreshFurniture()
+        {
+            lightingFx.transform.position = new Vector3(lightingFx.transform.position.x, 4.3f, 0);
+            animRefresh = DOTween.Sequence()
+                .Append(lightingFx.transform.DOMoveY(-0.6f, 2).SetEase(Ease.Linear));
         }
 
         private void OnClickCreatedToy()
@@ -73,9 +89,9 @@ namespace WFSport.Home
                 yield return new WaitForSeconds(0.5f);
             }
 
-            furnitureAsset = GameController.Instance.OrderAsset<Gameplay.FurnitureMode.Asset>(Minigame.Furniture);
+            furnitureAsset = GameController.Instance.OrderAsset<Gameplay.FurnitureMode.AssetConfig>(Minigame.Furniture);
 
-            if (furnitureAsset.Equals(default(Gameplay.FurnitureMode.Asset)))
+            if (furnitureAsset == null)
             {
                 Debug.LogError("<!> Your Asset is Empty <!>");
             }

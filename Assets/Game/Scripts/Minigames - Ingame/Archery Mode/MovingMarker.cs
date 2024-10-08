@@ -87,6 +87,12 @@ namespace WFSport.Gameplay.ArcheryMode
             });
         }
 
+        internal void OnHitBomb(Vector3 position)
+        {
+            myBomb.OnHitCorrect(position);
+            OnHiding();
+        }
+
         internal override void Init()
         {
             if (isInit) return;

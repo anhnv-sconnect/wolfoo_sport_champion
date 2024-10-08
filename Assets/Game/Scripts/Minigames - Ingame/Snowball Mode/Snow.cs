@@ -17,10 +17,14 @@ namespace WFSport.Gameplay.SnowballMode
         private ScratchCardManager myCard;
         private TweenerCore<Color, Color, ColorOptions> _tween;
 
-        private void Start()
+        private void Awake()
         {
             rigidBd = GetComponent<Rigidbody2D>();
             myCard = GetComponent<ScratchCardManager>();
+      //      myCard.MainCamera = Camera.main;
+        }
+        private void Start()
+        {
             myCard.Progress.OnProgress += OnScratching;
         }
 

@@ -7007,7 +7007,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   snowballs:
-  - {fileID: 8591742386587843068}
+  - {fileID: 2267532260451727509}
   - {fileID: 7660516302545229126}
   - {fileID: 5352036255027094170}
   - {fileID: 2754605616800766935}
@@ -8561,7 +8561,7 @@ Transform:
   - {fileID: 6975864478342654157}
   - {fileID: 2157781793238350307}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3042940206626125481
 MonoBehaviour:
@@ -16965,6 +16965,10 @@ PrefabInstance:
     - target: {fileID: 7457580220765061340, guid: ad127d61ae80673448f308db07b0ee86, type: 3}
       propertyPath: m_Name
       value: ScratchCard - Snow (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7457580220765061340, guid: ad127d61ae80673448f308db07b0ee86, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

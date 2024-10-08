@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e883edeb0753e9d46aa66914cc6af47f, type: 3}
+  m_Name: Character_Asset Config
+  m_EditorClassIdentifier: 
+  records:
+  - Name: 0
+    icon: {fileID: 21300000, guid: 8b82998ba2104724cbaa2f297613419f, type: 3}
+    characterAnimWorld: {fileID: 8223500246181278513, guid: 503ee415f48f8c64bbbb6bee713cb7a6, type: 3}
+    characterAnimUi: {fileID: 0}
+  - Name: 1
+    icon: {fileID: 21300000, guid: 852f2d946494ec143976b4c0df53d77c, type: 3}
+    characterAnimWorld: {fileID: 8268553071728684739, guid: 8d8282b18a891454894c9cb6e3de4474, type: 3}
+    characterAnimUi: {fileID: 0}
+  - Name: 2
+    icon: {fileID: 21300000, guid: 661224b3e8481044c938478195412084, type: 3}
+    characterAnimWorld: {fileID: 2884491716581251199, guid: 88e621c4bda9043499fa051a768d260d, type: 3}
+    characterAnimUi: {fileID: 541570421123884793, guid: 13a4a69a0eccef3438d4ad9c4161c5ed, type: 3}
+  - Name: 3
+    icon: {fileID: 21300000, guid: c578f9c1cba486c4e8e932070ff1c123, type: 3}
+    characterAnimWorld: {fileID: 1968340550340967579, guid: 674de1aec582a0e40a6976bc8d0fe224, type: 3}
+    characterAnimUi: {fileID: 0}
+  - Name: 4
+    icon: {fileID: 0}
+    characterAnimWorld: {fileID: 6387432650018150818, guid: cbd252f793d9b114791b852ae7dabd17, type: 3}
+    characterAnimUi: {fileID: 3323399376964219425, guid: 4d57e0ce9de5a3949b987d5774cc6c88, type: 3}
+  - Name: 5
+    icon: {fileID: 21300000, guid: 4112dd6ad5c321a40a941ab0c45933bf, type: 3}
+    characterAnimWorld: {fileID: 7965609766644471404, guid: 2a0f40999c423a24c95c70d99351fed7, type: 3}
+    characterAnimUi: {fileID: 0}
+  - Name: 6
+    icon: {fileID: 21300000, guid: 0721367e985987545a8fce93eabae62e, type: 3}
+    characterAnimWorld: {fileID: 425657965821622248, guid: 0b0137ccbeab5764d8c22a6ed4a00173, type: 3}
+    characterAnimUi: {fileID: 0}
+  - Name: 7
+    icon: {fileID: 21300000, guid: e141ce9f6ef6402448d99d3b83a2aff1, type: 3}
+    characterAnimWorld: {fileID: 2722655553069342194, guid: 652ec442b63d57941ba6f9593a0cdd21, type: 3}
+    characterAnimUi: {fileID: 0}

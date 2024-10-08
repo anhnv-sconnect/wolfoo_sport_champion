@@ -12,9 +12,14 @@ namespace WFSport.Base
         [SerializeField] public LocalDataManager localSaveloadData;
         [SerializeField] private string minigamesPath;
 
+        internal CharacterAsset GetCharacterData()
+        {
+            return assetDataManager.CharacterAssetData;
+        }
+
         internal T OrderAsset<T>(Minigame game) where T: IAsset
         {
-            var rs = default(T);
+            IAsset rs = null;
             switch (game)
             {
                 case Minigame.Archery:
@@ -24,6 +29,7 @@ namespace WFSport.Base
                 case Minigame.CatchMoreToys:
                     break;
                 case Minigame.CreateEnergy:
+                    rs = assetDataManager.CreateEnergyAsset;
                     break;
                 case Minigame.Latin:
                     break;
@@ -32,11 +38,11 @@ namespace WFSport.Base
                 case Minigame.Snowball:
                     break;
                 case Minigame.Furniture:
-                    rs = (T) (object) assetDataManager.FurnitureAsset;
-                    return rs;
+                    rs = assetDataManager.FurnitureAsset;
+                    return (T)rs;
             }
 
-            return rs;
+            return (T)rs;
         }
 
         internal GameObject OrderMinigame(Minigame mode)
