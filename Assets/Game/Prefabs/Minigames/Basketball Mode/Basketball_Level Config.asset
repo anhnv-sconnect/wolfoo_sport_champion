@@ -21,7 +21,7 @@ MonoBehaviour:
     botReloadTime: 3
     botShootingTargetPercent: 50
     timelineScores:
-    - 20
+    - 10
     - 40
     - 60
   mode1:

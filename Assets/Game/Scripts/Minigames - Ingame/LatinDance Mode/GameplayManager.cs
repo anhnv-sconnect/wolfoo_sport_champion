@@ -23,7 +23,7 @@ namespace WFSport.Gameplay.LatinDanceMode
 
         private float finalScore;
         private MinigameUI ui;
-        private float score;
+        private int score;
 
         private IMinigame.ConfigData myData;
         private IMinigame.ResultData result;
@@ -222,7 +222,7 @@ namespace WFSport.Gameplay.LatinDanceMode
             }
 
             score++;
-            ui.UpdateLoadingBar(score / finalScore);
+            ui.UpdateLoadingBar(score);
 
             if (ui.TotalStarClaimed > 0 && score == myData.timelineScore[ui.TotalStarClaimed - 1])
             {

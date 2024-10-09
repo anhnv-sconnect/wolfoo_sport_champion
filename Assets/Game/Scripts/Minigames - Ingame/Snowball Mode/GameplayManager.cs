@@ -12,7 +12,6 @@ namespace WFSport.Gameplay.SnowballMode
 {
     public class GameplayManager : MonoBehaviour, IMinigame
     {
-        [SerializeField] private CharacterWorldAnimation[] audiences;
         [SerializeField] private CharacterWorldAnimation wolfooPb;
         [SerializeField] private GameplayConfig config;
         [SerializeField] private SnowmanStage stage;
@@ -22,9 +21,11 @@ namespace WFSport.Gameplay.SnowballMode
         [SerializeField] private Transform otherItemInMapHolder;
 
         private MinigameUI ui;
-        private float totalSnowballClaimed;
+        private int totalSnowballClaimed;
         private float maxScore;
+        private CharacterAsset characterData;
         private Tutorial tutorial;
+        private CharacterWorldAnimation[] audiences;
 
         private IMinigame.ConfigData myData;
         private IMinigame.ResultData result;
@@ -78,14 +79,19 @@ namespace WFSport.Gameplay.SnowballMode
 
             var length = myData.timelineScore.Length;
             maxScore = myData.timelineScore[length - 1];
+            characterData = GameController.Instance.CharacterDataAsset;
+            audiences = new CharacterWorldAnimation[seats.Length];
 
+            var count = 0;
             foreach (var item in seats)
             {
-                var rdIdx = UnityEngine.Random.Range(0, audiences.Length);
-                var audience = Instantiate(audiences[rdIdx], item);
+                var rdIdx = UnityEngine.Random.Range(0, characterData.records.Length);
+                var audience = Instantiate(characterData.records[rdIdx].characterAnimWorld, item);
                 audience.transform.position = new Vector3(item.transform.position.x, item.transform.position.y, 1);
                 audience.ChangeSkin(CharacterWorldAnimation.SkinType.Christmas);
                 audience.PlayIdleAnim();
+                audiences[count] = audience;
+                count++;
             }
             var wolfoo = Instantiate(wolfooPb, player.transform);
             player.Setup(wolfoo);
@@ -100,12 +106,24 @@ namespace WFSport.Gameplay.SnowballMode
         {
             return (int)((target.position.y) * -100);
         }
+        private IEnumerator PlayAudienceAnim()
+        {
+            foreach (var audience in audiences)
+            {
+                audience.PlayJumpWinAnim();
+            }
+            yield return new WaitForSeconds(3);
+            foreach (var audience in audiences)
+            {
+                audience.PlayIdleAnim();
+            }
+        }
 
         private void OnSnowballCreated()
         {
             // Update UI score
             totalSnowballClaimed++;
-            ui.UpdateLoadingBar(totalSnowballClaimed / maxScore);
+            ui.UpdateLoadingBar(totalSnowballClaimed);
             if (ui.TotalStarClaimed > 0 && totalSnowballClaimed == myData.timelineScore[ui.TotalStarClaimed - 1])
             {
                 result.claimedCoin += myData.milestoneCoin;
@@ -119,6 +137,8 @@ namespace WFSport.Gameplay.SnowballMode
             {
                 player.Play();
             }
+
+            StartCoroutine("PlayAudienceAnim");
         }
 
         private void OnEndgame(MatchResult matchResult)

@@ -46,6 +46,7 @@ namespace WFSport.Gameplay.ArcheryMode
         private IEnumerator CountDownAliveSpecialTime()
         {
             isSpecialMode = true;
+            currentArrow.SetupSpecial(config.specialAliveTime);
             yield return new WaitForSeconds(config.specialAliveTime);
             isSpecialMode = false;
         }

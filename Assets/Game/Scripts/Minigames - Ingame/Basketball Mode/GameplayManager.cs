@@ -122,7 +122,7 @@ namespace WFSport.Gameplay.BasketballMode
 
                     return;
                 }
-                ui.UpdateLoadingBar(player.Score / maxScore);
+                ui.UpdateLoadingBar(player.Score);
 
                 result.claimedCoin += myData.normalPlusCoin;
                 if (ui.TotalStarClaimed > 0 && player.Score == myData.timelineScore[ui.TotalStarClaimed - 1])
@@ -132,16 +132,16 @@ namespace WFSport.Gameplay.BasketballMode
 
                 if (player.Score > maxScore)
                 {
-                    ui.UpdateLoadingBar(1);
+                    ui.UpdateLoadingBar(player.Score);
                     OnGameWining();
                 }
             }
             else
             {
-                ui.UpdateLoadingBar2(bot.Score / maxScore);
+                ui.UpdateLoadingBar2(bot.Score);
                 if (player.Score > maxScore)
                 {
-                    ui.UpdateLoadingBar(1);
+                    ui.UpdateLoadingBar2(bot.Score);
                     OnGameLosing();
                 }
             }
@@ -231,6 +231,7 @@ namespace WFSport.Gameplay.BasketballMode
         public void OnGameLosing()
         {
             player.Pause(true);
+            if (HasBot) bot.Pause(true);
             ui.PauseTime();
             foreach (var basket in myBaskets)
             {
@@ -242,6 +243,7 @@ namespace WFSport.Gameplay.BasketballMode
         public void OnGamePause()
         {
             player.Pause(true);
+            if (HasBot) bot.Pause(true);
             ui.PauseTime();
             foreach (var basket in myBaskets)
             {
@@ -271,6 +273,7 @@ namespace WFSport.Gameplay.BasketballMode
         public void OnGameStop()
         {
             player.Pause(true);
+            if (HasBot) bot.Pause(true);
             ui.PauseTime();
             foreach (var basket in myBaskets)
             {
@@ -282,6 +285,7 @@ namespace WFSport.Gameplay.BasketballMode
         public void OnGameWining()
         {
             player.Pause(true);
+            if (HasBot) bot.Pause(true);
             ui.PauseTime();
             foreach (var basket in myBaskets)
             {

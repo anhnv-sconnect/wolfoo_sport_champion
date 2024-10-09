@@ -22,7 +22,6 @@ namespace WFSport.Gameplay.RelayMode
         [SerializeField] private Player.Mode CurrentMode;
         [SerializeField] private Vector3 cameraRange;
         [SerializeField] private float levelScore;
-        [SerializeField] private CharacterWorldAnimation[] characterData;
         [SerializeField] private bool isTesting;
 
         private int levelIdx;
@@ -32,6 +31,7 @@ namespace WFSport.Gameplay.RelayMode
 
         private Camera camera_;
         private Transform[] maps;
+        private CharacterAsset characterData;
         private MinigameUI ui;
 
         private Dictionary<Player.Mode, List<LevelStage>> levels;
@@ -287,6 +287,8 @@ namespace WFSport.Gameplay.RelayMode
                 Instantiate(mapPb, transform),
             };
 
+            characterData = GameController.Instance.CharacterDataAsset;
+
             // Init Level
             levels = new Dictionary<Player.Mode, List<LevelStage>>();
             foreach (var item in levelData)
@@ -330,7 +332,7 @@ namespace WFSport.Gameplay.RelayMode
 
         private void SetupNextStage()
         {
-            rdCharacterIdx = UnityEngine.Random.Range(0, characterData.Length);
+            rdCharacterIdx = UnityEngine.Random.Range(0, characterData.records.Length);
 
             CreateNextLevel();
             CreateNextPlayer();
@@ -347,7 +349,7 @@ namespace WFSport.Gameplay.RelayMode
 
                 player.Current = Instantiate(playerPb, transform);
                 player.Current.transform.position = pos;
-                player.Current.Setup(level.Current.Mode, characterData[rdCharacterIdx]);
+                player.Current.Setup(level.Current.Mode, characterData.records[rdCharacterIdx].characterAnimWorld);
                 level.Current.Assign(player.Current);
             }
             else
@@ -356,11 +358,11 @@ namespace WFSport.Gameplay.RelayMode
 
                 player.Next = Instantiate(playerPb, transform);
                 player.Next.transform.position = pos;
-                player.Next.Setup(level.Next.Mode, characterData[rdCharacterIdx]);
+                player.Next.Setup(level.Next.Mode, characterData.records[rdCharacterIdx].characterAnimWorld);
                 level.Next.Assign(player.Next);
             }
             rdCharacterIdx++;
-            rdCharacterIdx = rdCharacterIdx >= characterData.Length ? 0 : rdCharacterIdx;
+            rdCharacterIdx = rdCharacterIdx >= characterData.records.Length ? 0 : rdCharacterIdx;
         }
 
         private Player.Mode GetLevelMode(int id)
@@ -453,7 +455,7 @@ namespace WFSport.Gameplay.RelayMode
         private void OnClaimExperience(Base.Player player, bool isSpecialItem)
         {
             playerScore++;
-            ui.UpdateLoadingBar((float)playerScore / levelScore);
+            ui.UpdateLoadingBar(playerScore);
 
             result.claimedCoin += myData.normalPlusCoin;
             if (ui.TotalStarClaimed > 0 && playerScore == myData.timelineScore[ui.TotalStarClaimed - 1])

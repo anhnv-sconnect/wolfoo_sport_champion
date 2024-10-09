@@ -226,7 +226,7 @@ namespace WFSport.Gameplay.CatchMoreToysMode
                 return;
             }
 
-            ui.UpdateLoadingBar(player.Score / finalScore);
+            ui.UpdateLoadingBar(player.Score);
 
             result.claimedCoin += isSpecial ? myData.specialPlusCoin : myData.normalPlusCoin;
             if (ui.TotalStarClaimed > 0 && player.Score == myData.timelineScore[ui.TotalStarClaimed - 1])

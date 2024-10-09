@@ -31,9 +31,10 @@ namespace WFSport.Gameplay
         private TweenerCore<float, float, FloatOptions> _tweenLoadingBar;
         private TweenerCore<Vector3, Vector3, VectorOptions> _tweenStar;
 
-        private float[] timeline;
+        private float[] loadingSteps;
         private Sequence tweenFadeScreen;
         private Sequence _animLowerTime;
+        private int lastScore;
 
         public int TotalStarClaimed { get => totalStarClaimed; }
 
@@ -99,8 +100,28 @@ namespace WFSport.Gameplay
         {
             StopCoroutine("CountTime");
         }
+        protected float[] GetLoadingSteps(float[] timelines)
+        {
+            var total = timelines.Length;
+            var loadingSteps = new float[total];
+            var step = 1f / total;
 
-        internal virtual void Setup(int time, float[] timeline)
+            for (int i = 0; i < total; i++)
+            {
+                if (i > 0)
+                {
+                    loadingSteps[i] = step / (timelines[i] - timelines[i - 1]);
+                }
+                else
+                {
+                    loadingSteps[i] = step / timelines[0];
+                }
+            }
+
+            return loadingSteps;
+        }
+
+        internal virtual void Setup(int time, float[] timelines)
         {
             // Init playtime
             fillBar.fillAmount = 0;
@@ -109,13 +130,7 @@ namespace WFSport.Gameplay
                 star.transform.localScale = Vector3.zero;
             }
 
-            // Init timeline
-            float total = timeline[timeline.Length - 1];
-            this.timeline = new float[timeline.Length];
-            for (int i = 0; i < timeline.Length; i++)
-            {
-                this.timeline[i] = timeline[i] / total;
-            }
+            loadingSteps = GetLoadingSteps(timelines);
 
             /// Anim Setup Timing
             totalTime = time;
@@ -149,11 +164,11 @@ namespace WFSport.Gameplay
             fillBar.fillAmount = 0;
         }
 
-        protected void CheckingStar(float value)
+        protected void CheckingStar()
         {
-            if (totalStarClaimed >= timeline.Length) return;
-            
-            if (value >= timeline[totalStarClaimed])
+            var step = (1f / starImgs.Length) * (totalStarClaimed + 1);
+            var value = fillBar.fillAmount;
+            if (value >= step)
             {
                 totalStarClaimed++;
                 if (totalStarClaimed <= starImgs.Length)
@@ -169,14 +184,18 @@ namespace WFSport.Gameplay
             }
         }
 
-        internal virtual void UpdateLoadingBar(float value)
+        internal virtual void UpdateLoadingBar(int score)
         {
-            if (value > 1) return;
+            if (fillBar.fillAmount >= 1) return;
+            _tweenLoadingBar?.Complete();
 
-            _tweenLoadingBar?.Kill();
+            var totalStep = score - lastScore;
+            lastScore = score;
+            var value = fillBar.fillAmount + loadingSteps[totalStarClaimed] * totalStep;
+
             _tweenLoadingBar = fillBar.DOFillAmount(value, 0.5f).OnComplete(() =>
             {
-                CheckingStar(fillBar.fillAmount);
+                CheckingStar();
             });
         }
     }

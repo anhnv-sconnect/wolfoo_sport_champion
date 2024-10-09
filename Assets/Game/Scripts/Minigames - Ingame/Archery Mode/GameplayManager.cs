@@ -330,7 +330,7 @@ namespace WFSport.Gameplay.ArcheryMode
         {
             if (isBot)
             {
-                ui.UpdateLoadingBar2(player.Score / maxScore);
+                ui.UpdateLoadingBar2(player.Score);
                 if (bot.Score == maxScore)
                 {
                     OnGameLosing();
@@ -338,7 +338,7 @@ namespace WFSport.Gameplay.ArcheryMode
             }
             else
             {
-                ui.UpdateLoadingBar(player.Score / maxScore);
+                ui.UpdateLoadingBar(player.Score);
 
                 result.claimedCoin += plusScore;
                 if (ui.TotalStarClaimed > 0 && player.Score == myData.timelineScore[ui.TotalStarClaimed - 1])

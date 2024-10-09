@@ -56,7 +56,19 @@ namespace WFSport.Gameplay.ArcheryMode
 
             myPlayer = player;
             IsAttached = false;
+            SetupUI();
 
+            StopCoroutine("DelaySpawn");
+            StartCoroutine("DelaySpawn");
+        }
+        private IEnumerator DelaySpawn()
+        {
+            arrowHolder.gameObject.SetActive(false);
+            yield return new WaitForSeconds(delaySpawnTime);
+            arrowHolder.gameObject.SetActive(true);
+        }
+        private void SetupUI()
+        {
             if (isSpecial)
             {
                 arrow1.gameObject.SetActive(true);
@@ -72,15 +84,6 @@ namespace WFSport.Gameplay.ArcheryMode
 
                 arrow1.localPosition = new Vector3(0, arrow1.localPosition.y, 0);
             }
-
-            StopCoroutine("DelaySpawn");
-            StartCoroutine("DelaySpawn");
-        }
-        private IEnumerator DelaySpawn()
-        {
-            arrowHolder.gameObject.SetActive(false);
-            yield return new WaitForSeconds(delaySpawnTime);
-            arrowHolder.gameObject.SetActive(true);
         }
         internal void SetupNormal()
         {
@@ -90,7 +93,7 @@ namespace WFSport.Gameplay.ArcheryMode
         {
             isSpecial = true;
             specialTime = activeTime;
-
+            SetupUI();
             StopCoroutine("CountTimeAliveSpecial");
             StartCoroutine("CountTimeAliveSpecial");
         }

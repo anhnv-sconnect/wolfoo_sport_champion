@@ -135,7 +135,7 @@ namespace WFSport.Gameplay.CreateEnergyMode
         {
             lidAnim?.Kill();
             lidAnim = DOTween.Sequence()
-                .Append(lid.DOJump(new Vector3(-outSideX - 2.5f, lid.position.y, 0), 0.5f, 1, 0.5f));
+                .Append(lid.DOJump(new Vector3(-outSideX - 2.5f, lid.position.y, 0), 0.5f, 1, 1f));
             lidAnim.OnComplete(() =>
             {
                 OnComplete?.Invoke();

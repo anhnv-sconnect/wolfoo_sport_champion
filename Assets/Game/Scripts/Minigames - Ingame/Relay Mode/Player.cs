@@ -39,6 +39,7 @@ namespace WFSport.Gameplay.RelayMode
         [SerializeField] private GameObject shield;
         [SerializeField] private ParticleSystem stunedFx;
         [SerializeField] private Transform ball;
+        [SerializeField] private ParticleSystem windyFx;
 
         private Mode playerMode;
         private GameState gameState;
@@ -237,6 +238,7 @@ namespace WFSport.Gameplay.RelayMode
                     characterAnimation.PlayDriveFasterAnim();
                     break;
             }
+            windyFx.Play();
         }
         private void PlayRunSlower()
         {
@@ -254,6 +256,7 @@ namespace WFSport.Gameplay.RelayMode
                     characterAnimation.PlayDriveAnim();
                     break;
             }
+            windyFx.Stop();
         }
         private void PlayRun()
         {
@@ -272,6 +275,7 @@ namespace WFSport.Gameplay.RelayMode
                     characterAnimation.PlayDriveAnim();
                     break;
             }
+            windyFx.Stop();
         }
         private void DisableShield()
         {

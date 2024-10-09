@@ -116,8 +116,8 @@ namespace WFSport.Gameplay.CreateEnergyMode
         }
         private void Lock()
         {
-            icon.color = Color.black;
-            icon.DOFade(0.7f, 0);
+            icon.color = Color.white;
+            icon.DOFade(0.8f, 0);
         }
         public void UnLock(bool isImmediately = false)
         {
