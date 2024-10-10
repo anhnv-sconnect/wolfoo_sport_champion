@@ -137,6 +137,12 @@ namespace WFSport.Base
                 case DialogName.Losegame:
                     curDialog = HUDSystem.Instance.Show<DialogLosingGame>(null, UIPanels<HUDSystem>.ShowType.KeepCurrent);
                     break;
+                case DialogName.Ads :
+                    curDialog = HUDSystem.Instance.Show<DialogAds>(null, UIPanels<HUDSystem>.ShowType.KeepCurrent);
+                    break;
+                case DialogName.NoAds :
+                    curDialog = HUDSystem.Instance.Show<DialogNoAds>(null, UIPanels<HUDSystem>.ShowType.KeepCurrent);
+                    break;
                 default:
                     curDialog = null;
                     break;
@@ -174,6 +180,7 @@ namespace WFSport.Base
 
                 if (purchaseActions == null) purchaseActions = new Stack<Action>(1);
                 purchaseActions.Push(OnPurchasingScrollItem);
+                OnOpenDialog(DialogName.Ads);
             }
             else if (data.purchaseType == PurchaseType.Coin)
             {
@@ -244,7 +251,7 @@ namespace WFSport.Base
         {
             HUDSystem.Instance.HideAll();
 
-            Debug.Log("GotoHomeScene ");
+            Debug.Log("GotoHomeScene");
             StopCoroutine("DelayToGoHome");
             loadSceneManager.LoadScene(Constant.SCENE.HOME, isUsingLoading);
             loadSceneManager.OnLoadComplete = () =>

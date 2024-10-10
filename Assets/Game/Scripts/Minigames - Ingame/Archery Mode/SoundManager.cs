@@ -6,5 +6,8 @@ namespace WFSport.Gameplay.ArcheryMode
 {
     public class SoundManager : SoundGameplayManager
     {
+        protected override void OnChangeVolume(EventKey.OnChangeVolume obj)
+        {
+        }
     }
 }

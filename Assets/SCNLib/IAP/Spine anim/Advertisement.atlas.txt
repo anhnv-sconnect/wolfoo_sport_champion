@@ -1,0 +1,258 @@
+
+Advertisement.png
+size: 2048,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+A
+  rotate: true
+  xy: 306, 9
+  size: 93, 112
+  orig: 95, 114
+  offset: 1, 1
+  index: -1
+Advertisement_btn/Advertisement_btn_00000
+  rotate: true
+  xy: 346, 111
+  size: 25, 35
+  orig: 659, 304
+  offset: 72, 176
+  index: -1
+Advertisement_btn/Advertisement_btn_00001
+  rotate: true
+  xy: 306, 106
+  size: 29, 38
+  orig: 659, 304
+  offset: 71, 174
+  index: -1
+Advertisement_btn/Advertisement_btn_00002
+  rotate: false
+  xy: 932, 22
+  size: 38, 51
+  orig: 659, 304
+  offset: 69, 165
+  index: -1
+Advertisement_btn/Advertisement_btn_00003
+  rotate: true
+  xy: 520, 157
+  size: 51, 72
+  orig: 659, 304
+  offset: 66, 149
+  index: -1
+Advertisement_btn/Advertisement_btn_00004
+  rotate: true
+  xy: 334, 138
+  size: 70, 89
+  orig: 659, 304
+  offset: 63, 136
+  index: -1
+Advertisement_btn/Advertisement_btn_00005
+  rotate: true
+  xy: 674, 115
+  size: 93, 106
+  orig: 659, 304
+  offset: 61, 121
+  index: -1
+Advertisement_btn/Advertisement_btn_00006
+  rotate: true
+  xy: 1153, 104
+  size: 122, 116
+  orig: 659, 304
+  offset: 61, 112
+  index: -1
+Advertisement_btn/Advertisement_btn_00007
+  rotate: true
+  xy: 1398, 355
+  size: 156, 122
+  orig: 659, 304
+  offset: 65, 106
+  index: -1
+Advertisement_btn/Advertisement_btn_00008
+  rotate: false
+  xy: 420, 12
+  size: 185, 124
+  orig: 659, 304
+  offset: 82, 104
+  index: -1
+Advertisement_btn/Advertisement_btn_00009
+  rotate: true
+  xy: 1272, 321
+  size: 190, 124
+  orig: 659, 304
+  offset: 132, 104
+  index: -1
+Advertisement_btn/Advertisement_btn_00010
+  rotate: true
+  xy: 1272, 129
+  size: 190, 124
+  orig: 659, 304
+  offset: 194, 104
+  index: -1
+Advertisement_btn/Advertisement_btn_00011
+  rotate: false
+  xy: 0, 3
+  size: 190, 124
+  orig: 659, 304
+  offset: 255, 104
+  index: -1
+Advertisement_btn/Advertisement_btn_00012
+  rotate: false
+  xy: 1271, 3
+  size: 189, 124
+  orig: 659, 304
+  offset: 311, 104
+  index: -1
+Advertisement_btn/Advertisement_btn_00013
+  rotate: true
+  xy: 1008, 34
+  size: 174, 124
+  orig: 659, 304
+  offset: 359, 104
+  index: -1
+Advertisement_btn/Advertisement_btn_00014
+  rotate: true
+  xy: 1398, 211
+  size: 142, 123
+  orig: 659, 304
+  offset: 400, 104
+  index: -1
+Advertisement_btn/Advertisement_btn_00015
+  rotate: true
+  xy: 720, 4
+  size: 109, 120
+  orig: 659, 304
+  offset: 433, 104
+  index: -1
+Advertisement_btn/Advertisement_btn_00016
+  rotate: false
+  xy: 1462, 102
+  size: 83, 107
+  orig: 659, 304
+  offset: 459, 107
+  index: -1
+Advertisement_btn/Advertisement_btn_00017
+  rotate: true
+  xy: 425, 145
+  size: 63, 93
+  orig: 659, 304
+  offset: 479, 109
+  index: -1
+Advertisement_btn/Advertisement_btn_00018
+  rotate: true
+  xy: 594, 161
+  size: 47, 78
+  orig: 659, 304
+  offset: 493, 112
+  index: -1
+Advertisement_btn/Advertisement_btn_00019
+  rotate: true
+  xy: 607, 116
+  size: 43, 65
+  orig: 659, 304
+  offset: 496, 114
+  index: -1
+D
+  rotate: false
+  xy: 842, 8
+  size: 88, 110
+  orig: 90, 112
+  offset: 1, 1
+  index: -1
+E
+  rotate: true
+  xy: 112, 137
+  size: 71, 109
+  orig: 73, 111
+  offset: 1, 1
+  index: -1
+E1
+  rotate: true
+  xy: 223, 137
+  size: 71, 109
+  orig: 73, 111
+  offset: 1, 1
+  index: -1
+E2
+  rotate: true
+  xy: 223, 137
+  size: 71, 109
+  orig: 73, 111
+  offset: 1, 1
+  index: -1
+I
+  rotate: true
+  xy: 192, 106
+  size: 29, 112
+  orig: 31, 114
+  offset: 1, 1
+  index: -1
+Layer 2
+  rotate: true
+  xy: 932, 75
+  size: 45, 56
+  orig: 45, 56
+  offset: 0, 0
+  index: -1
+M
+  rotate: true
+  xy: 192, 0
+  size: 102, 112
+  orig: 104, 114
+  offset: 1, 1
+  index: -1
+N
+  rotate: true
+  xy: 782, 120
+  size: 88, 111
+  orig: 90, 113
+  offset: 1, 1
+  index: -1
+R
+  rotate: true
+  xy: 895, 122
+  size: 86, 111
+  orig: 88, 113
+  offset: 1, 1
+  index: -1
+S
+  rotate: true
+  xy: 0, 131
+  size: 77, 110
+  orig: 79, 113
+  offset: 1, 2
+  index: -1
+Shape 1
+  rotate: false
+  xy: 0, 210
+  size: 1151, 16
+  orig: 1151, 16
+  offset: 0, 0
+  index: -1
+T
+  rotate: true
+  xy: 1134, 18
+  size: 84, 112
+  orig: 86, 114
+  offset: 1, 1
+  index: -1
+T1
+  rotate: false
+  xy: 1522, 399
+  size: 84, 112
+  orig: 86, 114
+  offset: 1, 1
+  index: -1
+UI 2
+  rotate: false
+  xy: 0, 228
+  size: 1270, 283
+  orig: 1270, 283
+  offset: 0, 0
+  index: -1
+V
+  rotate: true
+  xy: 607, 11
+  size: 91, 111
+  orig: 93, 113
+  offset: 1, 1
+  index: -1

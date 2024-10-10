@@ -17,6 +17,8 @@ namespace AnhNV.GameBase
             ChoosingLevel,
             Endgame,
             Losegame,
+            Ads,
+            NoAds
         }
         [SerializeField] string path;
         [SerializeField] GameObject popup;

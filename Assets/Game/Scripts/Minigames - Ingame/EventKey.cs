@@ -32,5 +32,11 @@ namespace WFSport.Gameplay
             public PurchaseType purchaseType;
             public int amount;
         }
+        public struct OnChangeVolume : IEventParams
+        {
+            public bool isSound;
+            public bool isMusic;
+            public float volume;
+        }
     }
 }

@@ -1,9 +1,11 @@
+using SCN;
 using SCN.HUD;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using WFSport.Base;
 
 namespace WFSport.UI
 {
@@ -16,14 +18,25 @@ namespace WFSport.UI
         protected override void Start()
         {
             base.Start();
-            backBtn.onClick.AddListener(OnClickBack);
-            cancelBtn.onClick.AddListener(OnClickBack);
-            adsBtn.onClick.AddListener(OnWatchAds);
+            if (backBtn != null) backBtn.onClick.AddListener(OnClickBack);
+            if (cancelBtn != null) cancelBtn.onClick.AddListener(OnClickBack);
+            if (adsBtn != null) adsBtn.onClick.AddListener(OnWatchAds);
         }
 
         private void OnWatchAds()
         {
-
+            base.Hide();
+            if (AdsManager.Instance.HasRewardVideo)
+            {
+                AdsManager.Instance.ShowRewardVideo(() =>
+                {
+                    EventDispatcher.Instance.Dispatch(new EventKeyBase.OnWatchAds { });
+                });
+            }
+            else
+            {
+                EventDispatcher.Instance.Dispatch(new EventKeyBase.OpenDialog { dialog = AnhNV.GameBase.PopupManager.DialogName.NoAds });
+            }
         }
 
         private void OnClickBack()

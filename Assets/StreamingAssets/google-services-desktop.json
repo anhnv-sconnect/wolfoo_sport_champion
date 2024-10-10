@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "461290307870",
+    "project_id": "wolfoo-sport",
+    "storage_bucket": "wolfoo-sport.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:461290307870:android:fd50d91348f2addcdc890f",
+        "android_client_info": {
+          "package_name": "wolfoo.sport.olympic.champion.NBA.game"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnTiWm7I-VxnjkSpIKx_DFurR5TMJmCJo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

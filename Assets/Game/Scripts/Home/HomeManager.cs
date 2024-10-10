@@ -1,6 +1,7 @@
 using AnhNV.GameBase;
 using DG.Tweening;
 using SCN;
+using SCN.IAP;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -36,6 +37,10 @@ namespace WFSport.Home
         private void OnDestroy()
         {
             animRefresh?.Kill();
+        }
+        public void OpenIAP()
+        {
+            IAPManager.Instance.OpenRemoveAdsPanel();
         }
 
         private void PlayAnimRefreshFurniture()
